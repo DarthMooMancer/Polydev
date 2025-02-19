@@ -18,38 +18,34 @@ end
 
 -- Create a new Java project
 function M.create_project()
-  -- Ensure the prompt is a string (to avoid invalid arguments)
-  local prompt = "Enter project name: "
+  -- Use vim.ui.input for better handling of input
+  vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
+    -- Debugging: Output the input received
+    print("Input received: " .. (project_name or "nil"))
 
-  -- Use vim.fn.input to capture the input
-  local project_name = vim.fn.input(prompt)
+    -- Check if the project name is valid
+    if not project_name or project_name == "" then
+      print("Project creation canceled.")
+      return
+    end
 
-  -- Debugging: Output the input received
-  print("Input received: " .. (project_name or "nil"))
+    -- Paths for the project
+    local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
+    local src_dir = project_root .. "/root/src"
+    local out_dir = project_root .. "/root/out"
 
-  -- Check if the project name is valid
-  if not project_name or project_name == "" then
-    print("Project creation canceled.")
-    return
-  end
+    -- Debugging: Print the paths
+    print("Project root: " .. project_root)
+    print("Source directory: " .. src_dir)
+    print("Output directory: " .. out_dir)
 
-  -- Paths for the project
-  local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
-  local src_dir = project_root .. "/root/src"
-  local out_dir = project_root .. "/root/out"
+    -- Create directories
+    vim.fn.mkdir(src_dir, "p")
+    vim.fn.mkdir(out_dir, "p")
 
-  -- Debugging: Print the paths
-  print("Project root: " .. project_root)
-  print("Source directory: " .. src_dir)
-  print("Output directory: " .. out_dir)
-
-  -- Create directories
-  vim.fn.mkdir(src_dir, "p")
-  vim.fn.mkdir(out_dir, "p")
-
-  -- Write the Main.java file
-  local main_java_path = src_dir .. "/Main.java"
-  local main_java_content = [[
+    -- Write the Main.java file
+    local main_java_path = src_dir .. "/Main.java"
+    local main_java_content = [[
 public class Main {
     public static void main(String[] args) {
         System.out.println("Hello, World!");
@@ -57,17 +53,19 @@ public class Main {
 }
 ]]
 
-  -- Create the file and write content
-  local file = io.open(main_java_path, "w")
-  if file then
-    file:write(main_java_content)
-    file:close()
-    vim.cmd("edit " .. main_java_path)
-    print("Project '" .. project_name .. "' created at " .. project_root)
-  else
-    print("Error creating Main.java")
-  end
+    -- Create the file and write content
+    local file = io.open(main_java_path, "w")
+    if file then
+      file:write(main_java_content)
+      file:close()
+      vim.cmd("edit " .. main_java_path)
+      print("Project '" .. project_name .. "' created at " .. project_root)
+    else
+      print("Error creating Main.java")
+    end
+  end)
 end
+
 
 
 -- Create a new Java file
