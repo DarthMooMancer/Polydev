@@ -16,7 +16,7 @@ For Lazy.nvim:
 require {
   "DarthMooMancer/Javanvim",
   config = function()
-    require("Javavim").setup()
+    require("Javanvim").setup()
   end
 }
 ```
