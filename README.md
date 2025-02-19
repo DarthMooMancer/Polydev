@@ -12,8 +12,7 @@ The main goal is the plugin is to be simple and extensible for Java developers. 
 ## Installation
 
 For Lazy.nvim:
-![carbon](https://github.com/user-attachments/assets/71721f72-7a2f-471e-9de5-b07d05cf06b3)
-
+![carbon-3](https://github.com/user-attachments/assets/966cef64-729c-417b-a907-bb05bde81dfb)
 
 
 For Mini.Deps:
