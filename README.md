@@ -10,9 +10,7 @@ The main goal is the plugin is to be simple and extensible for Java developers. 
 - Running Files (Again only Main.java files)
 
 ## Installation
-
-For Lazy.nvim:
-![carbon-3](https://github.com/user-attachments/assets/966cef64-729c-417b-a907-bb05bde81dfb)
+![carbon-5](https://github.com/user-attachments/assets/6a45eef0-27f1-4844-89b0-0458b1397f4f)
 
 
 For Mini.Deps:
