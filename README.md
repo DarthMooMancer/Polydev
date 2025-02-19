@@ -32,10 +32,9 @@ MiniDeps.add({ source = 'DarthMooMancer/nvim-java' })
 Nvim-java doesnt come with default keybinds; however, here are the ones I use and recommend:
 
 > vim.keymap.set("n", "<leader>jb", ":JavaBuild<CR>", { silent = true })
-vim.keymap.set("n", "<leader>jr", ":JavaRun<CR>", { silent = true })
-vim.keymap.set("n", "<leader>nf", ":NewJavaFile<CR>", { silent = true })
-vim.keymap.set("n", "<leader>np", ":NewJavaProject<CR>", { silent = true })
->
+> vim.keymap.set("n", "<leader>jr", ":JavaRun<CR>", { silent = true })
+> vim.keymap.set("n", "<leader>nf", ":NewJavaFile<CR>", { silent = true })
+> vim.keymap.set("n", "<leader>np", ":NewJavaProject<CR>", { silent = true })
 
 ## Questions and Contributing
 
