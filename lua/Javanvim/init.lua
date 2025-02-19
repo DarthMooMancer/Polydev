@@ -19,30 +19,28 @@ end
 -- Create a new Java project
 function M.create_project()
   vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
+    -- Debug: Print the project_name
+    print("Input received: " .. (project_name or "nil"))
+
     if not project_name or project_name == "" then
       print("Project creation canceled.")
       return
     end
 
-    -- Expand and sanitize the project root path
     local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
     local src_dir = project_root .. "/root/src"
     local out_dir = project_root .. "/root/out"
 
-    -- Debugging: Print paths
-    print("Creating project at:", project_root)
+    -- Debug: Print paths
+    print("Project root: " .. project_root)
+    print("Source directory: " .. src_dir)
+    print("Output directory: " .. out_dir)
 
     -- Create directories
-    local mkdir_status1 = vim.fn.mkdir(src_dir, "p")
-    local mkdir_status2 = vim.fn.mkdir(out_dir, "p")
+    vim.fn.mkdir(src_dir, "p")
+    vim.fn.mkdir(out_dir, "p")
 
-    -- Debugging: Check if directories were created
-    if not vim.loop.fs_stat(src_dir) or not vim.loop.fs_stat(out_dir) then
-      print("Error: Failed to create project directories.")
-      return
-    end
-
-    -- Path for Main.java
+    -- Write Main.java
     local main_java_path = src_dir .. "/Main.java"
     local main_java_content = [[
 public class Main {
@@ -51,21 +49,18 @@ public class Main {
     }
 }
 ]]
-
-    -- Attempt to write to the file
-    local file, err = io.open(main_java_path, "w")
-    if not file then
-      print("Error creating Main.java:", err)
-      return
+    local file = io.open(main_java_path, "w")
+    if file then
+      file:write(main_java_content)
+      file:close()
+      vim.cmd("edit " .. main_java_path)
+      print("Project '" .. project_name .. "' created at " .. project_root)
+    else
+      print("Error creating Main.java")
     end
-    file:write(main_java_content)
-    file:close()
-
-    -- Open the new Java file
-    vim.cmd("edit " .. main_java_path)
-    print("Project '" .. project_name .. "' created at " .. project_root)
   end)
 end
+
 
 -- Create a new Java file
 function M.create_new_file()
