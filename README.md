@@ -12,15 +12,9 @@ The main goal is the plugin is to be simple and extensible for Java developers. 
 ## Installation
 
 For Lazy.nvim:
-```
-require {
-  "DarthMooMancer/nvim-java",
-  config = function()
-    require("nvim-java").setup()
-  end
-}
+![carbon](https://github.com/user-attachments/assets/71721f72-7a2f-471e-9de5-b07d05cf06b3)
 
-```
+
 
 For Mini.Deps:
 ```
