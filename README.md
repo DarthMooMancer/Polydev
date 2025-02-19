@@ -14,18 +14,17 @@ The main goal is the plugin is to be simple and extensible for Java developers. 
 ## Installation
 
 For Lazy.nvim:
-```
+```lua
 require {
   "DarthMooMancer/nvim-java",
   config = function()
     require("nvim-java").setup()
   end
 }
-
 ```
 
 For Mini.Deps:
-```
+```lua
 MiniDeps.add({ source = 'DarthMooMancer/nvim-java', name = "nvim-java" })
 require("nvim-java").setup()
 
@@ -35,7 +34,7 @@ require("nvim-java").setup()
 
 ## Config
 Currently the only thing you can change is the project root, here is how:
-```
+```lua
 require...({
     project_root = "Your folder or directory"
 })
@@ -48,7 +47,7 @@ require...({
 
 Nvim-java doesnt come with default keybinds; however, here are the ones I use and recommend:
 
-```
+```lua
 vim.keymap.set("n", "<leader>jb", ":JavaBuild<CR>", { silent = true })
 vim.keymap.set("n", "<leader>jr", ":JavaRun<CR>", { silent = true })
 vim.keymap.set("n", "<leader>nf", ":NewJavaFile<CR>", { silent = true })
