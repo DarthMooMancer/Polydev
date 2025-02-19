@@ -1,25 +1,39 @@
+local M = {}
+
 local augroup = vim.api.nvim_create_augroup("nvim-java", { clear = true })
+
+-- Helper function for creating directories
+local function mkdir(path)
+  os.execute("mkdir -p " .. path)
+end
+
+-- Helper function for writing to a file
+local function write_file(path, content)
+  local file = io.open(path, "w")
+  if file then
+    file:write(content)
+    file:close()
+  else
+    print("Error writing to file: " .. path)
+  end
+end
+
+-- Function to create a new Java project
 local function create_java_project()
-  -- Get project name from user input
   vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
     if not project_name or project_name == "" then
       print("Project creation canceled.")
       return
     end
 
-    -- Define the project root path within ~/Projects
     local project_root = vim.fn.expand("~") .. "/Projects/" .. project_name
+    local src_dir = project_root .. "/root/src"
+    local out_dir = project_root .. "/root/out"
 
-    -- Define the directory paths
-    local root_dir = project_root .. "/root"
-    local src_dir = root_dir .. "/src"
-    local out_dir = root_dir .. "/out"
+    mkdir(src_dir)
+    mkdir(out_dir)
 
-    -- Create the directories if they don't exist
-    os.execute("mkdir -p " .. src_dir)
-    os.execute("mkdir -p " .. out_dir)
-
-    -- Create Main.java in src/
+    -- Create a Main.java file
     local main_java_path = src_dir .. "/Main.java"
     local main_java_content = [[
 public class Main {
@@ -28,76 +42,47 @@ public class Main {
     }
 }
 ]]
-    -- Write Main.java file
-    local file = io.open(main_java_path, "w")
-    if file then
-      file:write(main_java_content)
-      file:close()
-    else
-      print("Error creating Main.java")
-      return
-    end
+    write_file(main_java_path, main_java_content)
 
     -- Open Main.java in Neovim
     vim.cmd("edit " .. main_java_path)
-    print("Java project '" .. project_name .. "' created successfully at " .. project_root)
+    print("Java project '" .. project_name .. "' created at " .. project_root)
   end)
 end
 
+-- Function to create a new Java file
 local function create_new_java_file()
-  -- Get the class name for the new Java file
   vim.ui.input({ prompt = "Enter class name for new Java file: " }, function(class_name)
     if not class_name or class_name == "" then
       print("Class creation canceled.")
       return
     end
 
-    -- Get the current working directory
     local current_dir = vim.fn.expand("%:p:h")
-
-    -- Check if we're in a valid project directory
-    local root_dir = current_dir:match("(.*)/root/src")  -- Try to extract the project root
+    local root_dir = current_dir:match("(.*)/root/src")
     if not root_dir then
       print("Error: src directory not found.")
       return
     end
 
-    -- Construct the path to the src directory dynamically
     local src_dir = root_dir .. "/root/src"
-
-    -- Ensure that the src directory exists
-    if vim.fn.isdirectory(src_dir) == 0 then
-      print("Error: src directory not found.")
-      return
-    end
-
     local java_file_path = src_dir .. "/" .. class_name .. ".java"
 
-    -- Java content template
     local java_content = string.format([[
 public class %s {
   // New File
 }
 ]], class_name)
 
-    -- Write the Java class to the file
-    local file = io.open(java_file_path, "w")
-    if file then
-      file:write(java_content)
-      file:close()
-      vim.cmd("edit " .. java_file_path)
-      print( class_name .. ".java created successfully!")
-    else
-      print("Error creating " .. class_name .. ".java")
-    end
+    write_file(java_file_path, java_content)
+    vim.cmd("edit " .. java_file_path)
+    print(class_name .. ".java created successfully!")
   end)
 end
 
+-- Function to build Java project
 local function javabuild()
-  -- Get the current directory (where the user is editing)
   local current_dir = vim.fn.expand("%:p:h")
-
-  -- Try to extract the project root by looking for "root/src" in the path
   local project_root = current_dir:match("(.*)/root/src")
 
   if not project_root then
@@ -105,65 +90,46 @@ local function javabuild()
     return
   end
 
-  -- Define the source and output directories
   local src_dir = project_root .. "/root/src"
   local out_dir = project_root .. "/root/out"
+  mkdir(out_dir)
 
-  -- Ensure that the output directory exists
-  vim.fn.mkdir(out_dir, "p")
-
-  -- Compile all Java files in the src/ directory and output to out/
   local compile_command = "javac -d " .. out_dir .. " " .. src_dir .. "/*.java"
   local compile_status = vim.fn.system(compile_command)
 
-  -- Check if the compilation was successful
   if vim.v.shell_error ~= 0 then
     print("Error during compilation:\n" .. compile_status)
-    return
+  else
+    print("Compilation successful!")
   end
-
-  print("Compilation successful!")
 end
+
+-- Floating terminal for Java execution
 local function open_float_terminal(cmd)
-  -- Get the total dimensions of the Neovim window
   local ui = vim.api.nvim_list_uis()[1]
-  local width = math.floor(ui.width * 0.9)   -- 90% of the window width
-  local height = math.floor(ui.height * 0.9) -- 90% of the window height
-  local row = math.floor(ui.height * 0.05)   -- 5% padding top
-  local col = math.floor(ui.width * 0.05)    -- 5% padding left/right
+  local width = math.floor(ui.width * 0.9)
+  local height = math.floor(ui.height * 0.9)
+  local row = math.floor(ui.height * 0.05)
+  local col = math.floor(ui.width * 0.05)
 
-  -- Create a new buffer for the floating terminal
-  local buf = vim.api.nvim_create_buf(false, true)  -- Create a new buffer (no file, no listed)
-
-  -- Floating window options
-  local opts = {
+  local buf = vim.api.nvim_create_buf(false, true)
+  local win = vim.api.nvim_open_win(buf, true, {
     relative = 'editor',
-    width = width - 10,  -- Account for left/right padding
-    height = height - 10, -- Account for top/bottom padding
-    row = row + 5,        -- Shift down for padding
-    col = col + 5,        -- Shift right for padding
-    style = "minimal",    -- Removes unnecessary UI elements
-    border = "none",      -- Removes border for transparency
-  }
+    width = width - 10,
+    height = height - 10,
+    row = row + 5,
+    col = col + 5,
+    style = "minimal",
+    border = "none",
+  })
 
-  -- Open the floating window
-  local win = vim.api.nvim_open_win(buf, true, opts)
-
-  -- Apply transparency and Pmenu styling
-  vim.api.nvim_win_set_option(win, "winblend", vim.o.pumblend) -- Match `Pmenu` transparency
+  vim.api.nvim_win_set_option(win, "winblend", vim.o.pumblend)
   vim.api.nvim_win_set_option(win, "winhighlight", "Normal:Pmenu,FloatBorder:Pmenu")
 
-  -- Enable line numbers in the floating window
-  vim.api.nvim_win_set_option(win, "number", true)
-  vim.api.nvim_win_set_option(win, "relativenumber", false)  -- Use absolute line numbers
-
-  -- Start the interactive terminal
   vim.fn.termopen(cmd)
-
-  -- Automatically enter insert mode for smooth interaction
   vim.cmd("startinsert")
 
-  -- Map <Esc> in terminal and normal mode to close the floating window
+  -- Keymaps to close the terminal
   vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
   vim.api.nvim_buf_set_keymap(buf, "n", "<Esc>", ":q<CR>", { noremap = true, silent = true })
   vim.api.nvim_buf_set_keymap(buf, 'i', '<Esc>', '<Esc>:q!<CR>', { noremap = true, silent = true })
@@ -171,11 +137,9 @@ local function open_float_terminal(cmd)
   return buf, win
 end
 
+-- Function to run Java project in floating terminal
 local function javarun_float()
-  -- Get the current directory (where the user is editing)
   local current_dir = vim.fn.expand("%:p:h")
-
-  -- Try to extract the project root by looking for "root/src" in the path
   local project_root = current_dir:match("(.*)/root/src")
 
   if not project_root then
@@ -183,14 +147,12 @@ local function javarun_float()
     return
   end
 
-  -- Define the output directory where the .class files are located
   local out_dir = project_root .. "/root/out"
-
-  -- Run the Main class from the output directory in the floating terminal
   open_float_terminal("java -cp " .. out_dir .. " Main")
 end
 
-local function setup()
+-- Setup function to register commands
+function M.setup()
   vim.api.nvim_create_autocmd("VimEnter", {
     group = augroup,
     desc = "Register Java project commands",
@@ -204,4 +166,4 @@ local function setup()
   })
 end
 
-return { setup = setup }
+return M
