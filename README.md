@@ -1,8 +1,6 @@
-# Nvim-Java
-**********
+![banner-2](https://github.com/user-attachments/assets/c9e52b54-c7ad-414d-a282-89398e58a71a)
 
 ## Why?
--------
 
 The main goal is the plugin is to be simple and extensible for Java developers. Are there better plugins? Most likely, however this has simple functions for:
 
