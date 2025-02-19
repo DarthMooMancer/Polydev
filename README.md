@@ -33,6 +33,17 @@ require("nvim-java").setup()
 
 !!! You can install with any plugin manager, these are just examples. You can try this with vim, but I cant guarantee that it would work. !!!
 
+## Config
+Currently the only thing you can change is the project root, here is how:
+```
+require...({
+    project_root = "Your folder or directory"
+})
+```
+- Can use whatever for example: "~/whatever"
+- It will automatically make the new Root Directory, so you don't have to worry about that.
+- If you want the keybinds to be included as default and able to be changed, you can request it. I dont see the need right now however.
+
 ## Keybinds
 
 Nvim-java doesnt come with default keybinds; however, here are the ones I use and recommend:
