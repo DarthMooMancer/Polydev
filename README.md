@@ -14,17 +14,17 @@ The main goal is the plugin is to be simple and extensible for Java developers. 
 For Lazy.nvim:
 ```lua
 require {
-  "DarthMooMancer/java.nvim",
+  "DarthMooMancer/Java.nvim",
   config = function()
-    require("java.nvim").setup()
+    require("Java.nvim").setup()
   end
 }
 ```
 
 For Mini.Deps:
 ```lua
-MiniDeps.add({ source = 'DarthMooMancer/java.nvim', name = "java.nvim" })
-require("nvim-java").setup()
+MiniDeps.add({ source = 'DarthMooMancer/Java.nvim', name = "Java.nvim" })
+require("Java.nvim").setup()
 
 ```
 
