@@ -24,15 +24,25 @@ function M.create_project()
       return
     end
 
+    -- Expand and sanitize the project root path
     local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
     local src_dir = project_root .. "/root/src"
     local out_dir = project_root .. "/root/out"
 
-    -- Create directories
-    vim.fn.mkdir(src_dir, "p")
-    vim.fn.mkdir(out_dir, "p")
+    -- Debugging: Print paths
+    print("Creating project at:", project_root)
 
-    -- Write Main.java
+    -- Create directories
+    local mkdir_status1 = vim.fn.mkdir(src_dir, "p")
+    local mkdir_status2 = vim.fn.mkdir(out_dir, "p")
+
+    -- Debugging: Check if directories were created
+    if not vim.loop.fs_stat(src_dir) or not vim.loop.fs_stat(out_dir) then
+      print("Error: Failed to create project directories.")
+      return
+    end
+
+    -- Path for Main.java
     local main_java_path = src_dir .. "/Main.java"
     local main_java_content = [[
 public class Main {
@@ -41,15 +51,19 @@ public class Main {
     }
 }
 ]]
-    local file = io.open(main_java_path, "w")
-    if file then
-      file:write(main_java_content)
-      file:close()
-      vim.cmd("edit " .. main_java_path)
-      print("Project '" .. project_name .. "' created at " .. project_root)
-    else
-      print("Error creating Main.java")
+
+    -- Attempt to write to the file
+    local file, err = io.open(main_java_path, "w")
+    if not file then
+      print("Error creating Main.java:", err)
+      return
     end
+    file:write(main_java_content)
+    file:close()
+
+    -- Open the new Java file
+    vim.cmd("edit " .. main_java_path)
+    print("Project '" .. project_name .. "' created at " .. project_root)
   end)
 end
 
