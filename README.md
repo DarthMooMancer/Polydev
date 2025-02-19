@@ -1,4 +1,4 @@
-![banner-2](https://github.com/user-attachments/assets/c9e52b54-c7ad-414d-a282-89398e58a71a)
+# Java.nvim
 
 ## Why?
 
@@ -14,16 +14,16 @@ The main goal is the plugin is to be simple and extensible for Java developers. 
 For Lazy.nvim:
 ```lua
 require {
-  "DarthMooMancer/nvim-java",
+  "DarthMooMancer/java.nvim",
   config = function()
-    require("nvim-java").setup()
+    require("java.nvim").setup()
   end
 }
 ```
 
 For Mini.Deps:
 ```lua
-MiniDeps.add({ source = 'DarthMooMancer/nvim-java', name = "nvim-java" })
+MiniDeps.add({ source = 'DarthMooMancer/java.nvim', name = "java.nvim" })
 require("nvim-java").setup()
 
 ```
@@ -43,7 +43,7 @@ require...({
 
 ## Keybinds
 
-Nvim-java doesnt come with default keybinds; however, here are the ones I use and recommend:
+Java.nvim doesnt come with default keybinds; however, here are the ones I use and recommend:
 
 ```lua
 vim.keymap.set("n", "<leader>jb", ":JavaBuild<CR>", { silent = true })
