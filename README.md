@@ -1,8 +1,6 @@
 ![banner-2](https://github.com/user-attachments/assets/c9e52b54-c7ad-414d-a282-89398e58a71a)
 
-
-# Nvim-Java
-**********
+******
 
 ## Why?
 -------
