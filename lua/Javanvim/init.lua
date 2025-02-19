@@ -18,47 +18,47 @@ end
 
 -- Create a new Java project
 function M.create_project()
-  vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
-    -- Debug: Print the project_name
-    print("Input received: " .. (project_name or "nil"))
+  local project_name = vim.fn.input("Enter project name: ")
 
-    if not project_name or project_name == "" then
-      print("Project creation canceled.")
-      return
-    end
+  -- Debug: Print the project_name
+  print("Input received: " .. (project_name or "nil"))
 
-    local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
-    local src_dir = project_root .. "/root/src"
-    local out_dir = project_root .. "/root/out"
+  if not project_name or project_name == "" then
+    print("Project creation canceled.")
+    return
+  end
 
-    -- Debug: Print paths
-    print("Project root: " .. project_root)
-    print("Source directory: " .. src_dir)
-    print("Output directory: " .. out_dir)
+  local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
+  local src_dir = project_root .. "/root/src"
+  local out_dir = project_root .. "/root/out"
 
-    -- Create directories
-    vim.fn.mkdir(src_dir, "p")
-    vim.fn.mkdir(out_dir, "p")
+  -- Debug: Print paths
+  print("Project root: " .. project_root)
+  print("Source directory: " .. src_dir)
+  print("Output directory: " .. out_dir)
 
-    -- Write Main.java
-    local main_java_path = src_dir .. "/Main.java"
-    local main_java_content = [[
+  -- Create directories
+  vim.fn.mkdir(src_dir, "p")
+  vim.fn.mkdir(out_dir, "p")
+
+  -- Write Main.java
+  local main_java_path = src_dir .. "/Main.java"
+  local main_java_content = [[
 public class Main {
     public static void main(String[] args) {
         System.out.println("Hello, World!");
     }
 }
 ]]
-    local file = io.open(main_java_path, "w")
-    if file then
-      file:write(main_java_content)
-      file:close()
-      vim.cmd("edit " .. main_java_path)
-      print("Project '" .. project_name .. "' created at " .. project_root)
-    else
-      print("Error creating Main.java")
-    end
-  end)
+  local file = io.open(main_java_path, "w")
+  if file then
+    file:write(main_java_content)
+    file:close()
+    vim.cmd("edit " .. main_java_path)
+    print("Project '" .. project_name .. "' created at " .. project_root)
+  else
+    print("Error creating Main.java")
+  end
 end
 
 
