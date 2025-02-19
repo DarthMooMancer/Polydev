@@ -1,8 +1,8 @@
-Nvim-Java
----------
+# Nvim-Java
+**********
 
-Why?
-------
+## Why?
+-------
 
 The main goal is the plugin is to be simple and extensible for Java developers. Are there better plugins? Most likely, however this has simple functions for:
 
@@ -11,8 +11,7 @@ The main goal is the plugin is to be simple and extensible for Java developers. 
 - Building Files (Currently only Main.java files)
 - Running Files (Again only Main.java files)
 
-Installation
-------------
+## Installation
 
 For Lazy.nvim:
 '''
@@ -28,20 +27,17 @@ MiniDeps.add({ source = 'DarthMooMancer/nvim-java' })
 
 !!! You can install with any plugin manager, these are just examples. You can try this with vim, but I cant guarantee that it would work. !!!
 
-Keybinds
---------
+## Keybinds
 
 Nvim-java doesnt come with default keybinds; however, here are the ones I use and recommend:
 
-'''
-vim.keymap.set("n", "<leader>jb", ":JavaBuild<CR>", { silent = true })
+> vim.keymap.set("n", "<leader>jb", ":JavaBuild<CR>", { silent = true })
 vim.keymap.set("n", "<leader>jr", ":JavaRun<CR>", { silent = true })
 vim.keymap.set("n", "<leader>nf", ":NewJavaFile<CR>", { silent = true })
 vim.keymap.set("n", "<leader>np", ":NewJavaProject<CR>", { silent = true })
-'''
+>
 
-Questions and Contributing
---------------------------
+## Questions and Contributing
 
 If you want to contribute, make a PR or issue and I will answer as soon as I see it. 
 
