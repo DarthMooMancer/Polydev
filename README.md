@@ -1,4 +1,4 @@
-![Nvim-Java](https://github.com/user-attachments/assets/b90f1bc3-1278-41e0-af5c-237fb7e0559f)
+![banner](https://github.com/user-attachments/assets/1928ad61-59fe-4d1f-8ba8-b4ad19c084ec)
 
 
 # Nvim-Java
