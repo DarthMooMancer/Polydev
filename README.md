@@ -25,6 +25,10 @@ For Mini.Deps:
 MiniDeps.add({ source = 'DarthMooMancer/nvim-java' })
 ```
 
+Then all you need to do is add the require to your init.lua:
+```
+require("nvim-java").setup()
+```
 !!! You can install with any plugin manager, these are just examples. You can try this with vim, but I cant guarantee that it would work. !!!
 
 ## Keybinds
