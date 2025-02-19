@@ -1,3 +1,4 @@
+local augroup = vim.api.nvim_create_augroup("nvim-java", { clear = true })
 local function create_java_project()
   -- Get project name from user input
   vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
@@ -189,8 +190,18 @@ local function javarun_float()
   open_float_terminal("java -cp " .. out_dir .. " Main")
 end
 
--- Register Neovim commands
-vim.api.nvim_create_user_command("NewJavaProject", create_java_project, {})
-vim.api.nvim_create_user_command("JavaBuild", javabuild, {})
-vim.api.nvim_create_user_command("NewJavaFile", create_new_java_file, {})
-vim.api.nvim_create_user_command("JavaRun", javarun_float, {})
+local function setup()
+  vim.api.nvim_create_autocmd("VimEnter", {
+    group = augroup,
+    desc = "Register Java project commands",
+    once = true,
+    callback = function()
+      vim.api.nvim_create_user_command("NewJavaProject", create_java_project, {})
+      vim.api.nvim_create_user_command("JavaBuild", javabuild, {})
+      vim.api.nvim_create_user_command("NewJavaFile", create_new_java_file, {})
+      vim.api.nvim_create_user_command("JavaRun", javarun_float, {})
+    end,
+  })
+end
+
+return { setup = setup }
