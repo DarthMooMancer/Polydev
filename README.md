@@ -16,7 +16,7 @@ The main goal is the plugin is to be simple and extensible for Java developers. 
 For Lazy.nvim:
 ```
 require {
-"DarthMooMancer/nvim-java"
+  "DarthMooMancer/nvim-java"
 }
 ```
 
