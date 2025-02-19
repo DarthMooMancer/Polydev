@@ -10,6 +10,8 @@ The main goal is the plugin is to be simple and extensible for Java developers. 
 - Running Files (Again only Main.java files)
 
 ## Installation
+
+For Lazy.nvim:
 ```
 require {
   "DarthMooMancer/nvim-java",
