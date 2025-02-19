@@ -16,19 +16,21 @@ The main goal is the plugin is to be simple and extensible for Java developers. 
 For Lazy.nvim:
 ```
 require {
-  "DarthMooMancer/nvim-java"
+  "DarthMooMancer/nvim-java",
+  config = function()
+    require("nvim-java").setup()
+  end
 }
+
 ```
 
 For Mini.Deps:
 ```
-MiniDeps.add({ source = 'DarthMooMancer/nvim-java' })
+MiniDeps.add({ source = 'DarthMooMancer/nvim-java', name = "nvim-java" })
+require("nvim-java").setup()
+
 ```
 
-Then all you need to do is add the require to your init.lua:
-```
-require("nvim-java").setup()
-```
 !!! You can install with any plugin manager, these are just examples. You can try this with vim, but I cant guarantee that it would work. !!!
 
 ## Keybinds
