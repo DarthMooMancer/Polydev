@@ -14,16 +14,16 @@ The main goal is the plugin is to be simple and extensible for Java developers. 
 ## Installation
 
 For Lazy.nvim:
-'''
+```
 require {
-    "DarthMooMancer/nvim-java"
+"DarthMooMancer/nvim-java"
 }
-'''
+```
 
 For Mini.Deps:
-'''
+```
 MiniDeps.add({ source = 'DarthMooMancer/nvim-java' })
-'''
+```
 
 !!! You can install with any plugin manager, these are just examples. You can try this with vim, but I cant guarantee that it would work. !!!
 
@@ -31,10 +31,12 @@ MiniDeps.add({ source = 'DarthMooMancer/nvim-java' })
 
 Nvim-java doesnt come with default keybinds; however, here are the ones I use and recommend:
 
-> vim.keymap.set("n", "<leader>jb", ":JavaBuild<CR>", { silent = true })
-> vim.keymap.set("n", "<leader>jr", ":JavaRun<CR>", { silent = true })
-> vim.keymap.set("n", "<leader>nf", ":NewJavaFile<CR>", { silent = true })
-> vim.keymap.set("n", "<leader>np", ":NewJavaProject<CR>", { silent = true })
+```
+vim.keymap.set("n", "<leader>jb", ":JavaBuild<CR>", { silent = true })
+vim.keymap.set("n", "<leader>jr", ":JavaRun<CR>", { silent = true })
+vim.keymap.set("n", "<leader>nf", ":NewJavaFile<CR>", { silent = true })
+vim.keymap.set("n", "<leader>np", ":NewJavaProject<CR>", { silent = true })
+```
 
 ## Questions and Contributing
 
