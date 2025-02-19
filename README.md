@@ -1,4 +1,4 @@
-# Java.nvim
+# Javanvim
 
 ## Why?
 
@@ -14,17 +14,17 @@ The main goal is the plugin is to be simple and extensible for Java developers. 
 For Lazy.nvim:
 ```lua
 require {
-  "DarthMooMancer/Java.nvim",
+  "DarthMooMancer/Javanvim",
   config = function()
-    require("Java.nvim").setup()
+    require("Javavim").setup()
   end
 }
 ```
 
 For Mini.Deps:
 ```lua
-MiniDeps.add({ source = 'DarthMooMancer/Java.nvim', name = "Java.nvim" })
-require("Java.nvim").setup()
+MiniDeps.add({ source = 'DarthMooMancer/Javanvim', name = "Javanvim" })
+require("Javanvim").setup()
 
 ```
 
@@ -43,7 +43,7 @@ require...({
 
 ## Keybinds
 
-Java.nvim doesnt come with default keybinds; however, here are the ones I use and recommend:
+Javanvim doesnt come with default keybinds; however, here are the ones I use and recommend:
 
 ```lua
 vim.keymap.set("n", "<leader>jb", ":JavaBuild<CR>", { silent = true })
