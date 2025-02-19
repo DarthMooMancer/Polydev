@@ -10,8 +10,15 @@ The main goal is the plugin is to be simple and extensible for Java developers. 
 - Running Files (Again only Main.java files)
 
 ## Installation
-![carbon-5](https://github.com/user-attachments/assets/6a45eef0-27f1-4844-89b0-0458b1397f4f)
+```
+require {
+  "DarthMooMancer/nvim-java",
+  config = function()
+    require("nvim-java").setup()
+  end
+}
 
+```
 
 For Mini.Deps:
 ```
