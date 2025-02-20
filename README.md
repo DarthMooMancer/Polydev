@@ -1,5 +1,6 @@
 # Javanvim
 
+Documentation is slowly going to move to [https://darthmoomancer.github.io/Javanvim.github.io/](https://darthmoomancer.github.io/Javanvim.github.io/)
 ## Why?
 
 The main goal is the plugin is to be simple and extensible for Java developers. Are there better plugins? Most likely, however this has simple functions for:
