@@ -30,10 +30,6 @@ end
 function M.create_project()
   -- Use vim.ui.input for better handling of input
   vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
-    -- Debugging: Output the input received
-    print("Input received: " .. (project_name or "nil"))
-
-    -- Check if the project name is valid
     if not project_name or project_name == "" then
       print("Project creation canceled.")
       return
@@ -43,11 +39,6 @@ function M.create_project()
     local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
     local src_dir = project_root .. "/root/src"
     local out_dir = project_root .. "/root/out"
-
-    -- Debugging: Print the paths
-    print("Project root: " .. project_root)
-    print("Source directory: " .. src_dir)
-    print("Output directory: " .. out_dir)
 
     -- Create directories
     vim.fn.mkdir(src_dir, "p")
@@ -69,7 +60,7 @@ public class Main {
       file:write(main_java_content)
       file:close()
       vim.cmd("edit " .. main_java_path)
-      print("Project '" .. project_name .. "' created at " .. project_root)
+      print(" Project '" .. project_name .. "' created at " .. project_root)
     else
       print("Error creating Main.java")
     end
@@ -105,7 +96,7 @@ public class %s {
       file:write(java_content)
       file:close()
       vim.cmd("edit " .. java_file_path)
-      print(class_name .. ".java created successfully!")
+      print( class_name .. ".java created successfully!")
     else
       print("Error creating " .. class_name .. ".java")
     end
