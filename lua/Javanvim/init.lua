@@ -3,11 +3,21 @@ local M = {}
 -- Default config
 M.config = {
   project_root = "~/Projects",
+  keybinds = {
+    ["<leader>jb"] = "JavaBuild",
+    ["<leader>jr"] = "JavaRun",
+    ["<leader>nf"] = "NewJavaFile",
+    ["<leader>np"] = "NewJavaProject",
+  }
 }
 
--- Function to setup the plugin
 function M.setup(opts)
   M.config = vim.tbl_deep_extend("force", M.config, opts or {})
+
+  -- Apply keybindings dynamically
+  for key, command in pairs(M.config.keybinds) do
+    vim.keymap.set("n", key, ":" .. command .. "<CR>", { silent = true })
+  end
 
   -- Register user commands
   vim.api.nvim_create_user_command("NewJavaProject", M.create_project, {})
