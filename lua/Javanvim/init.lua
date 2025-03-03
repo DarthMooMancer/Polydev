@@ -28,21 +28,32 @@ end
 
 -- Create a new Java project
 function M.create_project()
+  -- Use vim.ui.input for better handling of input
   vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
+    -- Debugging: Output the input received
+    print("Input received: " .. (project_name or "nil"))
+
+    -- Check if the project name is valid
     if not project_name or project_name == "" then
       print("Project creation canceled.")
       return
     end
 
+    -- Paths for the project
     local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
     local src_dir = project_root .. "/root/src"
     local out_dir = project_root .. "/root/out"
+
+    -- Debugging: Print the paths
+    print("Project root: " .. project_root)
+    print("Source directory: " .. src_dir)
+    print("Output directory: " .. out_dir)
 
     -- Create directories
     vim.fn.mkdir(src_dir, "p")
     vim.fn.mkdir(out_dir, "p")
 
-    -- Write Main.java
+    -- Write the Main.java file
     local main_java_path = src_dir .. "/Main.java"
     local main_java_content = [[
 public class Main {
@@ -51,6 +62,8 @@ public class Main {
     }
 }
 ]]
+
+    -- Create the file and write content
     local file = io.open(main_java_path, "w")
     if file then
       file:write(main_java_content)
@@ -62,6 +75,8 @@ public class Main {
     end
   end)
 end
+
+
 
 -- Create a new Java file
 function M.create_new_file()
