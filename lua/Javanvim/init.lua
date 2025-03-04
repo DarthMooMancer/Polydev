@@ -106,7 +106,7 @@ end
 -- Compile Java files
 function M.build()
   local current_dir = vim.fn.expand("%:p:h")
-  local project_root = current_dir:match("(.*)/root/src")
+  local project_root = current_dir:match("(.*)/src")
   if not project_root then
     print("Error: Must be inside the 'src' directory.")
     return
