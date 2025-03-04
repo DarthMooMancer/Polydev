@@ -68,7 +68,7 @@ local function open_float_terminal(cmd)
   vim.fn.termopen(cmd)
   -- vim.cmd("startinsert")
 
-  vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
+  vim.api.nvim_buf_set_keymap(buf, "n", "<leader>qq", "i<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
   return buf, win
 end
 
