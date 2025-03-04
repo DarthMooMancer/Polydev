@@ -34,7 +34,7 @@ function M.setup(opts)
 end
 
 -- Open floating terminal
-function M.open_float_terminal(cmd)
+local function open_float_terminal(cmd)
   local ui = vim.api.nvim_list_uis()[1]
   local width, height = math.floor(ui.width * 0.9), math.floor(ui.height * 0.9)
   local row, col = math.floor(ui.height * 0.05), math.floor(ui.width * 0.05)
