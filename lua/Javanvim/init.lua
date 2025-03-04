@@ -62,7 +62,7 @@ local function open_float_terminal(cmd)
   vim.cmd("startinsert")
 
   -- Keymaps: ESC to exit Terminal mode, <C-q> to close the floating terminal
-  vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>", { noremap = true, silent = true })
+  -- vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>", { noremap = true, silent = true })
   vim.api.nvim_buf_set_keymap(buf, "t", "<C-q>", "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
 
   return buf, win
