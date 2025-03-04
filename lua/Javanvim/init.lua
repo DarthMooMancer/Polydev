@@ -69,7 +69,7 @@ local function open_float_terminal(cmd)
   -- Keymaps: ESC to exit Terminal mode, <C-q> to close the floating terminal
   -- vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>", { noremap = true, silent = true })
   -- vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
-  local close_key = "<Esc>" -- Default
+  local close_key = nil -- Default
   for key, action in pairs(M.config.keybinds) do
     if action == "CloseTerminal" then
       close_key = key
