@@ -62,12 +62,11 @@ local function open_float_terminal(cmd)
   end
   vim.api.nvim_win_set_option(win, "scrolloff", 5)
   vim.api.nvim_win_set_option(win, "cursorline", true)
+  vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<Esc>", { noremap = true, silent = true })
 
   vim.fn.termopen(cmd)
   vim.cmd("startinsert")
 
-  -- Keymaps: ESC to exit Terminal mode, <C-q> to close the floating terminal
-  -- vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>", { noremap = true, silent = true })
   -- vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
   local close_key = nil -- Default
   for key, action in pairs(M.config.keybinds) do
@@ -78,8 +77,9 @@ local function open_float_terminal(cmd)
   end
 
   -- Set keybinding for closing the terminal
-  vim.api.nvim_buf_set_keymap(buf, "t", close_key, "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
-
+  if close_key then
+    vim.api.nvim_buf_set_keymap(buf, "t", close_key, "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
+  end
   return buf, win
 end
 
