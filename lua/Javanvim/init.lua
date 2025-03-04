@@ -37,12 +37,12 @@ function M.create_project()
 
     -- Paths for the project
     local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
-    local src_dir = project_root .. "/root/src"
-    local out_dir = project_root .. "/root/out"
+    local src_dir = project_root .. "/src"
+    local build_dir = project_root .. "/build"
 
     -- Create directories
     vim.fn.mkdir(src_dir, "p")
-    vim.fn.mkdir(out_dir, "p")
+    vim.fn.mkdir(build_dir, "p")
 
     -- Write the Main.java file
     local main_java_path = src_dir .. "/Main.java"
@@ -84,7 +84,7 @@ function M.create_new_file()
       return
     end
 
-    local java_file_path = root_dir .. "/root/src/" .. class_name .. ".java"
+    local java_file_path = root_dir .. "/src/" .. class_name .. ".java"
     local java_content = string.format([[
 public class %s {
     // New File
@@ -112,8 +112,8 @@ function M.build()
     return
   end
 
-  local src_dir = project_root .. "/root/src"
-  local out_dir = project_root .. "/root/out"
+  local src_dir = project_root .. "/src"
+  local out_dir = project_root .. "/build"
 
   vim.fn.mkdir(out_dir, "p")
   local compile_command = string.format("javac -d %s %s/*.java", out_dir, src_dir)
@@ -157,7 +157,7 @@ function M.run()
     return
   end
 
-  local out_dir = project_root .. "/root/out"
+  local out_dir = project_root .. "/build"
   open_float_terminal("java -cp " .. out_dir .. " Main")
 end
 
