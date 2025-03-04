@@ -8,7 +8,6 @@ M.config = {
     ["<leader>jr"] = "JavaRun",
     ["<leader>nf"] = "NewJavaFile",
     ["<leader>np"] = "NewJavaProject",
-    ["<Esc>"] = "CloseTerminal",
   },
   terminal = {
     width_pad = 10,
@@ -62,24 +61,11 @@ local function open_float_terminal(cmd)
   end
   vim.api.nvim_win_set_option(win, "scrolloff", 5)
   vim.api.nvim_win_set_option(win, "cursorline", true)
-  vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<Esc>", { noremap = true, silent = true })
 
   vim.fn.termopen(cmd)
   vim.cmd("startinsert")
 
-  -- vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
-  local close_key = nil -- Default
-  for key, action in pairs(M.config.keybinds) do
-    if action == "CloseTerminal" then
-      close_key = key
-      break
-    end
-  end
-
-  -- Set keybinding for closing the terminal
-  if close_key then
-    vim.api.nvim_buf_set_keymap(buf, "t", close_key, "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
-  end
+  vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
   return buf, win
 end
 
