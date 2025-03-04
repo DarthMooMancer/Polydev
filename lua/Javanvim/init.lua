@@ -15,6 +15,7 @@ M.config = {
     border = true,
     number = true,
     relativenumber = true,
+    scroll = true,
   }
 }
 
@@ -53,79 +54,23 @@ local function open_float_terminal(cmd)
   -- Enable scrolling, relative line numbers, and prevent closing on click
   vim.api.nvim_win_set_option(win, "winblend", vim.o.pumblend)
   vim.api.nvim_win_set_option(win, "winhighlight", "Normal:Pmenu,FloatBorder:Pmenu")
-  vim.api.nvim_win_set_option(win, "number", true)
-  vim.api.nvim_win_set_option(win, "relativenumber", true)
-  vim.api.nvim_win_set_option(win, "scrolloff", 5)
+  if(M.config.terminal.number == true) then
+    vim.api.nvim_win_set_option(win, "number", true)
+  end
+  if(M.config.terminal.number == true and M.config.terminal.relativenumber == true) then
+    vim.api.nvim_win_set_option(win, "relativenumber", true)
+  end
+  if(M.config.terminal.scroll == true) then
+    vim.api.nvim_win_set_option(win, "scrolloff", 5)
+  end
   vim.api.nvim_win_set_option(win, "cursorline", true)
 
   vim.fn.termopen(cmd)
-  vim.cmd("startinsert")
+  -- vim.cmd("startinsert")
 
-  -- Keymaps: ESC to exit Terminal mode, <C-q> to close the floating terminal
-  -- vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>", { noremap = true, silent = true })
-  vim.api.nvim_buf_set_keymap(buf, "t", "<C-q>", "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
-
+  vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
   return buf, win
 end
-
--- -- Open floating terminal
--- local function open_float_terminal(cmd)
---   local ui = vim.api.nvim_list_uis()[1]
---   local width, height = math.floor(ui.width * 0.9), math.floor(ui.height * 0.9)
---   local row, col = math.floor(ui.height * 0.05), math.floor(ui.width * 0.05)
---
---   local buf = vim.api.nvim_create_buf(false, true)
---   local win = vim.api.nvim_open_win(buf, true, {
---     relative = "editor",
---     width = width - M.config.terminal.width_pad,
---     height = height - M.config.terminal.height_pad,
---     row = row,
---     col = col,
---     style = "minimal",
---     border = M.config.terminal.border and "rounded" or "none",
---     focusable = true,
---   })
---
---   -- Enable scrolling, relative line numbers, and prevent closing on click
---   vim.api.nvim_win_set_option(win, "winblend", vim.o.pumblend)
---   vim.api.nvim_win_set_option(win, "winhighlight", "Normal:Pmenu,FloatBorder:Pmenu")
---   if(M.config.terminal.number == true) then
---     vim.api.nvim_win_set_option(win, "number", true)
---   end
---   if(M.config.terminal.number == true and M.config.terminal.relativenumber == true) then
---     vim.api.nvim_win_set_option(win, "relativenumber", true)
---   end
---   vim.api.nvim_win_set_option(win, "scrolloff", 5)
---   vim.api.nvim_win_set_option(win, "cursorline", true)
---
---   vim.fn.termopen(cmd)
---   vim.cmd("startinsert")
---
---   vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
---   return buf, win
--- end
-
--- -- Open floating terminal
--- local function open_float_terminal(cmd)
---   local ui = vim.api.nvim_list_uis()[1]
---   local width, height = math.floor(ui.width * 0.9), math.floor(ui.height * 0.9)
---   local row, col = math.floor(ui.height * 0.05), math.floor(ui.width * 0.05)
---
---   local buf = vim.api.nvim_create_buf(false, true)
---   local win = vim.api.nvim_open_win(buf, true, {
---     relative = "editor", width = width - M.config.terminal.width_pad, height = height - M.config.terminal.height_pad,
---     row = row + 5, col = col + 5, style = "minimal", border = "rounded"
---   })
---
---   vim.api.nvim_win_set_option(win, "winblend", vim.o.pumblend)
---   vim.api.nvim_win_set_option(win, "winhighlight", "Normal:Pmenu,FloatBorder:Pmenu")
---
---   vim.fn.termopen(cmd)
---   vim.cmd("startinsert")
---
---   vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
---   return buf, win
--- end
 
 -- Create a new Java project
 function M.create_project()
