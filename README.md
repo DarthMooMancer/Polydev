@@ -1,6 +1,7 @@
 # Javanvim
 
-Documentation is here at [Javanvim.docs](https://darthmoomancer.github.io/Javanvim.docs/)
+!!! Documentation is currently broken, need to fix later
+here at [Javanvim.docs](https://darthmoomancer.github.io/Javanvim.docs/)
 
 ## Questions and Contributing
 
