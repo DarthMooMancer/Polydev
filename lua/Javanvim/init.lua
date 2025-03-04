@@ -8,6 +8,10 @@ M.config = {
     ["<leader>jr"] = "JavaRun",
     ["<leader>nf"] = "NewJavaFile",
     ["<leader>np"] = "NewJavaProject",
+  },
+  terminal = {
+    width_pad = 10,
+    height_pad = 10,
   }
 }
 
@@ -24,6 +28,28 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("NewJavaFile", M.create_new_file, {})
   vim.api.nvim_create_user_command("JavaBuild", M.build, {})
   vim.api.nvim_create_user_command("JavaRun", M.run, {})
+end
+
+-- Open floating terminal
+local function open_float_terminal(cmd)
+  local ui = vim.api.nvim_list_uis()[1]
+  local width, height = math.floor(ui.width * 0.9), math.floor(ui.height * 0.9)
+  local row, col = math.floor(ui.height * 0.05), math.floor(ui.width * 0.05)
+
+  local buf = vim.api.nvim_create_buf(false, true)
+  local win = vim.api.nvim_open_win(buf, true, {
+    relative = "editor", width = width - M.config.terminal.width_pad, height = height - M.config.terminal.height_pad,
+    row = row + 5, col = col + 5, style = "minimal", border = "rounded"
+  })
+
+  vim.api.nvim_win_set_option(win, "winblend", vim.o.pumblend)
+  vim.api.nvim_win_set_option(win, "winhighlight", "Normal:Pmenu,FloatBorder:Pmenu")
+
+  vim.fn.termopen(cmd)
+  vim.cmd("startinsert")
+
+  vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
+  return buf, win
 end
 
 -- Create a new Java project
@@ -124,28 +150,6 @@ function M.build()
   else
     print("Compilation successful!")
   end
-end
-
--- Open floating terminal
-local function open_float_terminal(cmd)
-  local ui = vim.api.nvim_list_uis()[1]
-  local width, height = math.floor(ui.width * 0.9), math.floor(ui.height * 0.9)
-  local row, col = math.floor(ui.height * 0.05), math.floor(ui.width * 0.05)
-
-  local buf = vim.api.nvim_create_buf(false, true)
-  local win = vim.api.nvim_open_win(buf, true, {
-    relative = "editor", width = width - 10, height = height - 10,
-    row = row + 5, col = col + 5, style = "minimal", border = "rounded"
-  })
-
-  vim.api.nvim_win_set_option(win, "winblend", vim.o.pumblend)
-  vim.api.nvim_win_set_option(win, "winhighlight", "Normal:Pmenu,FloatBorder:Pmenu")
-
-  vim.fn.termopen(cmd)
-  vim.cmd("startinsert")
-
-  vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
-  return buf, win
 end
 
 -- Run Java program in floating terminal
