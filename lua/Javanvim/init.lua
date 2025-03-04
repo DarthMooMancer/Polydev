@@ -12,6 +12,7 @@ M.config = {
   terminal = {
     width_pad = 10,
     height_pad = 10,
+    border = true,
   }
 }
 
@@ -31,26 +32,61 @@ function M.setup(opts)
 end
 
 -- Open floating terminal
-local function open_float_terminal(cmd)
+function M.open_float_terminal(cmd)
   local ui = vim.api.nvim_list_uis()[1]
   local width, height = math.floor(ui.width * 0.9), math.floor(ui.height * 0.9)
   local row, col = math.floor(ui.height * 0.05), math.floor(ui.width * 0.05)
 
   local buf = vim.api.nvim_create_buf(false, true)
   local win = vim.api.nvim_open_win(buf, true, {
-    relative = "editor", width = width - M.config.terminal.width_pad, height = height - M.config.terminal.height_pad,
-    row = row + 5, col = col + 5, style = "minimal", border = "rounded"
+    relative = "editor",
+    width = width - M.config.terminal.width_pad,
+    height = height - M.config.terminal.height_pad,
+    row = row,
+    col = col,
+    style = "minimal",
+    border = M.config.terminal.border and "rounded" or "none",
   })
 
+  -- Enable scrolling, relative line numbers, and prevent closing on click
   vim.api.nvim_win_set_option(win, "winblend", vim.o.pumblend)
   vim.api.nvim_win_set_option(win, "winhighlight", "Normal:Pmenu,FloatBorder:Pmenu")
+  vim.api.nvim_win_set_option(win, "number", true)
+  vim.api.nvim_win_set_option(win, "relativenumber", true)
+  vim.api.nvim_win_set_option(win, "scrolloff", 5)
+  vim.api.nvim_win_set_option(win, "cursorline", true)
 
   vim.fn.termopen(cmd)
   vim.cmd("startinsert")
 
-  vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
+  -- Keymaps: ESC to exit Terminal mode, <C-q> to close the floating terminal
+  vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>", { noremap = true, silent = true })
+  vim.api.nvim_buf_set_keymap(buf, "t", "<C-q>", "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
+
   return buf, win
 end
+
+-- -- Open floating terminal
+-- local function open_float_terminal(cmd)
+--   local ui = vim.api.nvim_list_uis()[1]
+--   local width, height = math.floor(ui.width * 0.9), math.floor(ui.height * 0.9)
+--   local row, col = math.floor(ui.height * 0.05), math.floor(ui.width * 0.05)
+--
+--   local buf = vim.api.nvim_create_buf(false, true)
+--   local win = vim.api.nvim_open_win(buf, true, {
+--     relative = "editor", width = width - M.config.terminal.width_pad, height = height - M.config.terminal.height_pad,
+--     row = row + 5, col = col + 5, style = "minimal", border = "rounded"
+--   })
+--
+--   vim.api.nvim_win_set_option(win, "winblend", vim.o.pumblend)
+--   vim.api.nvim_win_set_option(win, "winhighlight", "Normal:Pmenu,FloatBorder:Pmenu")
+--
+--   vim.fn.termopen(cmd)
+--   vim.cmd("startinsert")
+--
+--   vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
+--   return buf, win
+-- end
 
 -- Create a new Java project
 function M.create_project()
