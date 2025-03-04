@@ -8,11 +8,14 @@ M.config = {
     ["<leader>jr"] = "JavaRun",
     ["<leader>nf"] = "NewJavaFile",
     ["<leader>np"] = "NewJavaProject",
+    ["<Esc>"] = "CloseTerminal",
   },
   terminal = {
     width_pad = 10,
     height_pad = 10,
     border = true,
+    number = true,
+    relativenumber = true,
   }
 }
 
@@ -51,8 +54,12 @@ local function open_float_terminal(cmd)
   -- Enable scrolling, relative line numbers, and prevent closing on click
   vim.api.nvim_win_set_option(win, "winblend", vim.o.pumblend)
   vim.api.nvim_win_set_option(win, "winhighlight", "Normal:Pmenu,FloatBorder:Pmenu")
-  vim.api.nvim_win_set_option(win, "number", true)
-  vim.api.nvim_win_set_option(win, "relativenumber", true)
+  if(M.config.terminal.number == true) then
+    vim.api.nvim_win_set_option(win, "number", true)
+  end
+  if(M.config.terminal.number == true and M.config.terminal.relativenumber == true) then
+    vim.api.nvim_win_set_option(win, "relativenumber", true)
+  end
   vim.api.nvim_win_set_option(win, "scrolloff", 5)
   vim.api.nvim_win_set_option(win, "cursorline", true)
 
@@ -60,8 +67,18 @@ local function open_float_terminal(cmd)
   vim.cmd("startinsert")
 
   -- Keymaps: ESC to exit Terminal mode, <C-q> to close the floating terminal
-  vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>", { noremap = true, silent = true })
-  vim.api.nvim_buf_set_keymap(buf, "t", "<C-q>", "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
+  -- vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>", { noremap = true, silent = true })
+  -- vim.api.nvim_buf_set_keymap(buf, "t", "<Esc>", "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
+  local close_key = "<Esc>" -- Default
+  for key, action in pairs(M.config.keybinds) do
+    if action == "CloseTerminal" then
+      close_key = key
+      break
+    end
+  end
+
+  -- Set keybinding for closing the terminal
+  vim.api.nvim_buf_set_keymap(buf, "t", close_key, "<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
 
   return buf, win
 end
