@@ -16,8 +16,10 @@ M.config = {
     ["<leader>np"] = "NewJavaProject",
   },
   terminal = {
-    width_pad = 10,
-    height_pad = 10,
+    right_padding = 10,
+    bottom_padding = 10,
+    left_padding = 10,
+    top_padding = 10,
     border = true,
     number = true,
     relativenumber = true,
@@ -69,10 +71,10 @@ local function open_float_terminal(cmd)
   local buf = vim.api.nvim_create_buf(false, true)
   local win = vim.api.nvim_open_win(buf, true, {
     relative = "editor",
-    width = width - M.config.terminal.width_pad,
-    height = height - M.config.terminal.height_pad,
-    row = row,
-    col = col,
+    width = width - M.config.terminal.right_padding,
+    height = height - M.config.terminal.bottom_padding,
+    row = row - M.config.terminal.left_padding,
+    col = col - M.config.terminal.top_padding,
     style = "minimal",
     border = M.config.terminal.border and "rounded" or "none",
   })
