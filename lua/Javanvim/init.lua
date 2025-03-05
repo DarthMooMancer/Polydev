@@ -5,11 +5,11 @@ M.close_key = nil
 M.config = {
   project_root = "~/Projects",
   keybinds = {
+    ["<Esc>"] = "CloseTerminal",
     ["<leader>jb"] = "JavaBuild",
     ["<leader>jr"] = "JavaRun",
     ["<leader>nf"] = "NewJavaFile",
     ["<leader>np"] = "NewJavaProject",
-    ["<Esc>"] = "CloseTerminal",
   },
   terminal = {
     width_pad = 10,
@@ -24,12 +24,11 @@ M.config = {
 function M.setup(opts)
   M.config = vim.tbl_deep_extend("force", M.config, opts or {})
 
-  -- Update close_key from the overridden config
-  M.close_key = M.get_key_for_action("CloseTerminal")
-
   -- Apply keybindings dynamically
   for key, command in pairs(M.config.keybinds) do
-    if command ~= "CloseTerminal" then
+    if command == "CloseTerminal" then
+      M.close_key = key
+    else
       vim.keymap.set("n", key, ":" .. command .. "<CR>", { silent = true })
     end
   end
