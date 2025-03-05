@@ -24,11 +24,12 @@ M.config = {
 function M.setup(opts)
   M.config = vim.tbl_deep_extend("force", M.config, opts or {})
 
+  -- Update close_key from the overridden config
+  M.close_key = M.get_key_for_action("CloseTerminal")
+
   -- Apply keybindings dynamically
   for key, command in pairs(M.config.keybinds) do
-    if command == "CloseTerminal" then
-      M.close_key = key
-    else
+    if command ~= "CloseTerminal" then
       vim.keymap.set("n", key, ":" .. command .. "<CR>", { silent = true })
     end
   end
