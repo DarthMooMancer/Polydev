@@ -73,8 +73,8 @@ local function open_float_terminal(cmd)
     relative = "editor",
     width = width - M.config.terminal.right_padding,
     height = height - M.config.terminal.bottom_padding,
-    row = row - M.config.terminal.left_padding,
-    col = col - M.config.terminal.top_padding,
+    row = row + M.config.terminal.left_padding,
+    col = col + M.config.terminal.top_padding,
     style = "minimal",
     border = M.config.terminal.border and "rounded" or "none",
   })
