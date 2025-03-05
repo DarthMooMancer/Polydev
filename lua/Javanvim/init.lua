@@ -1,4 +1,5 @@
 local M = {}
+M.close_key = nil
 
 -- Default config
 M.config = {
@@ -25,7 +26,11 @@ function M.setup(opts)
 
   -- Apply keybindings dynamically
   for key, command in pairs(M.config.keybinds) do
-    vim.keymap.set("n", key, ":" .. command .. "<CR>", { silent = true })
+    if command == "CloseTerminal" then
+      M.close_key = key
+    else
+      vim.keymap.set("n", key, ":" .. command .. "<CR>", { silent = true })
+    end
   end
 
   -- Register user commands
@@ -79,9 +84,9 @@ local function open_float_terminal(cmd)
   vim.fn.termopen(cmd)
   -- vim.cmd("startinsert")
 
-  local close_key = get_key_for_action("CloseTerminal")
+  -- local close_key = get_key_for_action("CloseTerminal")
 
-  vim.api.nvim_buf_set_keymap(buf, "n", close_key, "i<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
+  vim.api.nvim_buf_set_keymap(buf, "n", M.close_key, "i<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
   return buf, win
 end
 
