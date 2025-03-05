@@ -18,8 +18,8 @@ M.config = {
   terminal = {
     right_padding = 10,
     bottom_padding = 10,
-    left_padding = 10,
-    top_padding = 10,
+    left_padding = 0,
+    top_padding = 0,
     border = true,
     number = true,
     relativenumber = true,
@@ -66,7 +66,7 @@ end
 local function open_float_terminal(cmd)
   local ui = vim.api.nvim_list_uis()[1]
   local width, height = math.floor(ui.width * 0.9), math.floor(ui.height * 0.9)
-  local row, col = math.floor(ui.height * 0.05), math.floor(ui.width * 0.05)
+  local row, col = math.floor(ui.height * 0.9), math.floor(ui.width * 0.9)
 
   local buf = vim.api.nvim_create_buf(false, true)
   local win = vim.api.nvim_open_win(buf, true, {
