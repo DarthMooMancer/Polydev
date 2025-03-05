@@ -22,20 +22,18 @@ M.config = {
 }
 
 function M.setup(opts)
-  -- Merge configs, replacing keybinds table completely if new one is provided
-  if opts and opts.keybinds then
-    M.config.keybinds = vim.tbl_extend("force", M.config.keybinds, opts.keybinds)
-  end
-
-  -- Merge other config settings
-  M.config = vim.tbl_deep_extend("force", M.config, opts or {})
-
-  -- Safely remove existing keybindings before setting new ones
-  for key, _ in pairs(M.config.keybinds) do
-    if pcall(vim.keymap.del, "n", key) then
-      -- Keybinding was successfully deleted (only if it existed)
+  opts = opts or {}
+  -- Apply default keybinds if not defined by user
+  if opts.keybinds then
+    for key, command in pairs(M.config.keybinds) do
+      if not opts.keybinds[key] then
+        opts.keybinds[key] = command
+      end
     end
   end
+
+  -- Merge the configurations
+  M.config = vim.tbl_deep_extend("force", M.config, opts)
 
   -- Apply keybindings dynamically
   for key, command in pairs(M.config.keybinds) do
