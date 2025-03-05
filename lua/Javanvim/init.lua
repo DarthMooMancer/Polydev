@@ -32,13 +32,17 @@ function M.setup(opts)
   for key, command in pairs(M.config.keybinds) do
     if command == "CloseTerminal" then
       M.close_key = key
-    elseif command == "JavaBuild" then
+    end
+    if command == "JavaBuild" then
       M.java_build = key
-    elseif command == "JavaRun" then
+    end
+    if command == "JavaRun" then
       M.java_run = key
-    elseif command == "NewJavaFile" then
+    end
+    if command == "NewJavaFile" then
       M.new_java_file = key
-    elseif command == "NewJavaProject" then
+    end
+    if command == "NewJavaProject" then
       M.new_java_project = key
     end
   end
