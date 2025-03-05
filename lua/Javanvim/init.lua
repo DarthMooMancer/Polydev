@@ -22,6 +22,17 @@ M.config = {
 }
 
 function M.setup(opts)
+  -- Clear previous keybindings before setting new ones
+  for key, _ in pairs(M.config.keybinds) do
+    vim.keymap.del("n", key)
+  end
+
+  -- Merge configs, replacing keybinds table completely if new one is provided
+  if opts and opts.keybinds then
+    M.config.keybinds = vim.tbl_extend("force", M.config.keybinds, opts.keybinds)
+  end
+
+  -- Merge other config settings
   M.config = vim.tbl_deep_extend("force", M.config, opts or {})
 
   -- Apply keybindings dynamically
@@ -39,6 +50,26 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("JavaBuild", M.build, {})
   vim.api.nvim_create_user_command("JavaRun", M.run, {})
 end
+
+
+-- function M.setup(opts)
+--   M.config = vim.tbl_deep_extend("force", M.config, opts or {})
+--
+--   -- Apply keybindings dynamically
+--   for key, command in pairs(M.config.keybinds) do
+--     if command == "CloseTerminal" then
+--       M.close_key = key
+--     else
+--       vim.keymap.set("n", key, ":" .. command .. "<CR>", { silent = true })
+--     end
+--   end
+--
+--   -- Register user commands
+--   vim.api.nvim_create_user_command("NewJavaProject", M.create_project, {})
+--   vim.api.nvim_create_user_command("NewJavaFile", M.create_new_file, {})
+--   vim.api.nvim_create_user_command("JavaBuild", M.build, {})
+--   vim.api.nvim_create_user_command("JavaRun", M.run, {})
+-- end
 
 -- Open floating terminal
 local function open_float_terminal(cmd)
