@@ -62,22 +62,62 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("JavaRun", M.run, {})
 end
 
--- Open floating terminal
-local function open_float_terminal(cmd)
-  local ui = vim.api.nvim_list_uis()[1]
-  local width, height = math.floor(ui.width * 0.9), math.floor(ui.height * 0.9)
-  local row, col = math.floor(ui.height * 0.05), math.floor(ui.width * 0.05)
+-- -- Open floating terminal
+-- local function open_float_terminal(cmd)
+--   local ui = vim.api.nvim_list_uis()[1]
+--   local width, height = math.floor(ui.width * 0.9), math.floor(ui.height * 0.9)
+--   local row, col = math.floor(ui.height * 0.05), math.floor(ui.width * 0.05)
+--
+--   local buf = vim.api.nvim_create_buf(false, true)
+--   local win = vim.api.nvim_open_win(buf, true, {
+--     relative = "editor",
+--     width = width - M.config.terminal.right_padding,
+--     height = height - M.config.terminal.bottom_padding,
+--     row = row + M.config.terminal.left_padding,
+--     col = col + M.config.terminal.top_padding,
+--     style = "minimal",
+--     border = M.config.terminal.border and "rounded" or "none",
+--   })
+--
+--
+  local function open_float_terminal(cmd)
+    local ui = vim.api.nvim_list_uis()[1]
+    local term_cfg = M.config.terminal
 
-  local buf = vim.api.nvim_create_buf(false, true)
-  local win = vim.api.nvim_open_win(buf, true, {
-    relative = "editor",
-    width = width - M.config.terminal.right_padding,
-    height = height - M.config.terminal.bottom_padding,
-    row = row + M.config.terminal.left_padding,
-    col = col + M.config.terminal.top_padding,
-    style = "minimal",
-    border = M.config.terminal.border and "rounded" or "none",
-  })
+    -- Default window size (90% of the editor)
+    local default_width = math.floor(ui.width * 0.9)
+    local default_height = math.floor(ui.height * 0.9)
+
+    -- Default centered position
+    local default_row = math.floor((ui.height - default_height) / 2)
+    local default_col = math.floor((ui.width - default_width) / 2)
+
+    -- Adjust size based on padding
+    local width = default_width - term_cfg.left_padding - term_cfg.right_padding
+    local height = default_height - term_cfg.top_padding - term_cfg.bottom_padding
+
+    -- Adjust position based on padding
+    local row = default_row + term_cfg.top_padding
+    local col = default_col + term_cfg.left_padding
+
+    -- Ensure window size doesn't go negative
+    width = math.max(1, width)
+    height = math.max(1, height)
+    -- Ensure position doesn't move off-screen
+    row = math.max(0, row)
+    col = math.max(0, col)
+
+    -- Create buffer and window
+    local buf = vim.api.nvim_create_buf(false, true)
+    local win = vim.api.nvim_open_win(buf, true, {
+      relative = "editor",
+      width = width,
+      height = height,
+      row = row,
+      col = col,
+      style = "minimal",
+      border = term_cfg.border and "rounded" or "none",
+    })
 
   -- Enable scrolling, relative line numbers, and prevent closing on click
   vim.api.nvim_win_set_option(win, "winblend", vim.o.pumblend)
