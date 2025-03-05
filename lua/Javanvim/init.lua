@@ -1,5 +1,9 @@
 local M = {}
 M.close_key = nil
+M.java_build = nil
+M.java_run = nil
+M.new_java_file = nil
+M.new_java_project = nil
 
 -- Default config
 M.config = {
@@ -24,14 +28,26 @@ M.config = {
 function M.setup(opts)
   M.config = vim.tbl_deep_extend("force", M.config, opts or {})
 
-  -- Apply keybindings dynamically
+  -- Apply keybindings manually
   for key, command in pairs(M.config.keybinds) do
     if command == "CloseTerminal" then
       M.close_key = key
-    else
-      vim.keymap.set("n", key, ":" .. command .. "<CR>", { silent = true })
+    elseif command == "JavaBuild" then
+      M.java_build = key
+    elseif command == "JavaRun" then
+      M.java_run = key
+    elseif command == "NewJavaFile" then
+      M.new_java_file = key
+    elseif command == "NewJavaProject" then
+      M.new_java_project = key
     end
   end
+
+  -- Register Keybinds
+  vim.keymap.set("n", M.java_build, ":JavaBuild<CR>", { silent = true })
+  vim.keymap.set("n", M.java_run, ":JavaRun<CR>", { silent = true })
+  vim.keymap.set("n", M.new_java_file, ":NewJavaFile<CR>", { silent = true })
+  vim.keymap.set("n", M.new_java_project, ":NewJavaProject<CR>", { silent = true })
 
   -- Register user commands
   vim.api.nvim_create_user_command("NewJavaProject", M.create_project, {})
