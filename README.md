@@ -1,5 +1,14 @@
 # Javanvim
 
+### Quick Features
+
+The ability to -
+* Create new projects
+* Create new files
+* Build those files
+* Run those files
+* Builtin terminal for running code
+
 !!! Documentation is over at [Javanvim.docs](https://darthmoomancer.github.io/Javanvim.docs/)
 
 ## Questions and Contributing
