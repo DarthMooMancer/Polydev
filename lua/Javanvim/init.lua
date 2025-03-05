@@ -8,6 +8,7 @@ M.config = {
     ["<leader>jr"] = "JavaRun",
     ["<leader>nf"] = "NewJavaFile",
     ["<leader>np"] = "NewJavaProject",
+    ["<Esc>"] = "CloseTerminal",
   },
   terminal = {
     width_pad = 10,
@@ -33,6 +34,16 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("JavaBuild", M.build, {})
   vim.api.nvim_create_user_command("JavaRun", M.run, {})
 end
+
+local function get_key_for_action(action)
+  for key, cmd in pairs(M.config.keybinds) do
+    if cmd == action then
+      return key
+    end
+  end
+  return nil -- Return nil if the action is not found
+end
+
 
 -- Open floating terminal
 local function open_float_terminal(cmd)
@@ -68,7 +79,9 @@ local function open_float_terminal(cmd)
   vim.fn.termopen(cmd)
   -- vim.cmd("startinsert")
 
-  vim.api.nvim_buf_set_keymap(buf, "n", "<Esc>", "i<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
+  local close_key = get_key_for_action("CloseTerminal")
+
+  vim.api.nvim_buf_set_keymap(buf, "n", close_key, "i<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
   return buf, win
 end
 
