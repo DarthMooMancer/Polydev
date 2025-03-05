@@ -16,8 +16,8 @@ M.config = {
     ["<leader>np"] = "NewJavaProject",
   },
   terminal = {
-    right_padding = 10,
-    bottom_padding = 10,
+    right_padding = 0,
+    bottom_padding = 0,
     left_padding = 0,
     top_padding = 0,
     border = true,
