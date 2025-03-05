@@ -69,8 +69,8 @@ local function open_float_terminal(cmd)
   local buf = vim.api.nvim_create_buf(false, true)
   local win = vim.api.nvim_open_win(buf, true, {
     relative = "editor",
-    width = width + M.config.terminal.width_pad,
-    height = height + M.config.terminal.height_pad,
+    width = width - M.config.terminal.width_pad,
+    height = height - M.config.terminal.height_pad,
     row = row,
     col = col,
     style = "minimal",
