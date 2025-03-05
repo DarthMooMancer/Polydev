@@ -22,11 +22,6 @@ M.config = {
 }
 
 function M.setup(opts)
-  -- Clear previous keybindings before setting new ones
-  for key, _ in pairs(M.config.keybinds) do
-    vim.keymap.del("n", key)
-  end
-
   -- Merge configs, replacing keybinds table completely if new one is provided
   if opts and opts.keybinds then
     M.config.keybinds = vim.tbl_extend("force", M.config.keybinds, opts.keybinds)
@@ -34,6 +29,13 @@ function M.setup(opts)
 
   -- Merge other config settings
   M.config = vim.tbl_deep_extend("force", M.config, opts or {})
+
+  -- Safely remove existing keybindings before setting new ones
+  for key, _ in pairs(M.config.keybinds) do
+    if pcall(vim.keymap.del, "n", key) then
+      -- Keybinding was successfully deleted (only if it existed)
+    end
+  end
 
   -- Apply keybindings dynamically
   for key, command in pairs(M.config.keybinds) do
@@ -50,7 +52,6 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("JavaBuild", M.build, {})
   vim.api.nvim_create_user_command("JavaRun", M.run, {})
 end
-
 
 -- function M.setup(opts)
 --   M.config = vim.tbl_deep_extend("force", M.config, opts or {})
