@@ -124,12 +124,6 @@ function M.open_float_terminal(cmd)
 end
 
 -- Migrate old folder to new method
--- take project to convert
--- cd into project in project_root
--- mkdir src and build
--- move all contents of root/src to src
--- move all contents of root/out to build
--- delete root
 function M.migrate()
   vim.ui.input({ prompt = "Enter project name to migrate: "}, function(project_name)
     if not project_name or project_name == "" then
@@ -145,9 +139,9 @@ function M.migrate()
     vim.fn.mkdir(src_dir, "p")
     vim.fn.mkdir(build_dir, "p")
 
-    -- local compile_command = string.format("javac -d %s %s/*.java", out_dir, src_dir)
-    -- mv ../* ../
-    local compile_command = string.format("mv " .. legacy_src_dir .. "* " .. src_dir .. " && mv " .. legacy_out_dir .. "* " .. build_dir .. " && rm -rd " .. project_root .. "/" .. "root/")
+    local compile_command = "mv " .. legacy_src_dir .. "/* " .. src_dir ..
+                            " && mv " .. legacy_out_dir .. "/* " .. build_dir ..
+                            " && rm -rd " .. project_root .. "/" .. "root/"
     local compile_status = vim.fn.system(compile_command)
 
     if vim.v.shell_error ~= 0 then
