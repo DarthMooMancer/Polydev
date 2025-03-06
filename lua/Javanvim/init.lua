@@ -60,64 +60,48 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("NewJavaFile", M.create_new_file, {})
   vim.api.nvim_create_user_command("JavaBuild", M.build, {})
   vim.api.nvim_create_user_command("JavaRun", M.run, {})
+  vim.api.nvim_create_user_command("Migrate", M.migrate, {})
 end
 
--- -- Open floating terminal
--- local function open_float_terminal(cmd)
---   local ui = vim.api.nvim_list_uis()[1]
---   local width, height = math.floor(ui.width * 0.9), math.floor(ui.height * 0.9)
---   local row, col = math.floor(ui.height * 0.05), math.floor(ui.width * 0.05)
---
---   local buf = vim.api.nvim_create_buf(false, true)
---   local win = vim.api.nvim_open_win(buf, true, {
---     relative = "editor",
---     width = width - M.config.terminal.right_padding,
---     height = height - M.config.terminal.bottom_padding,
---     row = row + M.config.terminal.left_padding,
---     col = col + M.config.terminal.top_padding,
---     style = "minimal",
---     border = M.config.terminal.border and "rounded" or "none",
---   })
---
---
-  local function open_float_terminal(cmd)
-    local ui = vim.api.nvim_list_uis()[1]
-    local term_cfg = M.config.terminal
+-- Open floating terminal
+function M.open_float_terminal(cmd)
+  local ui = vim.api.nvim_list_uis()[1]
+  local term_cfg = M.config.terminal
 
-    -- Default window size (90% of the editor)
-    local default_width = math.floor(ui.width * 0.9)
-    local default_height = math.floor(ui.height * 0.9)
+  -- Default window size (90% of the editor)
+  local default_width = math.floor(ui.width * 0.9)
+  local default_height = math.floor(ui.height * 0.9)
 
-    -- Default centered position
-    local default_row = math.floor((ui.height - default_height) / 2)
-    local default_col = math.floor((ui.width - default_width) / 2)
+  -- Default centered position
+  local default_row = math.floor((ui.height - default_height) / 2)
+  local default_col = math.floor((ui.width - default_width) / 2)
 
-    -- Adjust size based on padding
-    local width = default_width - term_cfg.left_padding - term_cfg.right_padding
-    local height = default_height - term_cfg.top_padding - (term_cfg.bottom_padding + 1)
+  -- Adjust size based on padding
+  local width = default_width - term_cfg.left_padding - term_cfg.right_padding
+  local height = default_height - term_cfg.top_padding - (term_cfg.bottom_padding + 1)
 
-    -- Adjust position based on padding
-    local row = default_row + term_cfg.top_padding
-    local col = default_col + term_cfg.left_padding
+  -- Adjust position based on padding
+  local row = default_row + term_cfg.top_padding
+  local col = default_col + term_cfg.left_padding
 
-    -- Ensure window size doesn't go negative
-    width = math.max(1, width)
-    height = math.max(1, height)
-    -- Ensure position doesn't move off-screen
-    row = math.max(0, row)
-    col = math.max(0, col)
+  -- Ensure window size doesn't go negative
+  width = math.max(1, width)
+  height = math.max(1, height)
+  -- Ensure position doesn't move off-screen
+  row = math.max(0, row)
+  col = math.max(0, col)
 
-    -- Create buffer and window
-    local buf = vim.api.nvim_create_buf(false, true)
-    local win = vim.api.nvim_open_win(buf, true, {
-      relative = "editor",
-      width = width,
-      height = height,
-      row = row,
-      col = col,
-      style = "minimal",
-      border = term_cfg.border and "rounded" or "none",
-    })
+  -- Create buffer and window
+  local buf = vim.api.nvim_create_buf(false, true)
+  local win = vim.api.nvim_open_win(buf, true, {
+    relative = "editor",
+    width = width,
+    height = height,
+    row = row,
+    col = col,
+    style = "minimal",
+    border = term_cfg.border and "rounded" or "none",
+  })
 
   -- Enable scrolling, relative line numbers, and prevent closing on click
   vim.api.nvim_win_set_option(win, "winblend", vim.o.pumblend)
@@ -137,6 +121,40 @@ end
 
   vim.api.nvim_buf_set_keymap(buf, "n", M.close_key, "i<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
   return buf, win
+end
+
+-- Migrate old folder to new method
+-- take project to convert
+-- cd into project in project_root
+-- mkdir src and build
+-- move all contents of root/src to src
+-- move all contents of root/out to build
+-- delete root
+function M.migrate()
+  vim.ui.input({ prompt = "Enter project name to migrate: "}, function(project_name)
+    if not project_name or project_name == "" then
+      print("Migration failed")
+      return
+    end
+    local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
+    local legacy_src_dir = project_root .. "/root/src"
+    local legacy_out_dir = project_root .. "/root/out"
+    local src_dir = project_root .. "/src"
+    local build_dir = project_root .. "/build"
+
+    vim.fn.mkdir(src_dir, "p")
+    vim.fn.mkdir(build_dir, "p")
+
+    -- local compile_command = string.format("javac -d %s %s/*.java", out_dir, src_dir)
+    local compile_command = string.format("mv" .. legacy_src_dir .. "*" .. src_dir " && mv " .. legacy_out_dir .. "*" .. build_dir "&& rm -rd " .. project_root .. "/" .. "root/")
+    local compile_status = vim.fn.system(compile_command)
+
+    if vim.v.shell_error ~= 0 then
+      print("Error during migration:\n" .. compile_status)
+    else
+      print("Migration successful!")
+    end
+  end)
 end
 
 -- Create a new Java project
@@ -189,7 +207,7 @@ function M.create_new_file()
     end
 
     local current_dir = vim.fn.expand("%:p:h")
-    local root_dir = current_dir:match("(.*)/root/src")
+    local root_dir = current_dir:match("(.*)/src")
     if not root_dir then
       print("Error: src directory not found.")
       return
@@ -247,7 +265,7 @@ function M.run()
   end
 
   local out_dir = project_root .. "/build"
-  open_float_terminal("java -cp " .. out_dir .. " Main")
+  M.open_float_terminal("java -cp " .. out_dir .. " Main")
 end
 
 return M
