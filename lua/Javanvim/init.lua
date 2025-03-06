@@ -94,7 +94,7 @@ end
 
     -- Adjust size based on padding
     local width = default_width - term_cfg.left_padding - term_cfg.right_padding
-    local height = default_height - term_cfg.top_padding - term_cfg.bottom_padding
+    local height = default_height - term_cfg.top_padding - (term_cfg.bottom_padding + 1)
 
     -- Adjust position based on padding
     local row = default_row + term_cfg.top_padding
