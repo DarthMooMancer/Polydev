@@ -146,7 +146,8 @@ function M.migrate()
     vim.fn.mkdir(build_dir, "p")
 
     -- local compile_command = string.format("javac -d %s %s/*.java", out_dir, src_dir)
-    local compile_command = string.format("mv" .. legacy_src_dir .. "*" .. src_dir .. " && mv " .. legacy_out_dir .. "*" .. build_dir .. "&& rm -rd " .. project_root .. "/" .. "root/")
+    -- mv ../* ../
+    local compile_command = string.format("mv " .. legacy_src_dir .. "* " .. src_dir .. " && mv " .. legacy_out_dir .. "* " .. build_dir .. " && rm -rd " .. project_root .. "/" .. "root/")
     local compile_status = vim.fn.system(compile_command)
 
     if vim.v.shell_error ~= 0 then
