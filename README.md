@@ -2,6 +2,7 @@
 A multi-lingual plugin (targeted towards Java) that adds some nice features to neovim for managing, creating, building and runnning projects all within neovim.
 
 ### Quick Features
+* Most code for right now is still Javanvim as now i am expanding, so bare with it.
 
 The ability to -
 * Create new projects
