@@ -50,10 +50,10 @@ function M.setup(opts)
   end
 
   -- Register Keybinds
-  vim.keymap.set("n", M.java_build, ":CBuild<CR>", { silent = true })
-  vim.keymap.set("n", M.java_run, ":CRun<CR>", { silent = true })
-  vim.keymap.set("n", M.new_java_file, ":NewCFile<CR>", { silent = true })
-  vim.keymap.set("n", M.new_java_project, ":NewCProject<CR>", { silent = true })
+  vim.keymap.set("n", M.c_build, ":CBuild<CR>", { silent = true })
+  vim.keymap.set("n", M.c_run, ":CRun<CR>", { silent = true })
+  vim.keymap.set("n", M.new_c_file, ":NewCFile<CR>", { silent = true })
+  vim.keymap.set("n", M.new_c_project, ":NewCProject<CR>", { silent = true })
 
   -- Register user commands
   vim.api.nvim_create_user_command("NewCProject", M.create_project, {})
