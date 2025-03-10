@@ -227,17 +227,17 @@ function M.build()
   vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
     local build_project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name .. "/build"
     local compile_command = "cd " .. build_project_root .. " && cmake .. && make"
-
-    -- Open terminal and make buffer modifiable
     local term_buf = M.open_float_terminal(compile_command)
     vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
-
-    -- Run compile command and handle result
     local compile_status = vim.fn.system(compile_command)
-    local message = vim.v.shell_error ~= 0 and {"Error during compilation:", vim.split(compile_status, "\n")} or {"Compilation successful!"}
 
-    -- Set message in terminal and make buffer non-modifiable
-    vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, message)
+    if vim.v.shell_error ~= 0 then
+      vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, {"Error during compilation:"})
+      vim.api.nvim_buf_set_lines(term_buf, 1, -1, false, vim.split(compile_status, "\n"))
+    else
+      vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, {"Compilation successful!"})
+    end
+
     vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
   end)
 end
