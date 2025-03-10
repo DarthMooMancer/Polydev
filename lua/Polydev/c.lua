@@ -283,8 +283,9 @@ function M.build()
 end
 
 function M.run()
-    -- Get the current file's directory
+  -- Get the current file's directory
   local current_dir = vim.fn.expand("%:p:h")
+
   -- Try to find the root of the project by matching the path
   local project_root = current_dir:match("(.*)/src")
   if not project_root then
@@ -295,27 +296,29 @@ function M.run()
   -- Define the build directory
   local build_dir = project_root .. "/build"
   
-  -- List files in the build directory and find the .txt file
+  -- List only .txt files in the build directory and filter out unwanted ones like CMakeCache.txt
   local files = vim.fn.glob(build_dir .. "/*.txt", true, true)
-  if #files == 0 then
-    print("Error: No .txt file found in the build directory.")
+  local project_name = nil
+
+  for _, file in ipairs(files) do
+    -- Make sure the file is the correct project name file (not CMakeCache.txt or others)
+    if not vim.fn.match(file, "CMakeCache.txt") then
+      -- Extract the project name (remove the extension)
+      project_name = vim.fn.fnamemodify(file, ":r")
+      break
+    end
+  end
+
+  -- If no project name file was found, print an error and return
+  if not project_name then
+    print("Error: No valid project name file found in the build directory.")
     return
   end
 
-  -- Extract the project name from the .txt file's name (without the .txt extension)
-  local project_name = vim.fn.fnamemodify(files[1], ":r")  -- :r removes the file extension
+  -- Print the project name for debugging
   print("Project_name: " .. project_name)
 
-  -- Define the command to run the project (adjusted for the C project)
-
-  -- local current_dir = vim.fn.expand("%:p:h")
-  -- local project_root = current_dir:match("(.*)/src")
-  -- if not project_root then
-  --   print("Error: Must be inside the 'src' directory.")
-  --   return
-  -- end
-  --
-  -- local out_dir = project_root .. "/build"
+  -- Open floating terminal and run the project executable
   M.open_float_terminal("cd " .. build_dir .. " && ./" .. project_name)
 end
 
