@@ -142,6 +142,15 @@ function M.create_project()
     vim.fn.mkdir(build_dir, "p")
     vim.fn.mkdir(include_dir, "p")
 
+    -- Write project name to file
+    local project_name_file = io.open(build_dir .. "/project_name.txt", "w")
+    if project_name_file then
+      project_name_file:write(project_name)
+      project_name_file:close()
+    else
+      print("Error creating project_name.txt")
+    end
+
     -- Write the Main.java file
     local main_c_path = src_dir .. "/main.c"
     local main_c_content = [[
@@ -224,23 +233,64 @@ public class %s {
 end
 
 function M.build()
-  vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
-    local build_project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name .. "/build"
-    local compile_command = "cd " .. build_project_root .. " && cmake .. && make"
-    local term_buf = M.open_float_terminal(compile_command)
-    vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
-    local compile_status = vim.fn.system(compile_command)
+  -- Get the current file's directory
+  local current_dir = vim.fn.expand("%:p:h")
+  -- Try to find the root of the project by matching the path
+  local project_root = current_dir:match("(.*)/src")
+  if not project_root then
+    print("Error: src directory not found.")
+    return
+  end
 
-    if vim.v.shell_error ~= 0 then
-      vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, {"Error during compilation:"})
-      vim.api.nvim_buf_set_lines(term_buf, 1, -1, false, vim.split(compile_status, "\n"))
-    else
-      vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, {"Compilation successful!"})
-    end
+  -- Define the build directory where project_name.txt is located
+  local build_dir = project_root .. "/build"
+  local project_name_file = build_dir .. "/project_name.txt"
+  local project_name = ""
 
-    vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
-  end)
+  -- Try to read the project name from the file
+  local file = io.open(project_name_file, "r")
+  if file then
+    project_name = file:read("*line")
+    file:close()
+  else
+    print("Error: project_name.txt not found.")
+    return
+  end
+
+  -- If project name is found, proceed with the build
+  local compile_command = "cd " .. build_dir .. " && cmake .. && make"
+  local term_buf = M.open_float_terminal(compile_command)
+  vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
+
+  -- Run compile command and handle result
+  local compile_status = vim.fn.system(compile_command)
+
+  -- Set message in terminal based on compile result
+  local message = vim.v.shell_error ~= 0 and {"Error during compilation:", vim.split(compile_status, "\n")} or {"Compilation successful!"}
+
+  -- Set message in terminal and make buffer non-modifiable
+  vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, message)
+  vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
 end
+
+-- function M.build()
+--   vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
+--     local build_project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name .. "/build"
+--     local compile_command = "cd " .. build_project_root .. " && cmake .. && make"
+--     local term_buf = M.open_float_terminal(compile_command)
+--     vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
+--     local compile_status = vim.fn.system(compile_command)
+--
+--     if vim.v.shell_error ~= 0 then
+--       vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, {"Error during compilation:"})
+--       vim.api.nvim_buf_set_lines(term_buf, 1, -1, false, vim.split(compile_status, "\n"))
+--     else
+--       vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, {"Compilation successful!"})
+--     end
+--
+--     vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
+--   end)
+-- end
 
 -- Run Java program in floating terminal
 function M.run()
