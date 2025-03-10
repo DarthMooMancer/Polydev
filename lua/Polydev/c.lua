@@ -309,7 +309,7 @@ function M.run()
 
   -- Ensure the project_name is being used correctly in the command
   local executable_path = build_dir .. "/" .. project_name
-  M.open_float_terminal("cd " .. build_dir .. " && ./" .. project_name)
+  M.open_float_terminal("cd " .. build_dir .. " && ." .. project_name)
 end
 
 return M
