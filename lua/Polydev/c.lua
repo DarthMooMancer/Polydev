@@ -4,7 +4,6 @@ M.c_build = nil
 M.c_run = nil
 M.new_c_file = nil
 M.new_c_project = nil
-M.project_name = nil
 
 -- Default config
 M.config = {
@@ -133,7 +132,6 @@ function M.create_project()
     end
 
     -- Paths for the project
-    M.project_name = project_name
     local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
     local src_dir = project_root .. "/src"
     local build_dir = project_root .. "/build"
@@ -232,28 +230,36 @@ function M.build()
   -- local compile_command = "mv " .. legacy_src_dir .. "/* " .. src_dir ..
   --                         " && mv " .. legacy_out_dir .. "/* " .. build_dir ..
   --                         " && rm -rd " .. project_root .. "/" .. "root/"
-  local project_root = vim.fn.expand(M.config.project_root) .. "/" .. M.project_name
-  local into_build = "cd " .. project_root .. "/build"
-  local into_build_status = vim.fn.system(into_build)
-  if vim.v.shell_error ~= 0 then
-    print("Could not go into build dir:\n" .. into_build_status)
-  end
 
-  local project_root_build = current_dir:match("(.*)/build")
-  if not project_root_build then
-    print("Error: Must be inside the 'build' directory.")
-    return
-  end
+  vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
+    if not project_name or project_name == "" then
+      print("Project creation canceled.")
+      return
+    end
+    local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
+    local into_build = "cd " .. project_root .. "/build"
+    local into_build_status = vim.fn.system(into_build)
+    if vim.v.shell_error ~= 0 then
+      print("Could not go into build dir:\n" .. into_build_status)
+    end
 
-  local compile_command = "cmake .. && make"
-  local compile_status = vim.fn.system(compile_command)
+    local project_root_build = current_dir:match("(.*)/build")
+    if not project_root_build then
+      print("Error: Must be inside the 'build' directory.")
+      return
+    end
 
-  if vim.v.shell_error ~= 0 then
-    print("Error during compilation:\n" .. compile_status)
-  else
-    print("Compilation successful!")
-  end
+    local compile_command = "cmake .. && make"
+    local compile_status = vim.fn.system(compile_command)
+
+    if vim.v.shell_error ~= 0 then
+      print("Error during compilation:\n" .. compile_status)
+    else
+      print("Compilation successful!")
+    end
+  end)
 end
+
 
 -- Run Java program in floating terminal
 function M.run()
