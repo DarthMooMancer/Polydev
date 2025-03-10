@@ -152,7 +152,7 @@ int main() {
   return 0;
 }
 ]]
-    local Cmake_path = project_root .. "/" .. "CMAKELists.txt"
+    local Cmake_path = project_root .. "/" .. "CMakeLists.txt"
     local Cmake_content = string.format([[
 cmake_minimum_required(VERSION 3.10)
 project(%s C)
