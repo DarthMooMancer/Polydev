@@ -235,10 +235,10 @@ function M.build()
       return
     end
 
-    local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
-    print("Project Root: " .. project_root)
+    local build_project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name .. "/build"
 
-    local into_build = "cd " .. project_root .. "/build"
+    local into_build = "cd " .. build_project_root
+    print("Project Root: " .. build_project_root)
     local into_build_status = vim.fn.system(into_build)
     if vim.v.shell_error ~= 0 then
       print("Could not go into build dir:\n" .. into_build_status)
