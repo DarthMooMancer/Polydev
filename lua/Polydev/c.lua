@@ -227,42 +227,44 @@ end
 function M.build()
   local current_dir = vim.fn.expand("%:p:h")
 
-  -- Prompt the user to input the project name
-  vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
-    if not project_name or project_name == "" then
-      print("Project creation canceled.")
-      return
-    end
+  -- Get the project root directory by searching for CMakeLists.txt
+  local project_root = vim.fn.findfile("CMakeLists.txt", current_dir .. ";")
+  
+  if project_root == "" then
+    print("Could not find CMakeLists.txt. Are you in a project directory?")
+    return
+  end
 
-    -- Define the project root path based on the entered project name
-    local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
-    local build_dir = project_root .. "/build"
+  -- Get the root directory where CMakeLists.txt is located
+  project_root = vim.fn.fnamemodify(project_root, ":h")
 
-    -- Check if the build directory exists, and create it if it doesn't
-    if vim.fn.isdirectory(build_dir) == 0 then
-      print("Build directory does not exist. Creating: " .. build_dir)
-      vim.fn.mkdir(build_dir, "p")
-    end
+  -- Define the build directory path
+  local build_dir = project_root .. "/build"
 
-    -- Change to the build directory
-    local into_build = "cd " .. build_dir
-    local into_build_status = vim.fn.system(into_build)
+  -- Check if the build directory exists, create it if it doesn't
+  if vim.fn.isdirectory(build_dir) == 0 then
+    print("Build directory does not exist. Creating: " .. build_dir)
+    vim.fn.mkdir(build_dir, "p")
+  end
 
-    if vim.v.shell_error ~= 0 then
-      print("Could not change into build dir:\n" .. into_build_status)
-      return
-    end
+  -- Change to the build directory
+  local into_build = "cd " .. build_dir
+  local into_build_status = vim.fn.system(into_build)
 
-    -- Run cmake and make to build the project
-    local compile_command = "cmake .. && make"
-    local compile_status = vim.fn.system(compile_command)
+  if vim.v.shell_error ~= 0 then
+    print("Could not change into build dir:\n" .. into_build_status)
+    return
+  end
 
-    if vim.v.shell_error ~= 0 then
-      print("Error during compilation:\n" .. compile_status)
-    else
-      print("Compilation successful!")
-    end
-  end)
+  -- Run cmake and make to build the project
+  local compile_command = "cmake .. && make"
+  local compile_status = vim.fn.system(compile_command)
+
+  if vim.v.shell_error ~= 0 then
+    print("Error during compilation:\n" .. compile_status)
+  else
+    print("Compilation successful!")
+  end
 end
 
 -- Run Java program in floating terminal
