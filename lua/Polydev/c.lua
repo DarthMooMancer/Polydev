@@ -256,8 +256,7 @@ function M.build()
   local project_name = vim.fn.fnamemodify(files[1], ":r")  -- :r removes the file extension
 
   -- Build command
-  local compile_command = "cd " .. build_dir .. " && cmake .. && make"
-  
+  local compile_command = "cd " .. build_dir .. " && cmake .. && make && chmod +x " .. project_name
   -- Open floating terminal to execute the build command
   local term_buf = M.open_float_terminal(compile_command)
   vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
@@ -269,7 +268,6 @@ function M.build()
   local message
   if vim.v.shell_error ~= 0 then
     message = {"Error during compilation:"}
-    -- Add each line of the compile_status as individual strings in the message array
     for _, line in ipairs(vim.split(compile_status, "\n")) do
       table.insert(message, line)
     end
@@ -285,7 +283,7 @@ end
 function M.run()
   local current_dir = vim.fn.expand("%:p:h")
   local project_root = current_dir:match("(.*)/src")
-  
+
   if not project_root then
     print("Error: src directory not found.")
     return
@@ -293,7 +291,6 @@ function M.run()
 
   local build_dir = project_root .. "/build"
   local files = vim.fn.glob(build_dir .. "/*.txt", true, true)
-  
   local project_name = nil
   for _, file in ipairs(files) do
     if vim.fn.match(file, "CMakeCache.txt") == -1 then
@@ -307,8 +304,6 @@ function M.run()
     return
   end
 
-  -- Ensure the project_name is being used correctly in the command
-  local executable_path = build_dir .. "/" .. project_name
   M.open_float_terminal("cd " .. build_dir .. " && ." .. project_name)
 end
 
