@@ -224,6 +224,7 @@ public class %s {
 end
 
 -- Compile C files
+-- Compile C files
 function M.build()
   vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
     local build_project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name .. "/build"
@@ -233,6 +234,9 @@ function M.build()
     
     -- Open the terminal and capture the output of the compile command
     local term_buf, term_win = M.open_float_terminal(compile_command)
+
+    -- Make the terminal buffer modifiable before updating its contents
+    vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
 
     -- Check if there was an error during the compilation
     local compile_status = vim.fn.system(compile_command)
@@ -245,6 +249,9 @@ function M.build()
       -- Compilation successful message
       vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, {"Compilation successful!"})
     end
+
+    -- Optionally make the buffer non-modifiable again after updating
+    vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
   end)
 end
 
