@@ -223,26 +223,46 @@ public class %s {
   end)
 end
 
--- Compile Java files
+-- Compile C files
 function M.build()
   vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
-    if not project_name or project_name == "" then
-      print("Project creation canceled.")
-      return
-    end
-
     local build_project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name .. "/build"
 
-    local compile_command = "cd " .. build_project_root .." && cmake .. && make"
+    -- Command to compile the project
+    local compile_command = "cd " .. build_project_root .. " && cmake .. && make"
+    
+    -- Open the terminal and capture the output of the compile command
+    local term_buf, term_win = M.open_float_terminal(compile_command)
+
+    -- Check if there was an error during the compilation
     local compile_status = vim.fn.system(compile_command)
 
     if vim.v.shell_error ~= 0 then
-      print("Error during compilation:\n" .. compile_status)
+      -- If there is an error, display the error in the terminal
+      vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, {"Error during compilation:"})
+      vim.api.nvim_buf_set_lines(term_buf, 1, -1, false, vim.split(compile_status, "\n"))
     else
-      print("Compilation successful!")
+      -- Compilation successful message
+      vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, {"Compilation successful!"})
     end
   end)
 end
+
+-- Compile Java files
+-- function M.build()
+--   vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
+--     local build_project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name .. "/build"
+--
+--     local compile_command = "cd " .. build_project_root .." && cmake .. && make"
+--     local compile_status = vim.fn.system(compile_command)
+--
+--     if vim.v.shell_error ~= 0 then
+--       print("Error during compilation:\n" .. compile_status)
+--     else
+--       print("Compilation successful!")
+--     end
+--   end)
+-- end
 
 -- Run Java program in floating terminal
 function M.run()
