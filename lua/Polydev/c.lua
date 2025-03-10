@@ -10,10 +10,10 @@ M.config = {
   project_root = "~/Projects/C",
   keybinds = {
     ["<Esc>"] = "CloseTerminal",
-    ["<leader>jb"] = "CBuild",
-    ["<leader>jr"] = "CRun",
-    ["<leader>nf"] = "NewCFile",
-    ["<leader>np"] = "NewCProject",
+    ["<leader>cb"] = "CBuild",
+    ["<leader>cr"] = "CRun",
+    ["<leader>cnf"] = "NewCFile",
+    ["<leader>cnp"] = "NewCProject",
   },
   terminal = {
     right_padding = 0,
