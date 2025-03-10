@@ -242,33 +242,33 @@ function M.build()
     return
   end
 
-  -- Define the build directory where project_name.txt is located
+  -- Define the build directory
   local build_dir = project_root .. "/build"
-  local project_name_file = build_dir .. "/project_name.txt"
-  local project_name = ""
-
-  -- Try to read the project name from the file
-  local file = io.open(project_name_file, "r")
-  if file then
-    project_name = file:read("*line")
-    file:close()
-  else
-    print("Error: project_name.txt not found.")
+  
+  -- List files in the build directory and find the .txt file
+  local files = vim.fn.glob(build_dir .. "/*.txt", true, true)
+  if #files == 0 then
+    print("Error: No .txt file found in the build directory.")
     return
   end
 
-  -- If project name is found, proceed with the build
+  -- Extract the project name from the .txt file's name (without the .txt extension)
+  local project_name = vim.fn.fnamemodify(files[1], ":r")  -- :r removes the file extension
+
+  -- Build command
   local compile_command = "cd " .. build_dir .. " && cmake .. && make"
+  
+  -- Open floating terminal to execute the build command
   local term_buf = M.open_float_terminal(compile_command)
   vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
 
-  -- Run compile command and handle result
+  -- Run compile command and capture output
   local compile_status = vim.fn.system(compile_command)
 
-  -- Set message in terminal based on compile result
+  -- Set message based on compile result
   local message = vim.v.shell_error ~= 0 and {"Error during compilation:", vim.split(compile_status, "\n")} or {"Compilation successful!"}
 
-  -- Set message in terminal and make buffer non-modifiable
+  -- Display message in terminal
   vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, message)
   vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
 end
