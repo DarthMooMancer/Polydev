@@ -4,9 +4,6 @@ M.c_build = nil
 M.c_run = nil
 M.new_c_file = nil
 M.new_c_project = nil
-M.build_term_buf = nil
-M.build_term_win = nil  -- Store the window reference for the build terminal
-
 
 -- Default config
 M.config = {
@@ -122,8 +119,6 @@ function M.open_float_terminal(cmd)
   vim.fn.termopen(cmd)
 
   vim.api.nvim_buf_set_keymap(buf, "n", M.close_key, "i<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
-  M.build_term_buf = buf
-  M.build_term_win = win
   return buf, win
 end
 
@@ -238,14 +233,6 @@ public class %s {
 end
 
 function M.build()
-  -- Close the build terminal if it's open before running the build
-  if M.build_term_buf and vim.api.nvim_buf_is_valid(M.build_term_buf) then
-    vim.api.nvim_buf_delete(M.build_term_buf, { force = true })
-    vim.api.nvim_win_close(M.build_term_win, true)
-    M.build_term_buf = nil
-    M.build_term_win = nil
-  end
-
   -- Get the current file's directory
   local current_dir = vim.fn.expand("%:p:h")
   -- Try to find the root of the project by matching the path
@@ -295,15 +282,27 @@ function M.build()
   vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
 end
 
-function M.run()
-  -- Close the build terminal if it's open before running the program
-  if M.build_term_buf and vim.api.nvim_buf_is_valid(M.build_term_buf) then
-    vim.api.nvim_buf_delete(M.build_term_buf, { force = true })
-    vim.api.nvim_win_close(M.build_term_win, true)
-    M.build_term_buf = nil
-    M.build_term_win = nil
-  end
+-- function M.build()
+--   vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
+--     local build_project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name .. "/build"
+--     local compile_command = "cd " .. build_project_root .. " && cmake .. && make"
+--     local term_buf = M.open_float_terminal(compile_command)
+--     vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
+--     local compile_status = vim.fn.system(compile_command)
+--
+--     if vim.v.shell_error ~= 0 then
+--       vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, {"Error during compilation:"})
+--       vim.api.nvim_buf_set_lines(term_buf, 1, -1, false, vim.split(compile_status, "\n"))
+--     else
+--       vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, {"Compilation successful!"})
+--     end
+--
+--     vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
+--   end)
+-- end
 
+-- Run Java program in floating terminal
+function M.run()
   local current_dir = vim.fn.expand("%:p:h")
   local project_root = current_dir:match("(.*)/src")
   if not project_root then
