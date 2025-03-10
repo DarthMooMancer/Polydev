@@ -304,6 +304,7 @@ function M.run()
 
   -- Extract the project name from the .txt file's name (without the .txt extension)
   local project_name = vim.fn.fnamemodify(files[1], ":r")  -- :r removes the file extension
+  print("Project_name: " .. project_name)
 
   -- Define the command to run the project (adjusted for the C project)
 
