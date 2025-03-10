@@ -60,7 +60,6 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("NewCFile", M.create_new_file, {})
   vim.api.nvim_create_user_command("CBuild", M.build, {})
   vim.api.nvim_create_user_command("CRun", M.run, {})
-  vim.api.nvim_create_user_command("Migrate", M.migrate, {})
 end
 
 -- Open floating terminal
