@@ -242,12 +242,30 @@ function M.build()
     return
   end
 
+  -- Define the build directory
   local build_dir = project_root .. "/build"
+  
+  -- List files in the build directory and find the .txt file
+  local files = vim.fn.glob(build_dir .. "/*.txt", true, true)
+  if #files == 0 then
+    print("Error: No .txt file found in the build directory.")
+    return
+  end
+
+  -- Extract the project name from the .txt file's name (without the .txt extension)
+  local project_name = vim.fn.fnamemodify(files[1], ":r")  -- :r removes the file extension
+
+  -- Build command
   local compile_command = "cd " .. build_dir .. " && cmake .. && make"
+  
+  -- Open floating terminal to execute the build command
   local term_buf = M.open_float_terminal(compile_command)
   vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
 
+  -- Run compile command and capture output
   local compile_status = vim.fn.system(compile_command)
+
+  -- Set message based on compile result
   local message
   if vim.v.shell_error ~= 0 then
     message = {"Error during compilation:"}
