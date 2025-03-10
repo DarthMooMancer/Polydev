@@ -283,15 +283,30 @@ function M.build()
 end
 
 function M.run()
-  local current_dir = vim.fn.expand("%:p:h")
-  local project_root = current_dir:match("(.*)/src")
-  if not project_root then
-    print("Error: Must be inside the 'src' directory.")
+  -- Define the build directory
+  local build_dir = project_root .. "/build"
+  
+  -- List files in the build directory and find the .txt file
+  local files = vim.fn.glob(build_dir .. "/*.txt", true, true)
+  if #files == 0 then
+    print("Error: No .txt file found in the build directory.")
     return
   end
 
-  local out_dir = project_root .. "/build"
-  M.open_float_terminal("java -cp " .. out_dir .. " Main")
+  -- Extract the project name from the .txt file's name (without the .txt extension)
+  local project_name = vim.fn.fnamemodify(files[1], ":r")  -- :r removes the file extension
+
+  -- Define the command to run the project (adjusted for the C project)
+
+  -- local current_dir = vim.fn.expand("%:p:h")
+  -- local project_root = current_dir:match("(.*)/src")
+  -- if not project_root then
+  --   print("Error: Must be inside the 'src' directory.")
+  --   return
+  -- end
+  --
+  -- local out_dir = project_root .. "/build"
+  M.open_float_terminal("cd " .. build_dir .. " && ./" .. project_name)
 end
 
 return M
