@@ -282,26 +282,6 @@ function M.build()
   vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
 end
 
--- function M.build()
---   vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
---     local build_project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name .. "/build"
---     local compile_command = "cd " .. build_project_root .. " && cmake .. && make"
---     local term_buf = M.open_float_terminal(compile_command)
---     vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
---     local compile_status = vim.fn.system(compile_command)
---
---     if vim.v.shell_error ~= 0 then
---       vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, {"Error during compilation:"})
---       vim.api.nvim_buf_set_lines(term_buf, 1, -1, false, vim.split(compile_status, "\n"))
---     else
---       vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, {"Compilation successful!"})
---     end
---
---     vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
---   end)
--- end
-
--- Run Java program in floating terminal
 function M.run()
   local current_dir = vim.fn.expand("%:p:h")
   local project_root = current_dir:match("(.*)/src")
