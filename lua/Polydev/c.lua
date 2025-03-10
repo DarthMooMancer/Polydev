@@ -223,53 +223,24 @@ public class %s {
   end)
 end
 
--- Compile C files
--- Compile C files
 function M.build()
   vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
     local build_project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name .. "/build"
-
-    -- Command to compile the project
     local compile_command = "cd " .. build_project_root .. " && cmake .. && make"
-    
-    -- Open the terminal and capture the output of the compile command
-    local term_buf, term_win = M.open_float_terminal(compile_command)
 
-    -- Make the terminal buffer modifiable before updating its contents
+    -- Open terminal and make buffer modifiable
+    local term_buf = M.open_float_terminal(compile_command)
     vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
 
-    -- Check if there was an error during the compilation
+    -- Run compile command and handle result
     local compile_status = vim.fn.system(compile_command)
+    local message = vim.v.shell_error ~= 0 and {"Error during compilation:", vim.split(compile_status, "\n")} or {"Compilation successful!"}
 
-    if vim.v.shell_error ~= 0 then
-      -- If there is an error, display the error in the terminal
-      vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, {"Error during compilation:"})
-      vim.api.nvim_buf_set_lines(term_buf, 1, -1, false, vim.split(compile_status, "\n"))
-    else
-      -- Compilation successful message
-      vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, {"Compilation successful!"})
-    end
-
-    -- Optionally make the buffer non-modifiable again after updating
+    -- Set message in terminal and make buffer non-modifiable
+    vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, message)
     vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
   end)
 end
-
--- Compile Java files
--- function M.build()
---   vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
---     local build_project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name .. "/build"
---
---     local compile_command = "cd " .. build_project_root .." && cmake .. && make"
---     local compile_status = vim.fn.system(compile_command)
---
---     if vim.v.shell_error ~= 0 then
---       print("Error during compilation:\n" .. compile_status)
---     else
---       print("Compilation successful!")
---     end
---   end)
--- end
 
 -- Run Java program in floating terminal
 function M.run()
