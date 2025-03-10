@@ -227,7 +227,7 @@ end
 function M.build()
   local current_dir = vim.fn.expand("%:p:h")
 
-  -- Try to detect the project root by looking for a known file or directory (e.g., CMakeLists.txt)
+  -- Try to find CMakeLists.txt or another specific file within the current directory or its parents
   local project_root = vim.fn.findfile("CMakeLists.txt", current_dir .. ";")
 
   if project_root == "" then
@@ -235,7 +235,7 @@ function M.build()
     return
   end
 
-  -- Get the directory where CMakeLists.txt is located (this is the project root)
+  -- Get the directory of CMakeLists.txt, which is the root of the project
   project_root = vim.fn.fnamemodify(project_root, ":h")
 
   -- Define the build directory path
@@ -266,7 +266,6 @@ function M.build()
     print("Compilation successful!")
   end
 end
-
 
 -- Run Java program in floating terminal
 function M.run()
