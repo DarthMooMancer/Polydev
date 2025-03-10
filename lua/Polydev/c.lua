@@ -285,7 +285,7 @@ end
 function M.run()
   local current_dir = vim.fn.expand("%:p:h")
   local project_root = current_dir:match("(.*)/src")
-
+  
   if not project_root then
     print("Error: src directory not found.")
     return
@@ -293,6 +293,7 @@ function M.run()
 
   local build_dir = project_root .. "/build"
   local files = vim.fn.glob(build_dir .. "/*.txt", true, true)
+  
   local project_name = nil
   for _, file in ipairs(files) do
     if vim.fn.match(file, "CMakeCache.txt") == -1 then
@@ -306,7 +307,9 @@ function M.run()
     return
   end
 
-  M.open_float_terminal("cd " .. build_dir .. " && ." .. project_name)
+  -- Ensure the project_name is being used correctly in the command
+  local executable_path = build_dir .. "/" .. project_name
+  M.open_float_terminal("cd " .. build_dir .. " && ./" .. project_name)
 end
 
 return M
