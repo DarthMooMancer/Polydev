@@ -244,12 +244,14 @@ function M.build()
 
   -- Define the build directory
   local build_dir = project_root .. "/build"
-  
   -- List files in the build directory and find the .txt file
   local files = vim.fn.glob(build_dir .. "/*.txt", true, true)
-  if #files == 0 then
-    print("Error: No .txt file found in the build directory.")
-    return
+  local project_name = nil
+  for _, file in ipairs(files) do
+    if vim.fn.match(file, "CMakeCache.txt") == -1 then
+      project_name = vim.fn.fnamemodify(file, ":r")
+      break
+    end
   end
 
   -- Extract the project name from the .txt file's name (without the .txt extension)
