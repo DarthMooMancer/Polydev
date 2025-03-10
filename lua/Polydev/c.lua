@@ -296,13 +296,21 @@ function M.run()
   -- Define the build directory
   local build_dir = project_root .. "/build"
   
-  -- List only .txt files in the build directory and filter out unwanted ones like CMakeCache.txt
+  -- List only .txt files in the build directory
   local files = vim.fn.glob(build_dir .. "/*.txt", true, true)
+  
+  -- Debugging: Print out the list of files detected
+  print("Files in build directory:")
+  for _, file in ipairs(files) do
+    print(file)
+  end
+
   local project_name = nil
 
+  -- Check each file in the build directory
   for _, file in ipairs(files) do
     -- Make sure the file is the correct project name file (not CMakeCache.txt or others)
-    if not vim.fn.match(file, "CMakeCache.txt") then
+    if vim.fn.match(file, "CMakeCache.txt") == -1 then
       -- Extract the project name (remove the extension)
       project_name = vim.fn.fnamemodify(file, ":r")
       break
