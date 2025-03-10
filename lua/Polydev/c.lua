@@ -283,6 +283,15 @@ function M.build()
 end
 
 function M.run()
+    -- Get the current file's directory
+  local current_dir = vim.fn.expand("%:p:h")
+  -- Try to find the root of the project by matching the path
+  local project_root = current_dir:match("(.*)/src")
+  if not project_root then
+    print("Error: src directory not found.")
+    return
+  end
+
   -- Define the build directory
   local build_dir = project_root .. "/build"
   
