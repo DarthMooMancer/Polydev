@@ -225,10 +225,6 @@ end
 
 -- Compile Java files
 function M.build()
-  -- local compile_command = "mv " .. legacy_src_dir .. "/* " .. src_dir ..
-  --                         " && mv " .. legacy_out_dir .. "/* " .. build_dir ..
-  --                         " && rm -rd " .. project_root .. "/" .. "root/"
-
   vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
     if not project_name or project_name == "" then
       print("Project creation canceled.")
@@ -237,20 +233,7 @@ function M.build()
 
     local build_project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name .. "/build"
 
-    local into_build = "cd " .. build_project_root
-    print("Project Root: " .. build_project_root)
-    local into_build_status = vim.fn.system(into_build)
-    if vim.v.shell_error ~= 0 then
-      print("Could not go into build dir:\n" .. into_build_status)
-    end
-
-    -- local project_root_build = current_dir:match("(.*)/build")
-    -- if not project_root_build then
-    --   print("Error: Must be inside the 'build' directory.")
-    --   return
-    -- end
-
-    local compile_command = "cmake .. && make"
+    local compile_command = "cd " .. build_project_root .." cmake .. && make"
     local compile_status = vim.fn.system(compile_command)
 
     if vim.v.shell_error ~= 0 then
