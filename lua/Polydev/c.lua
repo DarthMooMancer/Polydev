@@ -283,51 +283,30 @@ function M.build()
 end
 
 function M.run()
-  -- Get the current file's directory
   local current_dir = vim.fn.expand("%:p:h")
-
-  -- Try to find the root of the project by matching the path
   local project_root = current_dir:match("(.*)/src")
+
   if not project_root then
     print("Error: src directory not found.")
     return
   end
 
-  -- Define the build directory
   local build_dir = project_root .. "/build"
-  
-  -- List only .txt files in the build directory
   local files = vim.fn.glob(build_dir .. "/*.txt", true, true)
-  
-  -- Debugging: Print out the list of files detected
-  print("Files in build directory:")
-  for _, file in ipairs(files) do
-    print(file)
-  end
-
   local project_name = nil
-
-  -- Check each file in the build directory
   for _, file in ipairs(files) do
-    -- Make sure the file is the correct project name file (not CMakeCache.txt or others)
     if vim.fn.match(file, "CMakeCache.txt") == -1 then
-      -- Extract the project name (remove the extension)
       project_name = vim.fn.fnamemodify(file, ":r")
       break
     end
   end
 
-  -- If no project name file was found, print an error and return
   if not project_name then
     print("Error: No valid project name file found in the build directory.")
     return
   end
 
-  -- Print the project name for debugging
-  print("Project_name: " .. project_name)
-
-  -- Open floating terminal and run the project executable
-  M.open_float_terminal("cd " .. build_dir .. " && ./" .. project_name)
+  M.open_float_terminal("cd " .. build_dir .. " && ." .. project_name)
 end
 
 return M
