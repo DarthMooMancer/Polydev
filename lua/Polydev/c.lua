@@ -243,11 +243,11 @@ function M.build()
       print("Could not go into build dir:\n" .. into_build_status)
     end
 
-    local project_root_build = current_dir:match("(.*)/build")
-    if not project_root_build then
-      print("Error: Must be inside the 'build' directory.")
-      return
-    end
+    -- local project_root_build = current_dir:match("(.*)/build")
+    -- if not project_root_build then
+    --   print("Error: Must be inside the 'build' directory.")
+    --   return
+    -- end
 
     local compile_command = "cmake .. && make"
     local compile_status = vim.fn.system(compile_command)
