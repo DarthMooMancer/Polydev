@@ -7,6 +7,7 @@ M.new_c_project = nil
 M.build_term_buf = nil
 M.build_term_win = nil  -- Store the window reference for the build terminal
 
+
 -- Default config
 M.config = {
   project_root = "~/Projects/C",
@@ -121,12 +122,119 @@ function M.open_float_terminal(cmd)
   vim.fn.termopen(cmd)
 
   vim.api.nvim_buf_set_keymap(buf, "n", M.close_key, "i<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
-
-  -- Store the terminal buffer and window for later use
   M.build_term_buf = buf
   M.build_term_win = win
-
   return buf, win
+end
+
+-- Create a new Java project
+function M.create_project()
+  -- Use vim.ui.input for better handling of input
+  vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
+    if not project_name or project_name == "" then
+      print("Project creation canceled.")
+      return
+    end
+
+    -- Paths for the project
+    local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
+    local src_dir = project_root .. "/src"
+    local build_dir = project_root .. "/build"
+    local include_dir = project_root .. "/include"
+
+    -- Create directories
+    vim.fn.mkdir(src_dir, "p")
+    vim.fn.mkdir(build_dir, "p")
+    vim.fn.mkdir(include_dir, "p")
+
+    -- Write project name to file
+    local project_name_file = io.open(build_dir .. "/project_name.txt", "w")
+    if project_name_file then
+      project_name_file:write(project_name)
+      project_name_file:close()
+    else
+      print("Error creating project_name.txt")
+    end
+
+    -- Write the Main.java file
+    local main_c_path = src_dir .. "/main.c"
+    local main_c_content = [[
+#include <stdio.h>
+
+int main() {
+  printf("Hello World\n");
+  return 0;
+}
+]]
+    local Cmake_path = project_root .. "/" .. "CMakeLists.txt"
+    local Cmake_content = string.format([[
+cmake_minimum_required(VERSION 3.10)
+project(%s C)
+set(CMAKE_C_STANDARD 11)
+include_directories(include)
+
+set(SOURCES
+    src/main.c
+)
+
+add_executable(%s ${SOURCES})
+]], project_name, project_name)
+
+    -- Create the file and write content
+    local file = io.open(main_c_path, "w")
+    if file then
+      file:write(main_c_content)
+      file:close()
+      vim.cmd("edit " .. main_c_path)
+      print(" Project '" .. project_name .. "' created at " .. project_root)
+    else
+      print("Error creating main.c")
+    end
+
+    local cmake_file = io.open(Cmake_path, "w")
+    if cmake_file then
+      cmake_file:write(Cmake_content)
+      cmake_file:close()
+      vim.cmd("edit " .. project_root)
+      print(" Cmake created! '")
+    else
+      print("Error creating CMakeLists.txt")
+    end
+  end)
+end
+
+-- Create a new Java file
+function M.create_new_file()
+  vim.ui.input({ prompt = "Enter class name: " }, function(class_name)
+    if not class_name or class_name == "" then
+      print("Class creation canceled.")
+      return
+    end
+
+    local current_dir = vim.fn.expand("%:p:h")
+    local root_dir = current_dir:match("(.*)/src")
+    if not root_dir then
+      print("Error: src directory not found.")
+      return
+    end
+
+    local java_file_path = root_dir .. "/src/" .. class_name .. ".java"
+    local java_content = string.format([[
+public class %s {
+    // New File
+}
+]], class_name)
+
+    local file = io.open(java_file_path, "w")
+    if file then
+      file:write(java_content)
+      file:close()
+      vim.cmd("edit " .. java_file_path)
+      print( class_name .. ".java created successfully!")
+    else
+      print("Error creating " .. class_name .. ".java")
+    end
+  end)
 end
 
 function M.build()
@@ -208,4 +316,3 @@ function M.run()
 end
 
 return M
-
