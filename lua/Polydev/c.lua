@@ -233,7 +233,7 @@ function M.build()
 
     local build_project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name .. "/build"
 
-    local compile_command = "cd " .. build_project_root .." cmake .. && make"
+    local compile_command = "cd " .. build_project_root .." && cmake .. && make"
     local compile_status = vim.fn.system(compile_command)
 
     if vim.v.shell_error ~= 0 then
