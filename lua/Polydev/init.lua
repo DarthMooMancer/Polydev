@@ -1,8 +1,8 @@
 -- init.lua
 local M = {}
 
-M.Javanvim = require("Polydev.Javanvim")
--- M.Cnvim = require("my_plugin_name.cnvim")
+M.java = require("Polydev.java")
+M.c = require("Polydev.c")
 
 return M
 
