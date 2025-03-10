@@ -266,7 +266,16 @@ function M.build()
   local compile_status = vim.fn.system(compile_command)
 
   -- Set message based on compile result
-  local message = vim.v.shell_error ~= 0 and {"Error during compilation:", vim.split(compile_status, "\n")} or {"Compilation successful!"}
+  local message
+  if vim.v.shell_error ~= 0 then
+    message = {"Error during compilation:"}
+    -- Add each line of the compile_status as individual strings in the message array
+    for _, line in ipairs(vim.split(compile_status, "\n")) do
+      table.insert(message, line)
+    end
+  else
+    message = {"Compilation successful!"}
+  end
 
   -- Display message in terminal
   vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, message)
