@@ -3,6 +3,7 @@ M.close_key = nil
 M.c_build = nil
 M.c_run = nil
 M.new_c_file = nil
+M.new_c_header_file = nil
 M.new_c_project = nil
 
 -- Default config
@@ -14,6 +15,7 @@ M.config = {
     ["<leader>cr"] = "CRun",
     ["<leader>cnf"] = "NewCFile",
     ["<leader>cnp"] = "NewCProject",
+    ["<leader>cnh"] = "NewCHeaderFile",
   },
   terminal = {
     right_padding = 0,
@@ -47,6 +49,9 @@ function M.setup(opts)
     if command == "NewCProject" then
       M.new_c_project = key
     end
+    if command == "NewCHeaderFile" then
+      M.new_c_project = key
+    end
   end
 
   -- Register Keybinds
@@ -54,9 +59,11 @@ function M.setup(opts)
   vim.keymap.set("n", M.c_run, ":CRun<CR>", { silent = true })
   vim.keymap.set("n", M.new_c_file, ":NewCFile<CR>", { silent = true })
   vim.keymap.set("n", M.new_c_project, ":NewCProject<CR>", { silent = true })
+  vim.keymap.set("n", M.new_c_header_file, ":NewCHeaderFile<CR>", { silent = true })
 
   -- Register user commands
   vim.api.nvim_create_user_command("NewCProject", M.create_project, {})
+  vim.api.nvim_create_user_command("NewCHeaderFile", M.create_new_header_file, {})
   vim.api.nvim_create_user_command("NewCFile", M.create_new_file, {})
   vim.api.nvim_create_user_command("CBuild", M.build, {})
   vim.api.nvim_create_user_command("CRun", M.run, {})
