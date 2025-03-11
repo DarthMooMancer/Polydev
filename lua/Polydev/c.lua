@@ -200,9 +200,9 @@ end
 
 -- Create a new Java file
 function M.create_new_file()
-  vim.ui.input({ prompt = "Enter class name: " }, function(class_name)
+  vim.ui.input({ prompt = "Enter fil name: " }, function(class_name)
     if not class_name or class_name == "" then
-      print("Class creation canceled.")
+      print("File creation canceled.")
       return
     end
 
@@ -213,63 +213,91 @@ function M.create_new_file()
       return
     end
 
-    local java_file_path = root_dir .. "/src/" .. class_name .. ".java"
-    local java_content = string.format([[
-public class %s {
-    // New File
-}
-]], class_name)
+    local c_file_path = root_dir .. "/src/" .. class_name .. ".c"
+    local c_content = [[]]
 
-    local file = io.open(java_file_path, "w")
+    local file = io.open(c_file_path, "w")
     if file then
-      file:write(java_content)
+      file:write(c_content)
       file:close()
-      vim.cmd("edit " .. java_file_path)
-      print( class_name .. ".java created successfully!")
+      vim.cmd("edit " .. c_file_path)
+      print( " " .. class_name .. ".c created successfully!")
     else
-      print("Error creating " .. class_name .. ".java")
+      print("Error creating " .. class_name .. ".c")
+    end
+  end)
+end
+
+function M.create_new_header_file()
+  vim.ui.input({ prompt = "Enter header file name: " }, function(header_name)
+    if not header_name or header_name == "" then
+      print("Header File creation canceled.")
+      return
+    end
+
+    local current_dir = vim.fn.expand("%:p:h")
+    local root_dir = current_dir:match("(.*)/src")
+    if not root_dir then
+      print("Error: src directory not found.")
+      return
+    end
+
+    local header_file_path = root_dir .. "/include/" .. header_name .. ".h"
+
+    -- Convert header name to uppercase + underscores for the include guard
+    local guard_macro = header_name:upper():gsub("[^A-Z0-9]", "_") .. "_H"
+
+    -- Header file template
+    local header_content = string.format([[
+#ifndef %s
+#define %s
+
+// Necessary includes
+#include <stdio.h>
+
+// Function prototypes
+void example_function();
+
+#endif // %s
+]], guard_macro, guard_macro, guard_macro)
+
+    local file = io.open(header_file_path, "w")
+    if file then
+      file:write(header_content)
+      file:close()
+      vim.cmd("edit " .. header_file_path)
+      print(header_name .. ".h created successfully!")
+    else
+      print("Error creating " .. header_name .. ".h")
     end
   end)
 end
 
 function M.build()
-  -- Get the current file's directory
   local current_dir = vim.fn.expand("%:p:h")
-  -- Try to find the root of the project by matching the path
   local project_root = current_dir:match("(.*)/src")
   if not project_root then
     print("Error: src directory not found.")
     return
   end
 
-  -- Define the build directory
   local build_dir = project_root .. "/build"
-  
-  -- List files in the build directory and find the .txt file
   local files = vim.fn.glob(build_dir .. "/*.txt", true, true)
   if #files == 0 then
     print("Error: No .txt file found in the build directory.")
     return
   end
 
-  -- Extract the project name from the .txt file's name (without the .txt extension)
-  local project_name = vim.fn.fnamemodify(files[1], ":r")  -- :r removes the file extension
+  local project_name = vim.fn.fnamemodify(files[1], ":r")
 
-  -- Build command
   local compile_command = "cd " .. build_dir .. " && cmake .. && make"
-  
-  -- Open floating terminal to execute the build command
   local term_buf = M.open_float_terminal(compile_command)
   vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
 
-  -- Run compile command and capture output
   local compile_status = vim.fn.system(compile_command)
-
-  -- Set message based on compile result
   local message
   if vim.v.shell_error ~= 0 then
     message = {"Error during compilation:"}
-    -- Add each line of the compile_status as individual strings in the message array
     for _, line in ipairs(vim.split(compile_status, "\n")) do
       table.insert(message, line)
     end
@@ -277,7 +305,6 @@ function M.build()
     message = {"Compilation successful!"}
   end
 
-  -- Display message in terminal
   vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, message)
   vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
 end
