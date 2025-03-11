@@ -150,12 +150,12 @@ function M.create_project()
     vim.fn.mkdir(include_dir, "p")
 
     -- Write project name to file
-    local project_name_file = io.open(build_dir .. "/project_name.txt", "w")
+    local project_name_file = io.open(build_dir .. "/project_name.polydev", "w")
     if project_name_file then
       project_name_file:write(project_name)
       project_name_file:close()
     else
-      print("Error creating project_name.txt")
+      print("Error creating project_name.polydev")
     end
 
     -- Write the Main.java file
@@ -289,9 +289,9 @@ function M.build()
   end
 
   local build_dir = project_root .. "/build"
-  local files = vim.fn.glob(build_dir .. "/*.txt", true, true)
+  local files = vim.fn.glob(build_dir .. "/*.polydev", true, true)
   if #files == 0 then
-    print("Error: No .txt file found in the build directory.")
+    print("Error: No .polydev file found in the build directory.")
     return
   end
 
@@ -326,52 +326,21 @@ function M.run()
   end
 
   local build_dir = project_root .. "/build"
-
-  -- Find an executable file
-  local files = vim.fn.glob(build_dir .. "/*", true, true)
+  local files = vim.fn.glob(build_dir .. "/*.polydev", true, true)
   local project_name = nil
   for _, file in ipairs(files) do
-    -- Check if file is executable and not a directory
-    if vim.fn.filereadable(file) == 1 and vim.fn.match(file, "CMakeCache.txt") == -1 then
-      project_name = file
+    if vim.fn.match(file, "CMakeCache.txt") == -1 then
+      project_name = vim.fn.fnamemodify(file, ":r")
       break
     end
   end
 
   if not project_name then
-    print("Error: No valid executable found in the build directory.")
+    print("Error: No valid project name file found in the build directory.")
     return
   end
 
-  M.open_float_terminal("cd " .. build_dir .. " && ./" .. vim.fn.fnamemodify(project_name, ":t"))
+  M.open_float_terminal("cd " .. build_dir .. " && ./" .. project_name)
 end
-
-
--- function M.run()
---   local current_dir = vim.fn.expand("%:p:h")
---   local project_root = current_dir:match("(.*)/src")
---
---   if not project_root then
---     print("Error: src directory not found.")
---     return
---   end
---
---   local build_dir = project_root .. "/build"
---   local files = vim.fn.glob(build_dir .. "/*.txt", true, true)
---   local project_name = nil
---   for _, file in ipairs(files) do
---     if vim.fn.match(file, "CMakeCache.txt") == -1 then
---       project_name = vim.fn.fnamemodify(file, ":r")
---       break
---     end
---   end
---
---   if not project_name then
---     print("Error: No valid project name file found in the build directory.")
---     return
---   end
---
---   M.open_float_terminal("cd " .. build_dir .. " && ./" .. project_name)
--- end
 
 return M
