@@ -50,7 +50,7 @@ function M.setup(opts)
       M.new_c_project = key
     end
     if command == "NewCHeaderFile" then
-      M.new_c_project = key
+      M.new_c_header_file = key
     end
   end
 
