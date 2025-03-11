@@ -340,7 +340,7 @@ function M.run()
     return
   end
 
-  M.open_float_terminal("cd " .. build_dir .. " && ./" .. project_name)
+  M.open_float_terminal("cd " .. build_dir .. " && ." .. project_name)
 end
 
 return M
