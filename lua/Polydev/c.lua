@@ -295,21 +295,17 @@ function M.build()
     return
   end
 
-  local project_name = vim.fn.fnamemodify(files[1], ":r")
-
   local compile_command = "cd " .. build_dir .. " && cmake .. && make"
   local term_buf = M.open_float_terminal(compile_command)
   vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
 
   local compile_status = vim.fn.system(compile_command)
-  local message
+  local message = vim.v.shell_error == 0 and {"Compilation successful!"} or {"Error during compilation:"}
+
   if vim.v.shell_error ~= 0 then
-    message = {"Error during compilation:"}
     for _, line in ipairs(vim.split(compile_status, "\n")) do
       table.insert(message, line)
     end
-  else
-    message = {"Compilation successful!"}
   end
 
   vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, message)
@@ -327,20 +323,15 @@ function M.run()
 
   local build_dir = project_root .. "/build"
   local files = vim.fn.glob(build_dir .. "/*.polydev", true, true)
-  local project_name = nil
-  for _, file in ipairs(files) do
-    if vim.fn.match(file, "CMakeCache.txt") == -1 then
-      project_name = vim.fn.fnamemodify(file, ":r")
-      break
-    end
-  end
-
-  if not project_name then
-    print("Error: No valid project name file found in the build directory.")
+  if #files == 0 then
+    print("Error: No .polydev file found in the build directory.")
     return
   end
 
-  M.open_float_terminal("cd " .. build_dir .. " && ." .. project_name)
+  -- Directly use the .polydev file (no need to filter further)
+  local project_name = vim.fn.fnamemodify(files[1], ":r")
+
+  M.open_float_terminal("cd " .. build_dir .. " && ./" .. project_name)
 end
 
 return M
