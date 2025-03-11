@@ -330,8 +330,9 @@ function M.run()
 
   -- Directly use the .polydev file (no need to filter further)
   local project_name = vim.fn.fnamemodify(files[1], ":t")
+  local name = project_name:gsub("%.polydev$", "")
 
-  M.open_float_terminal("cd " .. build_dir .. " && ./" .. project_name)
+  M.open_float_terminal("cd " .. build_dir .. " && ./" .. name)
 end
 
 return M
