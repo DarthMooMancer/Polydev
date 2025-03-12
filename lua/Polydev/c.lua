@@ -150,7 +150,7 @@ function M.create_project()
     vim.fn.mkdir(include_dir, "p")
 
     -- Write project name to file
-    local project_name_file = io.open(build_dir .. "/project_name.polydev", "w")
+    local project_name_file = io.open(build_dir .. "/" .. project_name .. ".polydev", "w")
     if project_name_file then
       project_name_file:write(project_name)
       project_name_file:close()
