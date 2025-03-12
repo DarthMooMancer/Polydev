@@ -12,8 +12,8 @@ M.config = {
     ["<Esc>"] = "CloseTerminal",
     ["<leader>jb"] = "JavaBuild",
     ["<leader>jr"] = "JavaRun",
-    ["<leader>nf"] = "NewJavaFile",
-    ["<leader>np"] = "NewJavaProject",
+    ["<leader>jnf"] = "NewJavaFile",
+    ["<leader>jnp"] = "NewJavaProject",
   },
   terminal = {
     right_padding = 0,

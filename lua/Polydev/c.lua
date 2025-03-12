@@ -283,8 +283,6 @@ end
 function M.get_project_root()
   local current_dir = vim.fn.expand("%:p:h")
   local root_dir = nil
-  
-  -- Traverse upwards until the root directory is found
   while current_dir ~= "/" do
     if vim.fn.isdirectory(current_dir .. "/src") == 1 then
       root_dir = current_dir
