@@ -1,4 +1,4 @@
-site_name: Javanvim
+site_name: Polydev
 nav:
   - Home: index.md
   - Installation: installation.md
