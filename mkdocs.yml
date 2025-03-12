@@ -5,8 +5,8 @@ nav:
   - Setup: setup.md
   - Examples: examples.md
   - Language Docs:
-    - Java: java.md
-    - C: c.md 
+    - Java: languages/java.md
+    - C: languages/c.md 
 theme:
   name: material
   features:
