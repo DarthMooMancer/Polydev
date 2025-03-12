@@ -7,7 +7,7 @@ M.new_java_project = nil
 
 -- Default config
 M.config = {
-  project_root = "~/Projects",
+  project_root = "~/Projects/Java",
   keybinds = {
     ["<Esc>"] = "CloseTerminal",
     ["<leader>jb"] = "JavaBuild",
