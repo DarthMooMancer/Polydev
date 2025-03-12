@@ -1,7 +1,8 @@
 # Polydev
 A multi-lingual plugin (targeted towards Java) that adds some nice features to neovim for managing, creating, building and runnning projects all within neovim.
 
-![Polydev](https://github.com/user-attachments/assets/6be4b308-2215-4409-bcc2-9a6db4321ace)
+![Polydev](https://github.com/user-attachments/assets/dbb3790b-2d67-4e84-a0e7-42b86132902b)
+
 
 ### Quick Features
 The ability to -
