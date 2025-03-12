@@ -4,7 +4,7 @@ nav:
   - Installation: installation.md
   - Setup: setup.md
   - Examples: examples.md
-  - Language Docs:
+  - Language Specific Docs:
     - Java: languages/java.md
     - C: languages/c.md 
 theme:
