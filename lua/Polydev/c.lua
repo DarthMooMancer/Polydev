@@ -280,22 +280,37 @@ void example_function();
   end)
 end
 
-function M.build()
+function M.get_project_root()
   local current_dir = vim.fn.expand("%:p:h")
-  local project_root = current_dir:match("(.*)/src")
+  local root_dir = nil
+  
+  -- Traverse upwards until the root directory is found
+  while current_dir ~= "/" do
+    if vim.fn.isdirectory(current_dir .. "/src") == 1 then
+      root_dir = current_dir
+      break
+    end
+    -- Check if CMakeLists.txt exists (in case src directory isn't found)
+    if vim.fn.filereadable(current_dir .. "/CMakeLists.txt") == 1 then
+      root_dir = current_dir
+      break
+    end
+    current_dir = vim.fn.fnamemodify(current_dir, ":h") -- Go up one level
+  end
+
+  return root_dir
+end
+
+function M.build()
+  local project_root = M.get_project_root()
   if not project_root then
-    print("Error: src directory not found.")
+    print("Error: Project root not found.")
     return
   end
 
   local build_dir = project_root .. "/build"
-  local files = vim.fn.glob(build_dir .. "/*.polydev", true, true)
-  if #files == 0 then
-    print("Error: No .polydev file found in the build directory.")
-    return
-  end
-
   local compile_command = "cd " .. build_dir .. " && cmake .. && make"
+
   local term_buf = M.open_float_terminal(compile_command)
   vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
 
@@ -313,11 +328,9 @@ function M.build()
 end
 
 function M.run()
-  local current_dir = vim.fn.expand("%:p:h")
-  local project_root = current_dir:match("(.*)/src")
-
+  local project_root = M.get_project_root()
   if not project_root then
-    print("Error: src directory not found.")
+    print("Error: Project root not found.")
     return
   end
 
