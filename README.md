@@ -9,7 +9,7 @@ The ability to -
 * Run those files
 * Builtin terminal for running code
 
-!!! Documentation is over at [Javanvim.docs](https://darthmoomancer.github.io/Polydev/)
+!!! Documentation is over at [Polydev Documentation](https://darthmoomancer.github.io/Polydev/)
 
 ## Questions and Contributing
 
