@@ -201,13 +201,7 @@ function M.create_new_file()
     if not class_name then return print("File creation canceled.") end
     local root_dir = vim.fn.expand("%:p:h"):match("(.*)/src")
     if not root_dir then return print("Error: src directory not found.") end
-    local c_content = [[
-#include <stdio.h>
-
-int main() {
-    printf("Hello, World!\n");
-    return 0;
-}]]
+    local c_content = [[]]
     write_file(root_dir .. "/src/" .. class_name .. ".c", c_content)
   end)
 end
@@ -234,69 +228,34 @@ void example_function();
 end
 
 function M.get_project_root()
-  local current_dir = vim.fn.expand("%:p:h")
-  local root_dir = nil
-  while current_dir ~= "/" do
-    if vim.fn.isdirectory(current_dir .. "/src") == 1 then
-      root_dir = current_dir
-      break
+  local dir = vim.fn.expand("%:p:h")
+  while dir ~= "/" do
+    if vim.fn.isdirectory(dir .. "/src") == 1 or vim.fn.filereadable(dir .. "/CMakeLists.txt") == 1 then
+      return dir
     end
-    -- Check if CMakeLists.txt exists (in case src directory isn't found)
-    if vim.fn.filereadable(current_dir .. "/CMakeLists.txt") == 1 then
-      root_dir = current_dir
-      break
-    end
-    current_dir = vim.fn.fnamemodify(current_dir, ":h") -- Go up one level
+    dir = vim.fn.fnamemodify(dir, ":h")
   end
-
-  return root_dir
 end
 
 function M.build()
-  local project_root = M.get_project_root()
-  if not project_root then
-    print("Error: Project root not found.")
-    return
-  end
-
-  local build_dir = project_root .. "/build"
-  local compile_command = "cd " .. build_dir .. " && cmake .. && make"
-
-  local term_buf = M.open_float_terminal(compile_command)
+  local root = M.get_project_root()
+  if not root then return print("Error: Project root not found.") end
+  local cmd = "cd " .. root .. "/build && cmake .. && make"
+  local term_buf = M.open_float_terminal(cmd)
   vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
-
-  local compile_status = vim.fn.system(compile_command)
-  local message = vim.v.shell_error == 0 and {"Compilation successful!"} or {"Error during compilation:"}
-
-  if vim.v.shell_error ~= 0 then
-    for _, line in ipairs(vim.split(compile_status, "\n")) do
-      table.insert(message, line)
-    end
-  end
-
-  vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, message)
+  local output = vim.fn.system(cmd)
+  local success = vim.v.shell_error == 0
+  vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, { success and "Compilation successful!" or "Error during compilation:", output })
   vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
 end
 
 function M.run()
-  local project_root = M.get_project_root()
-  if not project_root then
-    print("Error: Project root not found.")
-    return
-  end
-
-  local build_dir = project_root .. "/build"
+  local root = M.get_project_root()
+  if not root then return print("Error: Project root not found.") end
+  local build_dir = root .. "/build"
   local files = vim.fn.glob(build_dir .. "/*.polydev", true, true)
-  if #files == 0 then
-    print("Error: No .polydev file found in the build directory.")
-    return
-  end
-
-  -- Directly use the .polydev file (no need to filter further)
-  local project_name = vim.fn.fnamemodify(files[1], ":t")
-  local name = project_name:gsub("%.polydev$", "")
-
-  M.open_float_terminal("cd " .. build_dir .. " && ./" .. name)
+  if #files == 0 then return print("Error: No .polydev file found in build directory.") end
+  M.open_float_terminal("cd " .. build_dir .. " && ./" .. files[1]:match("([^/]+)%.polydev$"))
 end
 
 return M
