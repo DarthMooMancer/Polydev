@@ -214,29 +214,14 @@ end
 
 function M.create_new_header_file()
   vim.ui.input({ prompt = "Enter header file name: " }, function(header_name)
-    if not header_name or header_name == "" then
-      print("Header File creation canceled.")
-      return
-    end
-
-    local current_dir = vim.fn.expand("%:p:h")
-    local root_dir = current_dir:match("(.*)/src")
-    if not root_dir then
-      print("Error: src directory not found.")
-      return
-    end
-
-    local header_file_path = root_dir .. "/include/" .. header_name .. ".h"
-
-    -- Convert header name to uppercase + underscores for the include guard
+    if not header_name then return print("Header file creation canceled.") end
+    local root_dir = vim.fn.expand("%:p:h"):match("(.*)/src")
+    if not root_dir then return print("Error: src directory not found.") end
     local guard_macro = header_name:upper():gsub("[^A-Z0-9]", "_") .. "_H"
-
-    -- Header file template
-    local header_content = string.format([[
+    local content = string.format([[
 #ifndef %s
 #define %s
 
-// Necessary includes
 #include <stdio.h>
 
 // Function prototypes
@@ -244,16 +229,7 @@ void example_function();
 
 #endif // %s
 ]], guard_macro, guard_macro, guard_macro)
-
-    local file = io.open(header_file_path, "w")
-    if file then
-      file:write(header_content)
-      file:close()
-      vim.cmd("edit " .. header_file_path)
-      print(header_name .. ".h created successfully!")
-    else
-      print("Error creating " .. header_name .. ".h")
-    end
+    write_file(root_dir .. "/include/" .. header_name .. ".h", content)
   end)
 end
 
