@@ -245,7 +245,7 @@ function M.build()
   vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
   local output = vim.fn.system(cmd)
   local success = vim.v.shell_error == 0
-  vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, { success and "Compilation successful!" or "Error during compilation:", output })
+  vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, vim.list_extend({ success and "Compilation successful!" or "Error during compilation:" }, vim.split(output, "\n", { trimempty = true })))
   vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
 end
 
