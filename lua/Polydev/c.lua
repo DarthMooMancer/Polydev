@@ -136,24 +136,13 @@ end
 
 function M.create_new_file()
   vim.ui.input({ prompt = "Enter file name: " }, function(class_name)
-    if not class_name or class_name == "" then
-      return print("File creation canceled.")
-    end
-
-    local root_dir = M.get_project_root() -- Use a function to reliably find the project root
-    if not root_dir then
-      return print("Error: Project root not found.")
-    end
-
+    if not class_name or class_name == "" then return print("File creation canceled.") end
+    local root_dir = M.get_project_root()
+    if not root_dir then return print("Error: Project root not found.") end
     local file_path = root_dir .. "/src/" .. class_name .. ".c"
-    local file = io.open(file_path, "w")
-    if file then
-      file:close()
-      vim.cmd("edit " .. file_path)
-      print(class_name .. ".c created successfully!")
-    else
-      print("Error creating " .. class_name .. ".c")
-    end
+    assert(io.open(file_path, "w")):close()
+    vim.cmd("edit " .. file_path)
+    print(class_name .. ".c created successfully!")
   end)
 end
 
