@@ -149,8 +149,8 @@ end
 function M.create_new_header_file()
   vim.ui.input({ prompt = "Enter header file name: " }, function(header_name)
     if not header_name then return print("Header file creation canceled.") end
-    local root_dir = vim.fn.expand("%:p:h"):match("(.*)/src")
-    if not root_dir then return print("Error: src directory not found.") end
+    local root_dir = M.get_project_root()
+    if not root_dir then return print("Error: Project root not found.") end
     local guard_macro = header_name:upper():gsub("[^A-Z0-9]", "_") .. "_H"
     local content = string.format([[
 #ifndef %s
