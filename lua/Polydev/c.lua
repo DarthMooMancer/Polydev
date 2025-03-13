@@ -52,35 +52,15 @@ function M.setup(opts)
   vim.keymap.set("n", M.new_c_header_file, ":NewCHeaderFile<CR>", { silent = true })
 end
 
--- Open floating terminal
 function M.open_float_terminal(cmd)
   local ui = vim.api.nvim_list_uis()[1]
   local term_cfg = M.config.terminal
 
-  -- Default window size (90% of the editor)
-  local default_width = math.floor(ui.width * 0.9)
-  local default_height = math.floor(ui.height * 0.9)
+  local width = math.max(1, math.floor(ui.width * 0.9) - term_cfg.left_padding - term_cfg.right_padding)
+  local height = math.max(1, math.floor(ui.height * 0.9) - term_cfg.top_padding - (term_cfg.bottom_padding + 1))
+  local row = math.max(1, math.floor((ui.height - height) / 2) + term_cfg.top_padding)
+  local col = math.max(1, math.floor((ui.width - width) / 2) + term_cfg.left_padding)
 
-  -- Default centered position
-  local default_row = math.floor((ui.height - default_height) / 2)
-  local default_col = math.floor((ui.width - default_width) / 2)
-
-  -- Adjust size based on padding
-  local width = default_width - term_cfg.left_padding - term_cfg.right_padding
-  local height = default_height - term_cfg.top_padding - (term_cfg.bottom_padding + 1)
-
-  -- Adjust position based on padding
-  local row = default_row + term_cfg.top_padding
-  local col = default_col + term_cfg.left_padding
-
-  -- Ensure window size doesn't go negative
-  width = math.max(1, width)
-  height = math.max(1, height)
-  -- Ensure position doesn't move off-screen
-  row = math.max(0, row)
-  col = math.max(0, col)
-
-  -- Create buffer and window
   local buf = vim.api.nvim_create_buf(false, true)
   local win = vim.api.nvim_open_win(buf, true, {
     relative = "editor",
@@ -92,22 +72,20 @@ function M.open_float_terminal(cmd)
     border = term_cfg.border and "rounded" or "none",
   })
 
-  -- Enable scrolling, relative line numbers, and prevent closing on click
   vim.api.nvim_win_set_option(win, "winblend", vim.o.pumblend)
   vim.api.nvim_win_set_option(win, "winhighlight", "Normal:Pmenu,FloatBorder:Pmenu")
-  if(M.config.terminal.number == true) then
+  vim.api.nvim_win_set_option(win, "cursorline", true)
+  if(term_cfg.number == true) then
     vim.api.nvim_win_set_option(win, "number", true)
+    if(term_cfg.relativenumber == true) then
+      vim.api.nvim_win_set_option(win, "relativenumber", true)
+    end
   end
-  if(M.config.terminal.number == true and M.config.terminal.relativenumber == true) then
-    vim.api.nvim_win_set_option(win, "relativenumber", true)
-  end
-  if(M.config.terminal.scroll == true) then
+  if(term_cfg.scroll == true) then
     vim.api.nvim_win_set_option(win, "scrolloff", 5)
   end
-  vim.api.nvim_win_set_option(win, "cursorline", true)
 
   vim.fn.termopen(cmd)
-
   vim.api.nvim_buf_set_keymap(buf, "n", M.close_key, "i<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
   return buf, win
 end
