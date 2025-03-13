@@ -139,10 +139,7 @@ function M.create_new_file()
     if not class_name or class_name == "" then return print("File creation canceled.") end
     local root_dir = M.get_project_root()
     if not root_dir then return print("Error: Project root not found.") end
-    local file_path = root_dir .. "/src/" .. class_name .. ".c"
-    assert(io.open(file_path, "w")):close()
-    vim.cmd("edit " .. file_path)
-    -- print(" " .. class_name .. ".c created successfully!")
+    write_file(root_dir .. "/src/" .. class_name .. ".c", "")
   end)
 end
 
