@@ -1,3 +1,6 @@
+## Key Notes
+* Currently with the way I have it work, the first time you build a project, it will error out no matter what. Just rerun the build and then if there are errors it is most likely a you issue more than a me issue.
+
 ## Keybinds
 ```lua
 require("Polydev").c.setup({
