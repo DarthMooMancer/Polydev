@@ -6,7 +6,6 @@ M.new_c_file = nil
 M.new_c_header_file = nil
 M.new_c_project = nil
 
--- Default config
 M.config = {
   project_root = "~/Projects/C",
   keybinds = {
@@ -31,42 +30,26 @@ M.config = {
 
 function M.setup(opts)
   M.config = vim.tbl_deep_extend("force", M.config, opts or {})
-
-  -- Apply keybindings manually
   for key, command in pairs(M.config.keybinds) do
-    if command == "CloseTerminal" then
-      M.close_key = key
-    end
-    if command == "CBuild" then
-      M.c_build = key
-    end
-    if command == "CRun" then
-      M.c_run = key
-    end
-    if command == "NewCFile" then
-      M.new_c_file = key
-    end
-    if command == "NewCProject" then
-      M.new_c_project = key
-    end
-    if command == "NewCHeaderFile" then
-      M.new_c_header_file = key
-    end
+    if command == "CloseTerminal" then M.close_key = key end
+    if command == "CBuild" then M.c_build = key end
+    if command == "CRun" then M.c_run = key end
+    if command == "NewCFile" then M.new_c_file = key end
+    if command == "NewCProject" then M.new_c_project = key end
+    if command == "NewCHeaderFile" then M.new_c_header_file = key end
   end
 
-  -- Register Keybinds
-  vim.keymap.set("n", M.c_build, ":CBuild<CR>", { silent = true })
-  vim.keymap.set("n", M.c_run, ":CRun<CR>", { silent = true })
-  vim.keymap.set("n", M.new_c_file, ":NewCFile<CR>", { silent = true })
-  vim.keymap.set("n", M.new_c_project, ":NewCProject<CR>", { silent = true })
-  vim.keymap.set("n", M.new_c_header_file, ":NewCHeaderFile<CR>", { silent = true })
-
-  -- Register user commands
   vim.api.nvim_create_user_command("NewCProject", M.create_project, {})
   vim.api.nvim_create_user_command("NewCHeaderFile", M.create_new_header_file, {})
   vim.api.nvim_create_user_command("NewCFile", M.create_new_file, {})
   vim.api.nvim_create_user_command("CBuild", M.build, {})
   vim.api.nvim_create_user_command("CRun", M.run, {})
+
+  vim.keymap.set("n", M.c_build, ":CBuild<CR>", { silent = true })
+  vim.keymap.set("n", M.c_run, ":CRun<CR>", { silent = true })
+  vim.keymap.set("n", M.new_c_file, ":NewCFile<CR>", { silent = true })
+  vim.keymap.set("n", M.new_c_project, ":NewCProject<CR>", { silent = true })
+  vim.keymap.set("n", M.new_c_header_file, ":NewCHeaderFile<CR>", { silent = true })
 end
 
 -- Open floating terminal
@@ -205,33 +188,27 @@ add_executable(%s ${SOURCES})
   end)
 end
 
--- Create a new Java file
+local function write_file(path, content)
+  local file = assert(io.open(path, "w"), "Error creating file: " .. path)
+  file:write(content)
+  file:close()
+  vim.cmd("edit " .. path)
+  print(path .. " created successfully!")
+end
+
 function M.create_new_file()
-  vim.ui.input({ prompt = "Enter fil name: " }, function(class_name)
-    if not class_name or class_name == "" then
-      print("File creation canceled.")
-      return
-    end
+  vim.ui.input({ prompt = "Enter file name: " }, function(class_name)
+    if not class_name then return print("File creation canceled.") end
+    local root_dir = vim.fn.expand("%:p:h"):match("(.*)/src")
+    if not root_dir then return print("Error: src directory not found.") end
+    local c_content = [[
+#include <stdio.h>
 
-    local current_dir = vim.fn.expand("%:p:h")
-    local root_dir = current_dir:match("(.*)/src")
-    if not root_dir then
-      print("Error: src directory not found.")
-      return
-    end
-
-    local c_file_path = root_dir .. "/src/" .. class_name .. ".c"
-    local c_content = [[]]
-
-    local file = io.open(c_file_path, "w")
-    if file then
-      file:write(c_content)
-      file:close()
-      vim.cmd("edit " .. c_file_path)
-      print( " " .. class_name .. ".c created successfully!")
-    else
-      print("Error creating " .. class_name .. ".c")
-    end
+int main() {
+    printf("Hello, World!\n");
+    return 0;
+}]]
+    write_file(root_dir .. "/src/" .. class_name .. ".c", c_content)
   end)
 end
 
