@@ -142,7 +142,7 @@ function M.create_new_file()
     local file_path = root_dir .. "/src/" .. class_name .. ".c"
     assert(io.open(file_path, "w")):close()
     vim.cmd("edit " .. file_path)
-    print(class_name .. ".c created successfully!")
+    print(" " .. class_name .. ".c created successfully!")
   end)
 end
 
