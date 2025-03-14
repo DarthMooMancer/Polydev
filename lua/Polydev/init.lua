@@ -1,5 +1,6 @@
 local M = {}
 
+M.loaded_languages = {}
 M.language_configs = {}
 
 -- Load language module and apply its config
