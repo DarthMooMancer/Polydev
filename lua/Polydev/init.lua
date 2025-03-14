@@ -5,6 +5,7 @@ M.java = require("Polydev.java")
 M.c = require("Polydev.c")
 M.lua = require("Polydev.lua")
 M.python = require("Polydev.python")
+M.rust = require("Polydev.rust")
 
 function M.load_language_module(lang)
     if M.loaded_languages[lang] then return true end
