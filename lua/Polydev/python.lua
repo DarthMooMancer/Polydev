@@ -140,6 +140,7 @@ setup(
 )
 ]], project_name))
 
+	vim.cmd("edit " .. project_root .. "/main.py")
 	local venv_path = project_root .. "/venv"
 	vim.fn.system("python3 -m venv " .. venv_path)
 	vim.g.python3_host_prog = venv_path .. "/bin/python"
@@ -147,7 +148,6 @@ setup(
 	vim.fn.setenv("PATH", venv_path .. "/bin:" .. vim.fn.getenv("PATH"))
 
 	print("Virtual environment activated for " .. project_name)
-	vim.cmd("edit " .. project_root .. "/main.py")
     end)
 end
 
