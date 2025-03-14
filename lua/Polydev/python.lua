@@ -167,7 +167,7 @@ function M.run()
     local venv_path = root .. "/venv/bin/activate"
     local venv_cmd = vim.fn.filereadable(venv_path) == 1 and "source " .. venv_path .. " && " or ""
 
-    M.open_float_terminal(venv_cmd .. "python " .. main_file)
+    M.open_float_terminal(venv_cmd .. "python3 " .. main_file)
 end
 
 return M
