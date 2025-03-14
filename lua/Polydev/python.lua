@@ -1,16 +1,16 @@
 local M = {}
 M.close_key = nil
 M.c_run = nil
-M.new_c_file = nil
-M.new_c_header_file = nil
+M.new_python_file = nil
+M.new_python_module_file = nil
 
 M.config = {
     project_root = "~/Projects/Python",
     keybinds = {
 	["<Esc>"] = "CloseTerminal",
-	["<leader>pr"] = "CRun",
-	["<leader>nf"] = "NewCFile",
-	["<leader>nh"] = "NewCHeaderFile",
+	["<leader>pr"] = "PythonRun",
+	["<leader>nf"] = "NewPythonFile",
+	["<leader>nh"] = "NewPythonModuleFile",
     },
     terminal = {
 	right_padding = 0,
@@ -28,19 +28,19 @@ function M.setup(opts)
     M.config = vim.tbl_deep_extend("force", M.config, opts or {})
     for key, command in pairs(M.config.keybinds) do
 	if command == "CloseTerminal" then M.close_key = key end
-	if command == "CRun" then M.c_run = key end
-	if command == "NewCFile" then M.new_c_file = key end
-	if command == "NewCHeaderFile" then M.new_c_header_file = key end
+	if command == "PythonRun" then M.c_run = key end
+	if command == "NewPythonFile" then M.new_python_file = key end
+	if command == "NewPythonModuleFile" then M.new_python_module_file = key end
     end
     vim.fn.system("source ./venv/bin/activate")
 
-    vim.api.nvim_create_user_command("NewCHeaderFile", M.create_new_header_file, {})
-    vim.api.nvim_create_user_command("NewCFile", M.create_new_file, {})
-    vim.api.nvim_create_user_command("CRun", M.run, {})
+    vim.api.nvim_create_user_command("NewPythonModuleFile", M.create_new_module_file, {})
+    vim.api.nvim_create_user_command("NewPythonFile", M.create_new_file, {})
+    vim.api.nvim_create_user_command("PythonRun", M.run, {})
 
-    vim.keymap.set("n", M.c_run, ":CRun<CR>", { silent = true })
-    vim.keymap.set("n", M.new_c_file, ":NewCFile<CR>", { silent = true })
-    vim.keymap.set("n", M.new_c_header_file, ":NewCHeaderFile<CR>", { silent = true })
+    vim.keymap.set("n", M.c_run, ":PythonRun<CR>", { silent = true })
+    vim.keymap.set("n", M.new_python_file, ":NewPythonFile<CR>", { silent = true })
+    vim.keymap.set("n", M.new_python_module_file, ":NewPythonModuleFile<CR>", { silent = true })
 end
 
 function M.open_float_terminal(cmd)
@@ -145,39 +145,33 @@ setup(
 end
 
 function M.create_new_file()
-    vim.ui.input({ prompt = "Enter file name: " }, function(class_name)
-	if not class_name or class_name == "" then return print("File creation canceled.") end
-	local root_dir = M.get_project_root()
-	if not root_dir then return print("Error: Project root not found.") end
-	write_file(root_dir .. "/src/" .. class_name .. ".c", "")
-    end)
-end
+    vim.ui.input({ prompt = "Enter file name: " }, function(file_name)
+        if not file_name or file_name == "" then 
+            return print("File creation canceled.") 
+        end
 
-function M.create_new_header_file()
-    vim.ui.input({ prompt = "Enter header file name: " }, function(header_name)
-	if not header_name then return print("Header file creation canceled.") end
-	local root_dir = M.get_project_root()
-	if not root_dir then return print("Error: Project root not found.") end
-	local guard_macro = header_name:upper():gsub("[^A-Z0-9]", "_") .. "_H"
-	local content = string.format([[
-#ifndef %s
-#define %s
+        -- Ensure filename has .py extension
+        if not file_name:match("%.py$") then
+            file_name = file_name .. ".py"
+        end
 
-#include <stdio.h>
+        local root_dir = M.get_project_root()
+        if not root_dir then 
+            return print("Error: Project root not found.") 
+        end
 
-// Function prototypes
-void example_function();
+        -- Extract project name from root directory
+        local project_name = vim.fn.fnamemodify(root_dir, ":t")
+        local file_path = root_dir .. "/" .. project_name .. "/" .. file_name
 
-#endif // %s
-]], guard_macro, guard_macro, guard_macro)
-	write_file(root_dir .. "/include/" .. header_name .. ".h", content)
+        write_file(file_path, "")
     end)
 end
 
 function M.get_project_root()
     local dir = vim.fn.expand("%:p:h")
     while dir ~= "/" do
-	if vim.fn.isdirectory(dir .. "/src") == 1 or vim.fn.filereadable(dir .. "/CMakeLists.txt") == 1 then
+	if vim.fn.isdirectory(dir .. "/src") == 1 or vim.fn.filereadable(dir .. "/*.polydev") == 1 then
 	    return dir
 	end
 	dir = vim.fn.fnamemodify(dir, ":h")
