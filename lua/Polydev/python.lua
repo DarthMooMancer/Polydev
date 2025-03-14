@@ -30,6 +30,7 @@ function M.setup(opts)
         if command == "PythonRun" then M.c_run = key end
         if command == "NewPythonFile" then M.new_python_file = key end
     end
+    vim.fn.system("source ./venv/bin/activate")
 
     vim.api.nvim_create_user_command("NewPythonFile", M.create_new_file, {})
     vim.api.nvim_create_user_command("PythonRun", M.run, {})
