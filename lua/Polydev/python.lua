@@ -128,6 +128,7 @@ if __name__ == "__main__":
     main()
 ]])
 
+	write_file(project_root .. "/include/__init__.py", "")
 	write_file(project_root .. "/requirements.txt", "")
 	write_file(project_root .. "/setup.py", string.format([[
 from setuptools import setup, find_packages
