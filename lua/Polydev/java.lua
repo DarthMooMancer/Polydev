@@ -155,40 +155,29 @@ public class %s {
     end)
 end
 
--- Compile Java files
 function M.build()
     local current_dir = vim.fn.expand("%:p:h")
     local project_root = current_dir:match("(.*)/src")
-    if not project_root then
-	print("Error: Must be inside the 'src' directory.")
-	return
-    end
+    if not project_root then return print("Error: Must be inside the 'src' directory.") end
 
     local src_dir = project_root .. "/src"
     local out_dir = project_root .. "/build"
-
     vim.fn.mkdir(out_dir, "p")
-    local compile_command = string.format("javac -d %s %s/*.java", out_dir, src_dir)
-    local compile_status = vim.fn.system(compile_command)
 
-    if vim.v.shell_error ~= 0 then
-	print("Error during compilation:\n" .. compile_status)
-    else
-	print("Compilation successful!")
-    end
+    local compile_command = string.format("javac -d %s %s/*.java", out_dir, src_dir)
+    local term_buf = M.open_float_terminal(compile_command)
+
+    local output = vim.fn.system(compile_command)
+    local success = vim.v.shell_error == 0
+
+    vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, vim.list_extend({ success and "Compilation successful!" or "Error during compilation:" }, vim.split(output, "\n", { trimempty = true })))
+    vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
 end
 
--- Run Java program in floating terminal
 function M.run()
-    local current_dir = vim.fn.expand("%:p:h")
-    local project_root = current_dir:match("(.*)/src")
-    if not project_root then
-	print("Error: Must be inside the 'src' directory.")
-	return
-    end
-
-    local out_dir = project_root .. "/build"
-    M.open_float_terminal("java -cp " .. out_dir .. " Main")
+    local project_root = vim.fn.expand("%:p:h"):match("(.*)/src")
+    if not project_root then return print("Error: Must be inside the 'src' directory.") end
+    M.open_float_terminal("java -cp " .. project_root .. "/build" .. " Main")
 end
 
 return M
