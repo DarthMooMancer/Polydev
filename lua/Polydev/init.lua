@@ -16,7 +16,6 @@ function M.load_language_module(lang)
     return false
 end
 
--- Create a new project by specifying a language
 function M.create_project()
     vim.ui.input({ prompt = "Enter language for project: " }, function(lang)
         if not lang or lang == "" then return print("Project creation canceled.") end
@@ -29,7 +28,6 @@ function M.create_project()
     end)
 end
 
--- Auto-load language module based on file type
 function M.setup()
     vim.api.nvim_create_user_command("NewProject", M.create_project, {})
     vim.keymap.set("n", "<leader>np", ":NewProject<CR>", { silent = true })

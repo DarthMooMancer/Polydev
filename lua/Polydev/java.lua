@@ -81,25 +81,20 @@ function M.open_float_terminal(cmd)
     return buf, win
 end
 
+local function write_file(path, content)
+    local file = assert(io.open(path, "w"), "Error creating file: " .. path)
+    file:write(content)
+    file:close()
+    vim.cmd("edit " .. path)
+    print(path .. " created successfully!")
+end
+
 function M.create_project()
-    -- Use vim.ui.input for better handling of input
     vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
-	if not project_name or project_name == "" then
-	    print("Project creation canceled.")
-	    return
-	end
-
-	-- Paths for the project
+	if not project_name or project_name == "" then return print("Project creation canceled.") end
 	local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
-	local src_dir = project_root .. "/src"
-	local build_dir = project_root .. "/build"
+	for _, path in ipairs({ "/src", "/build" }) do vim.fn.mkdir(project_root .. path, "p") end
 
-	-- Create directories
-	vim.fn.mkdir(src_dir, "p")
-	vim.fn.mkdir(build_dir, "p")
-
-	-- Write the Main.java file
-	local main_java_path = src_dir .. "/Main.java"
 	local main_java_content = [[
 public class Main {
     public static void main(String[] args) {
@@ -108,73 +103,37 @@ public class Main {
 }
 ]]
 
-	-- Create the file and write content
-	local file = io.open(main_java_path, "w")
-	if file then
-	    file:write(main_java_content)
-	    file:close()
-	    vim.cmd("edit " .. main_java_path)
-	    print(" Project '" .. project_name .. "' created at " .. project_root)
-	else
-	    print("Error creating Main.java")
-	end
+	write_file(project_root .. "/src/Main.java", main_java_content)
     end)
 end
 
--- Create a new Java file
 function M.create_new_file()
     vim.ui.input({ prompt = "Enter class name: " }, function(class_name)
-	if not class_name or class_name == "" then
-	    print("Class creation canceled.")
-	    return
-	end
-
-	local current_dir = vim.fn.expand("%:p:h")
-	local root_dir = current_dir:match("(.*)/src")
-	if not root_dir then
-	    print("Error: src directory not found.")
-	    return
-	end
-
-	local java_file_path = root_dir .. "/src/" .. class_name .. ".java"
+	if not class_name or class_name == "" then return print("Class creation canceled.") end
+	local root_dir = vim.fn.expand("%:p:h"):match("(.*)/src")
+	if not root_dir then return print("Error: src directory not found.") end
 	local java_content = string.format([[
 public class %s {
     // New File
 }
 ]], class_name)
 
-	local file = io.open(java_file_path, "w")
-	if file then
-	    file:write(java_content)
-	    file:close()
-	    vim.cmd("edit " .. java_file_path)
-	    print( class_name .. ".java created successfully!")
-	else
-	    print("Error creating " .. class_name .. ".java")
-	end
+	write_file(root_dir .. "/src/" .. class_name .. ".java", java_content)
     end)
 end
 
 function M.build()
-    local current_dir = vim.fn.expand("%:p:h")
-    local project_root = current_dir:match("(.*)/src")
-    if not project_root then
-        print("Error: Could not detect project root directory.")
-        return
-    end
-
-    local src_dir = project_root .. "/src"
+    local project_root = vim.fn.expand("%:p:h"):match("(.*)/src")
+    if not project_root then return print("Error: Could not detect project root directory.") end
     local out_dir = project_root .. "/build"
 
     vim.fn.mkdir(out_dir, "p")
-    local compile_command = string.format("javac -d %s %s/*.java", out_dir, src_dir)
+    local compile_command = string.format("javac -d %s %s/*.java", out_dir, project_root .. "/src")
     local compile_status = vim.fn.system(compile_command)
 
-    -- Check if the compilation was successful
     if vim.v.shell_error == 0 then
         print("Compilation successful!")
     else
-        -- Only open the terminal if there's an error
         print("Error during compilation. Opening terminal for details...")
         local term_buf = M.open_float_terminal(compile_command)
         vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
