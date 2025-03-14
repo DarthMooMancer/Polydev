@@ -157,14 +157,10 @@ end
 
 function M.run()
     local root = M.get_project_root()
-    if not root then
-        return print("Error: Project root not found.")
-    end
+    if not root then return print("Error: Project root not found.") end
 
     local main_file = root .. "/main.py"
-    if vim.fn.filereadable(main_file) == 0 then
-        return print("Error: main.py not found in project root.")
-    end
+    if vim.fn.filereadable(main_file) == 0 then return print("Error: main.py not found in project root.") end
 
     -- Check if virtual environment exists
     local venv_path = root .. "/venv/bin/activate"
