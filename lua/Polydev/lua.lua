@@ -22,6 +22,15 @@ M.config = {
     }
 }
 
+-- Function to get the project root directory
+function M.get_project_root()
+    -- You can modify this to be more sophisticated if needed
+    -- This simply looks for a directory containing init.lua or any specific file
+    local project_root = vim.fn.expand(M.config.project_root)
+    return project_root
+end
+
+-- Function to setup the configuration
 function M.setup(opts)
     M.config = vim.tbl_deep_extend("force", M.config, opts or {})
     for key, command in pairs(M.config.keybinds) do
@@ -38,6 +47,7 @@ function M.setup(opts)
     vim.keymap.set("n", M.new_lua_file, ":NewLuaFile<CR>", { silent = true })
 end
 
+-- Function to open a floating terminal with command
 function M.open_float_terminal(cmd)
     local ui = vim.api.nvim_list_uis()[1]
     local term_cfg = M.config.terminal
@@ -76,6 +86,7 @@ function M.open_float_terminal(cmd)
     return buf, win
 end
 
+-- Function to write content to a file
 local function write_file(path, content)
     local file = assert(io.open(path, "w"), "Error creating file: " .. path)
     file:write(content)
@@ -84,6 +95,7 @@ local function write_file(path, content)
     print(path .. " created successfully!")
 end
 
+-- Function to create a new project with the required directories
 function M.create_project()
     vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
         if not project_name or project_name == "" then
@@ -107,6 +119,7 @@ return M
     end)
 end
 
+-- Function to create a new Lua file
 function M.create_new_file()
     vim.ui.input({ prompt = "Enter file name: " }, function(class_name)
         if not class_name or class_name == "" then return print("File creation canceled.") end
@@ -116,11 +129,20 @@ function M.create_new_file()
     end)
 end
 
+-- Function to run the init.lua file from /lua/<project_name>/init.lua
 function M.run()
     local root = M.get_project_root()
     if not root then return print("Error: Project root not found.") end
+
+    -- Define the path to the init.lua
     local init_path = root .. "/lua/" .. M.get_project_name() .. "/init.lua"
-    M.open_float_terminal("lua " .. init_path)
+
+    -- Check if the init.lua file exists
+    if vim.fn.filereadable(init_path) == 1 then
+        M.open_float_terminal("lua " .. init_path)
+    else
+        print("Error: init.lua not found in " .. init_path)
+    end
 end
 
 return M
