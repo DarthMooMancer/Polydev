@@ -33,7 +33,6 @@ function M.setup(opts)
 	if command == "NewRustFile" then M.new_rust_file = key end
     end
 
-    vim.api.nvim_create_user_command("NewCHeaderFile", M.create_new_header_file, {})
     vim.api.nvim_create_user_command("NewRustFile", M.create_new_file, {})
     vim.api.nvim_create_user_command("RustBuild", M.build, {})
     vim.api.nvim_create_user_command("RustRun", M.run, {})
