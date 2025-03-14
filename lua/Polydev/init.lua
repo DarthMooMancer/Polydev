@@ -3,9 +3,10 @@ local M = {}
 M.loaded_languages = {}
 M.java = require("Polydev.java")
 M.c = require("Polydev.c")
+M.lua = require("Polydev.lua")
 
 function M.load_language_module(lang)
-    if M.loaded_languages[lang] then return true end -- Prevent redundant loading
+    if M.loaded_languages[lang] then return true end
 
     local ok, lang_module = pcall(require, "Polydev." .. lang)
     if ok and lang_module.setup then
