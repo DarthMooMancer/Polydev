@@ -131,28 +131,7 @@ end
 function M.run()
     local root = M.get_project_root()
     if not root then return print("Error: Project root not found.") end
-    
-    -- Open the floating terminal with the command `cargo run`
-    local term_buf, term_win = M.open_float_terminal("cargo run")
-    
-    -- Make the terminal buffer writable and wait for the output
-    vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
-    
-    -- Get the output of the `cargo run` command and display it
-    local output = vim.fn.system("cargo run")
-    local success = vim.v.shell_error == 0
-    
-    -- Set the output in the terminal buffer
-    vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, vim.list_extend(
-        { success and "Program ran successfully!" or "Error during run:" }, 
-        vim.split(output, "\n", { trimempty = true })
-    ))
-    
-    -- Set the terminal buffer as non-modifiable again
-    vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
-    
-    -- Optionally, ensure the terminal window is focused
-    vim.api.nvim_set_current_win(term_win)
+    M.open_float_terminal("cargo run")
 end
 
 return M
