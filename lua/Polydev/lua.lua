@@ -4,7 +4,7 @@ M.lua_run = nil
 M.new_lua_file = nil
 
 M.config = {
-    project_root = "~/Projects/Lua",  -- Modify this path as needed
+    project_root = "~/Projects/Lua",
     keybinds = {
         ["<Esc>"] = "CloseTerminal",
         ["<leader>pr"] = "LuaRun",
@@ -39,7 +39,6 @@ function M.get_project_name()
     return polydev_file:match("([^/]+)%.polydev$")
 end
 
--- Function to setup the configuration
 function M.setup(opts)
     M.config = vim.tbl_deep_extend("force", M.config, opts or {})
     for key, command in pairs(M.config.keybinds) do
@@ -48,15 +47,12 @@ function M.setup(opts)
         if command == "NewLuaFile" then M.new_lua_file = key end
     end
 
-    -- Define user commands and key mappings
     vim.api.nvim_create_user_command("NewLuaFile", M.create_new_file, {})
     vim.api.nvim_create_user_command("LuaRun", M.run, {})
-
     vim.keymap.set("n", M.lua_run, ":LuaRun<CR>", { silent = true })
     vim.keymap.set("n", M.new_lua_file, ":NewLuaFile<CR>", { silent = true })
 end
 
--- Function to open a floating terminal with command
 function M.open_float_terminal(cmd)
     local ui = vim.api.nvim_list_uis()[1]
     local term_cfg = M.config.terminal
