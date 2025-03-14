@@ -1,10 +1,10 @@
 ### Lazyvim and Config
 ```lua
--- There is no need to copy this. This is an example and it consists of the defaults. This is a Java example.
+-- There is no need to copy this. This is an example and it consists of the defaults. This is a java example
 require {
   "DarthMooMancer/Polydev",
   config = function()
-    require("Polydev").language.setup({
+    require("Polydev").java.setup({
       project_root = "~/projects",
       keybinds = {
         ["<Esc>"] = "CloseTerminal",
