@@ -11,7 +11,7 @@ require {
     require("Polydev").setup()
     --require("Polydev").language.setup({
         -- configs
-      })
+      --})
   end
 }
 ```
@@ -24,7 +24,7 @@ MiniDeps.add({
 })
 
 require("Polydev").setup()
-require("Polydev").language.setup({
+--require("Polydev").language.setup({
   -- configs
-})
+--})
 ```
