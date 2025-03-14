@@ -127,9 +127,6 @@ if __name__ == "__main__":
     main()
 ]])
 
-	-- Set up virtual environment
-	vim.fn.system("python -m venv " .. project_root .. "/venv && source " .. project_root .. "/venv/bin/activate")
-
 	write_file(project_root .. "/requirements.txt", "")
 	write_file(project_root .. "/setup.py", string.format([[
 from setuptools import setup, find_packages
@@ -144,6 +141,7 @@ setup(
 ]], project_name))
 
 	vim.fn.system("python3 -m venv " .. project_root .. "/venv")
+	vim.fn.system("source " .. project_root .. "/venv/bin/activate")
 	vim.cmd("edit " .. project_root .. "/main.py")
     end)
 end
