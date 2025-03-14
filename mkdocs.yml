@@ -6,7 +6,9 @@ nav:
   - Examples: examples.md
   - Language Specific Docs:
     - Java: languages/java.md
-    - C: languages/c.md 
+    - C: languages/c.md
+    - Lua: languages/lua.md
+    - Python: languages/python.md
 theme:
   name: material
   features:
