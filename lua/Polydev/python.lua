@@ -101,7 +101,7 @@ function M.create_project()
 	    vim.fn.mkdir(project_root .. path, "p")
 	end
 
-	write_file(project_root .. "/" .. project_name .. "/__.init__.py", "")
+	write_file(project_root .. "/" .. project_name .. "/__init__.py", "")
 	write_file(project_root .. "/" .. project_name .. ".polydev", project_name)
 	write_file(project_root .. "/main.py", [[
 def main():
