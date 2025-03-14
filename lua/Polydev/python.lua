@@ -128,7 +128,7 @@ if __name__ == "__main__":
 ]])
 
 	-- Set up virtual environment
-	vim.fn.system("python -m venv " .. project_root .. "/venv")
+	vim.fn.system("python -m venv " .. project_root .. "/venv && source " .. project_root .. "/venv/bin/activate")
 
 	write_file(project_root .. "/requirements.txt", "")
 	write_file(project_root .. "/setup.py", string.format([[
