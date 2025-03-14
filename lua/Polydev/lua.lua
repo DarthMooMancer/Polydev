@@ -24,15 +24,26 @@ M.config = {
 
 -- Function to get the project root directory
 function M.get_project_root()
-    local project_root = vim.fn.expand(M.config.project_root)
-    -- You can customize this based on how your project structure looks
-    -- Here we check if the "init.lua" exists in the directory
-    if vim.fn.isdirectory(project_root) == 1 then
-        return project_root
-    else
-        print("Error: Project root directory not found.")
+    -- Find the .polydev file in the current directory or any parent directories
+    local current_dir = vim.fn.expand('%:p:h')  -- Get current file's directory
+
+    -- Search upwards for the .polydev file
+    local polydev_file = vim.fn.findfile(".polydev", current_dir .. ";")
+    if polydev_file == "" then
+        print("Error: .polydev file not found in the current or parent directories.")
         return nil
     end
+
+    -- Extract the name of the project from the .polydev file (excluding the extension)
+    local project_name = polydev_file:match("([^/]+)%.polydev$")
+    if not project_name then
+        print("Error: Unable to extract project name from .polydev file.")
+        return nil
+    end
+
+    -- Construct the project root path based on the project name
+    local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
+    return project_root
 end
 
 -- Function to setup the configuration
