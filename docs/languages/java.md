@@ -10,3 +10,14 @@ require("Polydev").java.setup({
   }
 })
 ```
+## File Structure
+
+```md
+Projects/
+└── Java/
+    └── Project_Name/
+        ├── src/
+        │   └── Main.java
+        └── build/
+            └── *.class
+```

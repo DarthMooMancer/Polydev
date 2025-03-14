@@ -12,3 +12,18 @@ require("Polydev").c.setup({
     ["<leader>nh"] = "NewCHeaderFile", -- Creates a new header file in the current project src folder
 })
 ```
+
+## File Structure
+```md
+Projects/
+└── C/
+    └── Project_Name/
+        ├── CMakeLists.txt
+        ├── src/
+        │   ├── main.c
+        │   └── *.c
+        ├── build/
+        │   └── <project_name>.polydev
+        └── include/
+            └── *.h
+```
