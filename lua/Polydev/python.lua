@@ -140,8 +140,13 @@ setup(
 )
 ]], project_name))
 
-	vim.fn.system("python3 -m venv " .. project_root .. "/venv")
-	vim.fn.system("source " .. project_root .. "/venv/bin/activate")
+	local venv_path = project_root .. "/venv"
+	vim.fn.system("python3 -m venv " .. venv_path)
+	vim.g.python3_host_prog = venv_path .. "/bin/python"
+	vim.fn.setenv("VIRTUAL_ENV", venv_path)
+	vim.fn.setenv("PATH", venv_path .. "/bin:" .. vim.fn.getenv("PATH"))
+
+	print("Virtual environment activated for " .. project_name)
 	vim.cmd("edit " .. project_root .. "/main.py")
     end)
 end
@@ -168,7 +173,7 @@ end
 
 function M.install_dependency()
     vim.ui.input({ prompt = "Enter pip module: " }, function(pip_module)
-    	if not pip_module or pip_module == "" then
+	if not pip_module or pip_module == "" then
 	    return print("Pip canceled")
 	end
 
