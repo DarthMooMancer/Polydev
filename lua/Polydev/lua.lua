@@ -22,28 +22,21 @@ M.config = {
     }
 }
 
--- Function to get the project root directory
 function M.get_project_root()
-    -- Find the .polydev file in the current directory or any parent directories
-    local current_dir = M.get_project_root()  -- Get current file's directory
-
-    -- Search upwards for the .polydev file
-    local polydev_file = vim.fn.findfile(".polydev", current_dir .. ";")
-    if polydev_file == "" then
-        print("Error: .polydev file not found in the current or parent directories.")
-        return nil
+    local dir = vim.fn.expand("%:p:h")
+    while dir ~= "/" do
+        local polydev_file = vim.fn.glob(dir .. "/*.polydev")
+        if polydev_file ~= "" then return dir end
+        dir = vim.fn.fnamemodify(dir, ":h")
     end
+    return nil
+end
 
-    -- Extract the name of the project from the .polydev file (excluding the extension)
-    local project_name = polydev_file:match("([^/]+)%.polydev$")
-    if not project_name then
-        print("Error: Unable to extract project name from .polydev file.")
-        return nil
-    end
-
-    -- Construct the project root path based on the project name
-    local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
-    return project_root
+function M.get_project_name()
+    local root = M.get_project_root()
+    if not root then return nil end
+    local polydev_file = vim.fn.glob(root .. "/*.polydev")
+    return polydev_file:match("([^/]+)%.polydev$")
 end
 
 -- Function to setup the configuration
@@ -102,7 +95,6 @@ function M.open_float_terminal(cmd)
     return buf, win
 end
 
--- Function to write content to a file
 local function write_file(path, content)
     local file = assert(io.open(path, "w"), "Error creating file: " .. path)
     file:write(content)
@@ -111,60 +103,38 @@ local function write_file(path, content)
     print(path .. " created successfully!")
 end
 
--- Function to create a new project with the required directories
 function M.create_project()
     vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
-        if not project_name or project_name == "" then
-            print("Project creation canceled.")
-            return
-        end
-
+        if not project_name or project_name == "" then return print("Project creation canceled.") end
         local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
-        -- Create the required directory structure
-        for _, path in ipairs({ "/lua/" .. project_name }) do
-            vim.fn.mkdir(project_root .. path, "p")
-        end
+        for _, path in ipairs({ "/lua/" .. project_name }) do vim.fn.mkdir(project_root .. path, "p") end
 
-        -- Create a sample init.lua
         write_file(project_root .. "/lua/" .. project_name .. "/init.lua", [[
 local M = {}
+
 return M
 ]])
 
-        -- Create a .polydev file using the project name
-        write_file(project_root .. "/" .. project_name .. ".polydev", [[
--- Lua polydev file for project ]] .. project_name .. [[
--- This file will be used to execute your project
-
-local example = require("]] .. project_name .. [[.example")
--- Example of running the project
-example.run()
-]])
-
+        write_file(project_root .. "/" .. project_name .. ".polydev", "")
         vim.cmd("edit " .. project_root .. "/lua/" .. project_name .. "/init.lua")
     end)
 end
 
--- Function to create a new Lua file
 function M.create_new_file()
     vim.ui.input({ prompt = "Enter file name: " }, function(class_name)
         if not class_name or class_name == "" then return print("File creation canceled.") end
         local root_dir = M.get_project_root()
-        if not root_dir then return print("Error: Project root not found.") end
-        write_file(root_dir .. "/lua/" .. M.get_project_name() .. "/" .. class_name .. ".lua", "")
+        local project_name = M.get_project_name()
+        if not root_dir or not project_name then return print("Error: Project root not found.") end
+        write_file(root_dir .. "/lua/" .. project_name .. "/" .. class_name .. ".lua", "")
     end)
 end
 
--- Function to run the project by using the <name>/lua/<name>/init.lua file
 function M.run()
     local root = M.get_project_root()
-    if not root then return print("Error: Project root not found.") end
-    
-    -- Define the path to the <project_name>/lua/<project_name>/init.lua file
     local project_name = M.get_project_name()
+    if not root or not project_name then return print("Error: Project root not found.") end
     local init_lua_path = root .. "/lua/" .. project_name .. "/init.lua"
-    
-    -- Check if the init.lua file exists
     if vim.fn.filereadable(init_lua_path) == 1 then
         M.open_float_terminal("lua " .. init_lua_path)
     else
