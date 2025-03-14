@@ -10,7 +10,6 @@ M.config = {
         ["<Esc>"] = "CloseTerminal",
         ["<leader>pr"] = "PythonRun",
         ["<leader>nf"] = "NewPythonFile",
-        ["<leader>nh"] = "NewPythonModuleFile",
     },
     terminal = {
         right_padding = 0,
@@ -30,16 +29,13 @@ function M.setup(opts)
         if command == "CloseTerminal" then M.close_key = key end
         if command == "PythonRun" then M.c_run = key end
         if command == "NewPythonFile" then M.new_python_file = key end
-        if command == "NewPythonModuleFile" then M.new_python_module_file = key end
     end
 
-    vim.api.nvim_create_user_command("NewPythonModuleFile", M.create_new_module_file, {})
     vim.api.nvim_create_user_command("NewPythonFile", M.create_new_file, {})
     vim.api.nvim_create_user_command("PythonRun", M.run, {})
 
     vim.keymap.set("n", M.c_run, ":PythonRun<CR>", { silent = true })
     vim.keymap.set("n", M.new_python_file, ":NewPythonFile<CR>", { silent = true })
-    vim.keymap.set("n", M.new_python_module_file, ":NewPythonModuleFile<CR>", { silent = true })
 end
 
 function M.open_float_terminal(cmd)
@@ -83,6 +79,17 @@ local function write_file(path, content)
     file:close()
     vim.cmd("edit " .. path)
     print(path .. " created successfully!")
+end
+
+function M.get_project_root()
+    local dir = vim.fn.expand("%:p:h")
+    while dir ~= "/" do
+	if vim.fn.isdirectory(dir .. "/venv") == 1 or vim.fn.filereadable(dir .. "/main.py") == 1 then
+	    return dir
+	end
+	dir = vim.fn.fnamemodify(dir, ":h")
+    end
+    return nil
 end
 
 function M.create_project()
@@ -144,16 +151,6 @@ function M.create_new_file()
     end)
 end
 
-function M.get_project_root()
-    local dir = vim.fn.expand("%:p:h")
-    while dir ~= "/" do
-        if vim.fn.isdirectory(dir .. "/venv") == 1 or vim.fn.filereadable(dir .. "/main.py") == 1 then
-            return dir
-        end
-        dir = vim.fn.fnamemodify(dir, ":h")
-    end
-    return nil
-end
 
 function M.run()
     local root = M.get_project_root()
