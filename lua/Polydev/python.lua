@@ -116,7 +116,9 @@ function M.create_project()
 	end
 
 	local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
-	vim.fn.mkdir(project_root, "p")
+	-- for _, path in ipairs({ "/src", "/build", "/include" }) do
+	--     vim.fn.mkdir(project_root .. path, "p")
+	-- end
 	vim.fn.mkdir(project_root .. "/tests", "p")
 
 	write_file(project_root .. "/main.py", [[
