@@ -9,3 +9,14 @@ require("Polydev").lua.setup({
     }
 })
 ```
+
+## File Structure
+```md
+Projects/
+└── Lua/
+    └── Project_Name/
+        ├── <Project_name>.polydev
+        └── lua/
+            └── Project_name/
+                └── init.lua
+```
