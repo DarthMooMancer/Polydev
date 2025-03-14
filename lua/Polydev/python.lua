@@ -143,6 +143,7 @@ setup(
 )
 ]], project_name))
 
+	vim.fn.system("python3 -m venv " .. project_root .. "/venv")
 	vim.cmd("edit " .. project_root .. "/main.py")
     end)
 end
