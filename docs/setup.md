@@ -12,7 +12,19 @@ require("Polydev").language.setup({
 * It will automatically make the new Root Directory, so you don't have to worry about making it.
 
 ## Keybinds
-* Keybinds are different for each language, but each one can be changed. Look at the language you want to change for keybind documentation.
+* Every language has the same keybinds so it is easy to remember keybinds and not have to remember thousands of keybinds.
+* The only keybind that doesnt change no matter what happens is creating a new project. Enter the language you want, then enter the project name and boom! new project.
+```lua
+require("Polydev"}.language.setup({
+  keybinds = [
+  	["<Esc>"] = "CloseTerminal",
+  	["<leader>pb"] = "languageBuild",
+  	["<leader>pr"] = "languageRun",
+  	["<leader>nf"] = "NewlanguageFile", -- such as .c files
+  	["<leader>nh"] = "Newlanguage_secondaryFile", -- such as .h files
+  }
+})
+```
 
 ## Terminal
 * The terminal has a couple of options that can be customized and with more to come
