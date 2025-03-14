@@ -34,7 +34,7 @@ end
 
 -- Auto-load language module based on file type
 function M.setup()
-    vim.api.nvim_create_user_command("NewProject", M.create_project(), {})
+    vim.api.nvim_create_user_command("NewProject", M.create_project, {})
     vim.keymap.set("n", "<leader>np", ":NewProject<CR>", { silent = true })
     vim.api.nvim_create_autocmd("FileType", {
         pattern = "*",
