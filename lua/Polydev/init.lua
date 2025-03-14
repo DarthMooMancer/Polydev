@@ -6,6 +6,10 @@ M.c = require("Polydev.c")
 M.lua = require("Polydev.lua")
 M.python = require("Polydev.python")
 
+function M.is_venv_active()
+    return vim.fn.getenv("VIRTUAL_ENV") ~= vim.NIL and vim.fn.getenv("VIRTUAL_ENV") ~= ""
+end
+
 function M.load_language_module(lang)
     if M.loaded_languages[lang] then return true end
 
@@ -32,6 +36,7 @@ end
 
 function M.setup()
     vim.api.nvim_create_user_command("NewProject", M.create_project, {})
+    vim.api.nvim_create_user_command("EnvCheck", M.is_venv_active, {})
     vim.keymap.set("n", "<leader>np", ":NewProject<CR>", { silent = true })
     vim.api.nvim_create_autocmd("FileType", {
         pattern = "*",
