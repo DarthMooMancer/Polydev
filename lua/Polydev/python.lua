@@ -7,30 +7,42 @@ M.new_python_module_file = nil
 M.config = {
     project_root = "~/Projects/Python",
     keybinds = {
-        ["<Esc>"] = "CloseTerminal",
-        ["<leader>pr"] = "PythonRun",
-        ["<leader>nf"] = "NewPythonFile",
+	["<Esc>"] = "CloseTerminal",
+	["<leader>pr"] = "PythonRun",
+	["<leader>nf"] = "NewPythonFile",
     },
     terminal = {
-        right_padding = 0,
-        bottom_padding = 0,
-        left_padding = 0,
-        top_padding = 0,
-        border = true,
-        number = true,
-        relativenumber = true,
-        scroll = true,
+	right_padding = 0,
+	bottom_padding = 0,
+	left_padding = 0,
+	top_padding = 0,
+	border = true,
+	number = true,
+	relativenumber = true,
+	scroll = true,
     }
 }
 
 function M.setup(opts)
     M.config = vim.tbl_deep_extend("force", M.config, opts or {})
     for key, command in pairs(M.config.keybinds) do
-        if command == "CloseTerminal" then M.close_key = key end
-        if command == "PythonRun" then M.c_run = key end
-        if command == "NewPythonFile" then M.new_python_file = key end
+	if command == "CloseTerminal" then M.close_key = key end
+	if command == "PythonRun" then M.c_run = key end
+	if command == "NewPythonFile" then M.new_python_file = key end
     end
-    vim.fn.system("source ./venv/bin/activate")
+
+    local root = M.get_project_root()
+    if root then
+	local venv_path = root .. "/venv/bin/activate"
+	if vim.fn.filereadable(venv_path) == 1 then
+	    -- Activate the virtual environment
+	    vim.env.VIRTUAL_ENV = venv_path
+	    vim.env.PATH = root .. "/venv/bin:" .. vim.env.PATH
+	    print("Virtual environment activated.")
+	else
+	    print("No virtual environment found.")
+	end
+    end
 
     vim.api.nvim_create_user_command("NewPythonFile", M.create_new_file, {})
     vim.api.nvim_create_user_command("PythonRun", M.run, {})
@@ -98,16 +110,16 @@ end
 
 function M.create_project()
     vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
-        if not project_name or project_name == "" then
-            print("Project creation canceled.")
-            return
-        end
+	if not project_name or project_name == "" then
+	    print("Project creation canceled.")
+	    return
+	end
 
-        local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
-        vim.fn.mkdir(project_root, "p")
-        vim.fn.mkdir(project_root .. "/tests", "p")
+	local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
+	vim.fn.mkdir(project_root, "p")
+	vim.fn.mkdir(project_root .. "/tests", "p")
 
-        write_file(project_root .. "/main.py", [[
+	write_file(project_root .. "/main.py", [[
 def main():
     print("Hello, World!")
 
@@ -115,11 +127,11 @@ if __name__ == "__main__":
     main()
 ]])
 
-        -- Set up virtual environment
-        vim.fn.system("python -m venv " .. project_root .. "/venv")
+	-- Set up virtual environment
+	vim.fn.system("python -m venv " .. project_root .. "/venv")
 
-        write_file(project_root .. "/requirements.txt", "")
-        write_file(project_root .. "/setup.py", string.format([[
+	write_file(project_root .. "/requirements.txt", "")
+	write_file(project_root .. "/setup.py", string.format([[
 from setuptools import setup, find_packages
 
 setup(
@@ -131,27 +143,27 @@ setup(
 )
 ]], project_name))
 
-        vim.cmd("edit " .. project_root .. "/main.py")
+	vim.cmd("edit " .. project_root .. "/main.py")
     end)
 end
 
 function M.create_new_file()
     vim.ui.input({ prompt = "Enter file name: " }, function(file_name)
-        if not file_name or file_name == "" then
-            return print("File creation canceled.")
-        end
+	if not file_name or file_name == "" then
+	    return print("File creation canceled.")
+	end
 
-        if not file_name:match("%.py$") then
-            file_name = file_name .. ".py"
-        end
+	if not file_name:match("%.py$") then
+	    file_name = file_name .. ".py"
+	end
 
-        local root_dir = M.get_project_root()
-        if not root_dir then
-            return print("Error: Project root not found.")
-        end
+	local root_dir = M.get_project_root()
+	if not root_dir then
+	    return print("Error: Project root not found.")
+	end
 
-        local file_path = root_dir .. "/" .. file_name
-        write_file(file_path, "")
+	local file_path = root_dir .. "/" .. file_name
+	write_file(file_path, "")
     end)
 end
 
