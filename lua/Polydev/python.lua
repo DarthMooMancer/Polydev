@@ -116,10 +116,9 @@ function M.create_project()
 	end
 
 	local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
-	-- for _, path in ipairs({ "/src", "/build", "/include" }) do
-	--     vim.fn.mkdir(project_root .. path, "p")
-	-- end
-	vim.fn.mkdir(project_root .. "/tests", "p")
+	for _, path in ipairs({ "/tests", "/include" }) do
+	    vim.fn.mkdir(project_root .. path, "p")
+	end
 
 	write_file(project_root .. "/main.py", [[
 def main():
@@ -168,7 +167,7 @@ function M.create_new_file()
 	    return print("Error: Project root not found.")
 	end
 
-	local file_path = root_dir .. "/" .. file_name
+	local file_path = root_dir .. "/include/" .. file_name
 	write_file(file_path, "")
     end)
 end
