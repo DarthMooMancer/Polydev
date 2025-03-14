@@ -169,13 +169,13 @@ function M.create_new_file()
 end
 
 function M.install_dependency()
-    vim.ui.input({ prompt = "Enter pip module: ", function(pip_module)
+    vim.ui.input({ prompt = "Enter pip module: " }, function(pip_module)
     	if not pip_module or pip_module == "" then
 	    return print("Pip canceled")
 	end
 
 	M.open_float_terminal("pip install " .. pip_module)
-    end})
+    end)
 end
 
 function M.run()
