@@ -4,12 +4,30 @@ M.language_configs = {}
 
 -- Load language module and apply its config
 function M.load_language_module(lang)
-    local lang_module = require("Polydev." .. lang)
-    if lang_module then
-        lang_module.setup()
-        M.language_configs[lang] = lang_module.config or {}  -- Store the configuration
-        return true
+    -- Check if the language module is already loaded
+    if M.loaded_languages[lang] then return true end
+
+    -- Only attempt to load if it's a valid language (exclude non-programming filetypes)
+    local valid_languages = { "java", "c", "python", "go", "rust" }  -- Add more languages as needed
+    local is_valid = false
+    for _, valid_lang in ipairs(valid_languages) do
+        if lang == valid_lang then
+            is_valid = true
+            break
+        end
     end
+
+    -- If it's a valid language, attempt to load the module
+    if is_valid then
+        local ok, lang_module = pcall(require, "Polydev." .. lang)
+        if ok and lang_module.setup then
+            lang_module.setup()
+            M.loaded_languages[lang] = lang_module
+            return true
+        end
+    end
+
+    -- If not a valid language or module not found, suppress the error
     return false
 end
 
