@@ -158,20 +158,29 @@ end
 function M.build()
     local current_dir = vim.fn.expand("%:p:h")
     local project_root = current_dir:match("(.*)/src")
-    if not project_root then return print("Error: Must be inside the 'src' directory.") end
+    if not project_root then
+        print("Error: Could not detect project root directory.")
+        return
+    end
 
     local src_dir = project_root .. "/src"
     local out_dir = project_root .. "/build"
+
     vim.fn.mkdir(out_dir, "p")
-
     local compile_command = string.format("javac -d %s %s/*.java", out_dir, src_dir)
-    local term_buf = M.open_float_terminal(compile_command)
+    local compile_status = vim.fn.system(compile_command)
 
-    local output = vim.fn.system(compile_command)
-    local success = vim.v.shell_error == 0
-
-    vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, vim.list_extend({ success and "Compilation successful!" or "Error during compilation:" }, vim.split(output, "\n", { trimempty = true })))
-    vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
+    -- Check if the compilation was successful
+    if vim.v.shell_error == 0 then
+        print("Compilation successful!")
+    else
+        -- Only open the terminal if there's an error
+        print("Error during compilation. Opening terminal for details...")
+        local term_buf = M.open_float_terminal(compile_command)
+        vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
+        vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, vim.split(compile_status, "\n", { trimempty = true }))
+        vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
+    end
 end
 
 function M.run()
