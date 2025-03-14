@@ -25,7 +25,7 @@ M.config = {
 -- Function to get the project root directory
 function M.get_project_root()
     -- Find the .polydev file in the current directory or any parent directories
-    local current_dir = vim.fn.expand('%:p:h')  -- Get current file's directory
+    local current_dir = M.get_project_root()  -- Get current file's directory
 
     -- Search upwards for the .polydev file
     local polydev_file = vim.fn.findfile(".polydev", current_dir .. ";")
