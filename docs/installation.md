@@ -8,7 +8,10 @@
 require {
   "DarthMooMancer/Polydev",
   config = function()
-    require("Polydev").language.setup()
+    require("Polydev").setup()
+    --require("Polydev").language.setup({
+        -- configs
+      })
   end
 }
 ```
@@ -20,5 +23,8 @@ MiniDeps.add({
   source = 'DarthMooMancer/Polydev',
 })
 
-require("Polydev").language.setup()
+require("Polydev").setup()
+require("Polydev").language.setup({
+  -- configs
+})
 ```
