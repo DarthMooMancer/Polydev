@@ -2,7 +2,7 @@ local M = {}
 M.close_key = nil
 M.c_run = nil
 M.new_python_file = nil
-M.new_python_module_file = nil
+M.new_pip_module = nil
 
 M.config = {
     project_root = "~/Projects/Python",
@@ -10,6 +10,7 @@ M.config = {
 	["<Esc>"] = "CloseTerminal",
 	["<leader>pr"] = "PythonRun",
 	["<leader>nf"] = "NewPythonFile",
+	["<leader>pb"] = "PythonPip"
     },
     terminal = {
 	right_padding = 0,
@@ -29,26 +30,25 @@ function M.setup(opts)
 	if command == "CloseTerminal" then M.close_key = key end
 	if command == "PythonRun" then M.c_run = key end
 	if command == "NewPythonFile" then M.new_python_file = key end
+	if command == "PythonPip" then M.new_pip_module = key end
     end
 
     local root = M.get_project_root()
     if root then
 	local venv_path = root .. "/venv/bin/activate"
 	if vim.fn.filereadable(venv_path) == 1 then
-	    -- Activate the virtual environment
 	    vim.env.VIRTUAL_ENV = venv_path
 	    vim.env.PATH = root .. "/venv/bin:" .. vim.env.PATH
-	    print("Virtual environment activated.")
-	else
-	    print("No virtual environment found.")
 	end
     end
 
+    vim.api.nvim_create_user_command("PythonPip", M.install_dependency, {})
     vim.api.nvim_create_user_command("NewPythonFile", M.create_new_file, {})
     vim.api.nvim_create_user_command("PythonRun", M.run, {})
 
     vim.keymap.set("n", M.c_run, ":PythonRun<CR>", { silent = true })
     vim.keymap.set("n", M.new_python_file, ":NewPythonFile<CR>", { silent = true })
+    vim.keymap.set("n", M.new_pip_module, ":PythonPip<CR>", { silent = true })
 end
 
 function M.open_float_terminal(cmd)
@@ -168,6 +168,15 @@ function M.create_new_file()
     end)
 end
 
+function M.install_dependency()
+    vim.ui.input({ prompt = "Enter pip module: ", function(pip_module)
+    	if not pip_module or pip_module == "" then
+	    return print("Pip canceled")
+	end
+
+	M.open_float_terminal("pip install " .. pip_module)
+    end})
+end
 
 function M.run()
     local root = M.get_project_root()
