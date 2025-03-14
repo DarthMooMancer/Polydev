@@ -7,8 +7,8 @@ M.lua = require("Polydev.lua")
 M.python = require("Polydev.python")
 
 function M.is_venv_active()
-    local venv = vim.fn.getenv("VIRTUAL_ENV")
-    if venv and venv ~= "" then
+    local venv = tostring(vim.fn.getenv("VIRTUAL_ENV") or "")
+    if venv ~= "" then
         print("Virtual environment active: " .. venv)
     else
         print("No virtual environment detected.")
