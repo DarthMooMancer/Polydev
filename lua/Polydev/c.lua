@@ -52,7 +52,7 @@ function M.open_float_terminal(cmd)
     local term_cfg = M.config.terminal
 
     local width = math.max(1, math.floor(ui.width * 0.9) - term_cfg.left_padding - term_cfg.right_padding)
-    local height = math.max(1, math.floor(ui.height * 0.9) - term_cfg.top_padding - (term_cfg.bottom_padding + 1))
+    local height = math.max(1, math.floor(ui.height * 0.9) - term_cfg.top_padding - term_cfg.bottom_padding)
     local row = math.max(1, math.floor((ui.height - height) / 2) + term_cfg.top_padding)
     local col = math.max(1, math.floor((ui.width - width) / 2) + term_cfg.left_padding)
 
