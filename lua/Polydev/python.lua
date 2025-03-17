@@ -116,7 +116,7 @@ function M.create_project()
 	end
 
 	local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
-	for _, path in ipairs({ "/tests", "/include" }) do
+	for _, path in ipairs({ "/include" }) do
 	    vim.fn.mkdir(project_root .. path, "p")
 	end
 
