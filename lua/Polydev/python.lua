@@ -183,16 +183,42 @@ function M.install_dependency()
     end)
 end
 
+-- function M.run()
+--     local root = M.get_project_root()
+--     if not root then return print("Error: Project root not found.") end
+--
+--     local main_file = root .. "/main.py"
+--     if vim.fn.filereadable(main_file) == 0 then return print("Error: main.py not found in project root.") end
+--
+--     -- Check if virtual environment exists
+--     local venv_path = root .. "/venv/bin/activate"
+--     local venv_cmd = vim.fn.filereadable(venv_path) == 1 and "source " .. venv_path .. " && " or ""
+--
+--     M.open_float_terminal(venv_cmd .. "python3 " .. main_file)
+-- end
+
 function M.run()
     local root = M.get_project_root()
-    if not root then return print("Error: Project root not found.") end
+    if not root then 
+        return print("Error: Project root not found.") 
+    end
 
     local main_file = root .. "/main.py"
-    if vim.fn.filereadable(main_file) == 0 then return print("Error: main.py not found in project root.") end
+    if vim.fn.filereadable(main_file) == 0 then 
+        return print("Error: main.py not found in project root.") 
+    end
 
-    -- Check if virtual environment exists
-    local venv_path = root .. "/venv/bin/activate"
-    local venv_cmd = vim.fn.filereadable(venv_path) == 1 and "source " .. venv_path .. " && " or ""
+    -- Detect current shell
+    local shell = vim.fn.getenv("SHELL") or ""
+    local venv_cmd
+
+    if shell:match("fish") then
+        local venv_fish = root .. "/venv/bin/activate.fish"
+        venv_cmd = vim.fn.filereadable(venv_fish) == 1 and "source " .. venv_fish .. " && " or ""
+    else
+        local venv_bash = root .. "/venv/bin/activate"
+        venv_cmd = vim.fn.filereadable(venv_bash) == 1 and "source " .. venv_bash .. " && " or ""
+    end
 
     M.open_float_terminal(venv_cmd .. "python3 " .. main_file)
 end
