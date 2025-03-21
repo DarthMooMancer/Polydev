@@ -196,16 +196,39 @@ end
 --
 --     M.open_float_terminal(venv_cmd .. "python3 " .. main_file)
 -- end
+--
+function M.custom_run()
+    vim.ui.input({ prompt = "Enter File Name: " }, function(custom_file)
+	if not custom_file or custom_file == "" then
+	    return print("Run canceled")
+	end
+
+	local root = M.get_project_root()
+	-- Detect current shell
+	local shell = vim.fn.getenv("SHELL") or ""
+	local venv_cmd
+
+	if shell:match("fish") then
+	    local venv_fish = root .. "/venv/bin/activate.fish"
+	    venv_cmd = vim.fn.filereadable(venv_fish) == 1 and "source " .. venv_fish .. " && " or ""
+	else
+	    local venv_bash = root .. "/venv/bin/activate"
+	    venv_cmd = vim.fn.filereadable(venv_bash) == 1 and "source " .. venv_bash .. " && " or ""
+	end
+
+	M.open_float_terminal(venv_cmd .. "python3 " .. custom_file)
+    end)
+end
 
 function M.run()
     local root = M.get_project_root()
-    if not root then 
-        return print("Error: Project root not found.") 
+    if not root then
+        return print("Error: Project root not found.")
     end
 
     local main_file = root .. "/main.py"
-    if vim.fn.filereadable(main_file) == 0 then 
-        return print("Error: main.py not found in project root.") 
+    if vim.fn.filereadable(main_file) == 0 then
+        return print("Error: main.py not found in project root.")
     end
 
     -- Detect current shell
