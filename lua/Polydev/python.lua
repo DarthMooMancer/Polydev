@@ -222,7 +222,7 @@ function M.custom_run()
 	    venv_cmd = vim.fn.filereadable(venv_bash) == 1 and "source " .. venv_bash .. " && " or ""
 	end
 
-	M.open_float_terminal(venv_cmd .. "python3 " .. custom_file)
+	M.open_float_terminal(venv_cmd .. "python3 " .. custom_file .. ".py")
     end)
 end
 
