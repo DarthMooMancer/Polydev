@@ -173,7 +173,7 @@ end
 function M.build()
     local root = M.get_project_root()
     if not root then return print("Error: Project root not found.") end
-    local cmd = "cd " .. "../build && cmake " .. M.config.build_attributes .. " && make"
+    local cmd = "cd " .. "../build && cmake " .. M.config.build_attributes .. " .. && make"
     local term_buf = M.open_float_terminal(cmd)
     vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
     local output = vim.fn.system(cmd)
