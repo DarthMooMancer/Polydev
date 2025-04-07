@@ -180,8 +180,24 @@ function M.build()
     vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
     local output = vim.fn.system(cmd)
     local success = vim.v.shell_error == 0
-    vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, vim.list_extend({ success and "Compilation successful!" or "Error during compilation:" }, vim.split(output, "\n", { trimempty = true })))
-    vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
+    -- Check if the output contains "ninja: no work to do."
+    local suppress_ninja_output = false
+    for _, line in ipairs(vim.split(output, "\n", { trimempty = true })) do
+	if line:match("ninja: no work to do.") then
+	    suppress_ninja_output = true
+	    break
+	end
+    end
+
+    -- Prepare the final output message
+    local status_message = success and "Compilation successful!" or "Error during compilation:"
+
+    -- If there's no work to do, suppress Ninja output
+    if suppress_ninja_output then
+	vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, { status_message })
+    else
+	vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, vim.list_extend({ status_message }, vim.split(output, "\n", { trimempty = true })))
+    end
 end
 
 function M.run()
