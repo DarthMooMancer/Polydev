@@ -117,7 +117,7 @@ int main() {
 
 	write_file(project_root .. "/CMakeLists.txt", string.format([[
 cmake_minimum_required(VERSION 3.10)
-project(%s C)
+project(%s)
 set(CMAKE_C_STANDARD 11)
 include_directories(include)
 
