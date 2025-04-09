@@ -107,11 +107,16 @@ function M.create_project()
 	end
 
 	write_file(project_root .. "/build/" .. project_name .. ".polydev", project_name)
-	write_file(project_root .. "/src/main.c", [[
-#include <stdio.h>
+	write_file(project_root .. "/src/main.cpp", [[
+/* If you have vcpkg and want to use it:
+vcpkg new --application
+vcpkg add port <package_name>
+*/
+
+#include <iostream>
 
 int main() {
-  printf("Hello World\n");
+  std::cout << "Hello World" << std::endl;
   return 0;
 }
 ]])
@@ -119,14 +124,51 @@ int main() {
 	write_file(project_root .. "/CMakeLists.txt", string.format([[
 cmake_minimum_required(VERSION 3.10)
 project(%s)
-set(CMAKE_C_STANDARD 11)
 include_directories(include)
-
 set(SOURCES src/main.c)
 add_executable(%s ${SOURCES})
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_C_STANDARD 23)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
+# find_package(SDL3 CONFIG REQUIRED) # An example of how to import libraries from vcpkg
+# target_link_libraries(Game PRIVATE SDL3::SDL3)
 ]], project_name, project_name))
 
-	vim.cmd("edit " .. project_root .. "/src/main.c")
+
+	write_file(project_root .. "/CMakePresets.json", string.format([[
+# For the purposes of vcpkg, DO NOT REMOVE, but feel free to change as needed
+{
+  "version": 2,
+  "configurePresets": [
+    {
+      "name": "vcpkg",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      }
+    }
+  ]
+}
+]]))
+
+	write_file(project_root .. "/CMakeUserPresets.json", string.format([[
+{
+  "version": 2,
+  "configurePresets": [
+    {
+      "name": "default",
+      "inherits": "vcpkg",
+      "environment": {
+        "VCPKG_ROOT": "/Users/<USER>/vcpkg"
+      }
+    }
+  ]
+}
+
+]]))
+	vim.cmd("edit " .. project_root .. "/src/main.cpp")
     end)
 end
 
@@ -135,7 +177,7 @@ function M.create_new_file()
 	if not class_name or class_name == "" then return print("File creation canceled.") end
 	local root_dir = M.get_project_root()
 	if not root_dir then return print("Error: Project root not found.") end
-	write_file(root_dir .. "/src/" .. class_name .. ".c", "")
+	write_file(root_dir .. "/src/" .. class_name .. ".cpp", "")
     end)
 end
 
@@ -144,19 +186,19 @@ function M.create_new_header_file()
 	if not header_name then return print("Header file creation canceled.") end
 	local root_dir = M.get_project_root()
 	if not root_dir then return print("Error: Project root not found.") end
-	local guard_macro = header_name:upper():gsub("[^A-Z0-9]", "_") .. "_H"
+	local guard_macro = header_name:upper():gsub("[^A-Z0-9]", "_") .. "_HPP"
 	local content = string.format([[
 #ifndef %s
 #define %s
 
-#include <stdio.h>
+#include <iostream>
 
 // Function prototypes
 void example_function();
 
 #endif // %s
 ]], guard_macro, guard_macro, guard_macro)
-	write_file(root_dir .. "/include/" .. header_name .. ".h", content)
+	write_file(root_dir .. "/include/" .. header_name .. ".hpp", content)
     end)
 end
 
@@ -174,23 +216,14 @@ function M.build()
     local root = M.get_project_root()
     if not root then return print("Error: Project root not found.") end
     local build_dir = root .. "/build"
-    -- local cmd = "cd " .. build_dir .. " && cmake .. --preset default" .. " && cmake --build ."
+
     local cmd = "cd " .. build_dir .. " && cmake --build ."
     local term_buf = M.open_float_terminal(cmd)
     vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
     local output = vim.fn.system(cmd)
     local success = vim.v.shell_error == 0
-    local suppress_ninja_output = false
-    for _, line in ipairs(vim.split(output, "\n", { trimempty = true })) do
-	if line:match("ninja: no work to do.") then
-	    suppress_ninja_output = true
-	    break
-	end
-    end
-
-    local status_message = success and "Compilation successful!" or "Error during compilation:"
-    if suppress_ninja_output then vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, { status_message })
-    else vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, vim.list_extend({ status_message }, vim.split(output, "\n", { trimempty = true }))) end
+    vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, vim.list_extend({ success and "Compilation successful!" or "Error during compilation:" }, vim.split(output, "\n", { trimempty = true })))
+    vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
 end
 
 function M.run()
