@@ -108,10 +108,15 @@ function M.create_project()
 
 	write_file(project_root .. "/build/" .. project_name .. ".polydev", project_name)
 	write_file(project_root .. "/src/main.c", [[
+/* If you have vcpkg and want to use it:
+vcpkg new --application
+vcpkg add port <package_name>
+*/
+
 #include <stdio.h>
 
 int main() {
-  printf("Hello World\n");
+  printf("%s", "Hello World");
   return 0;
 }
 ]])
@@ -119,13 +124,50 @@ int main() {
 	write_file(project_root .. "/CMakeLists.txt", string.format([[
 cmake_minimum_required(VERSION 3.10)
 project(%s)
-set(CMAKE_C_STANDARD 11)
 include_directories(include)
-
 set(SOURCES src/main.c)
 add_executable(%s ${SOURCES})
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_C_STANDARD 23)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
+# find_package(SDL3 CONFIG REQUIRED) # An example of how to import libraries from vcpkg
+# target_link_libraries(Game PRIVATE SDL3::SDL3)
 ]], project_name, project_name))
 
+
+	write_file(project_root .. "/CMakePresets.json", string.format([[
+# For the purposes of vcpkg, DO NOT REMOVE, but feel free to change as needed
+{
+  "version": 2,
+  "configurePresets": [
+    {
+      "name": "vcpkg",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      }
+    }
+  ]
+}
+]]))
+
+	write_file(project_root .. "/CMakeUserPresets.json", string.format([[
+{
+  "version": 2,
+  "configurePresets": [
+    {
+      "name": "default",
+      "inherits": "vcpkg",
+      "environment": {
+        "VCPKG_ROOT": "/Users/<USER>/vcpkg"
+      }
+    }
+  ]
+}
+
+]]))
 	vim.cmd("edit " .. project_root .. "/src/main.c")
     end)
 end
@@ -175,7 +217,7 @@ function M.build()
     if not root then return print("Error: Project root not found.") end
     local build_dir = root .. "/build"
 
-    local cmd = "cd " .. build_dir .. " && cmake .. --preset default" .. " && cmake --build ."
+    local cmd = "cd " .. build_dir .. " && cmake --build ."
     local term_buf = M.open_float_terminal(cmd)
     vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
     local output = vim.fn.system(cmd)
