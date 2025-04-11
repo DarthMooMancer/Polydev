@@ -29,9 +29,11 @@ require("Polydev").language.setup({
 * Every language has the almost same keybinds so it is easy to remember keybinds and not have to remember thousands of keybinds.
 * Some languages have separate functions (python has a pip keybind for example) adding more keybinds
 
+```
 Key/
 ├── *Universal, cannot be changed through specific language settings
 └── *Per-language, can be changed separately by language if wanted
+```
 
 ### Lazy
 ```lua
