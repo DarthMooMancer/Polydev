@@ -1,32 +1,21 @@
 local M = {}
-M.close_key = nil
+local utils = require("Polydev.utils")
+
 M.java_build = nil
 M.java_run = nil
 
 M.config = {
     project_root = "~/Projects/Java",
     keybinds = {
-	["<Esc>"] = "CloseTerminal",
 	["<leader>pb"] = "JavaBuild",
 	["<leader>pr"] = "JavaRun",
     },
-    terminal = {
-	right_padding = 0,
-	bottom_padding = 0,
-	left_padding = 0,
-	top_padding = 0,
-	border = true,
-	number = true,
-	relativenumber = true,
-	scroll = true,
-    }
 }
 
 function M.setup(opts)
     M.config = vim.tbl_deep_extend("force", M.config, opts or {})
 
     for key, command in pairs(M.config.keybinds) do
-	if command == "CloseTerminal" then M.close_key = key end
 	if command == "JavaBuild" then M.java_build = key end
 	if command == "JavaRun" then M.java_run = key end
     end
@@ -36,52 +25,6 @@ function M.setup(opts)
 
     vim.api.nvim_create_user_command("JavaBuild", M.build, {})
     vim.api.nvim_create_user_command("JavaRun", M.run, {})
-end
-
-function M.open_float_terminal(cmd)
-    local ui = vim.api.nvim_list_uis()[1]
-    local term_cfg = M.config.terminal
-
-    local width = math.max(1, math.floor(ui.width * 0.9) - term_cfg.left_padding - term_cfg.right_padding)
-    local height = math.max(1, math.floor(ui.height * 0.9) - term_cfg.top_padding - term_cfg.bottom_padding)
-    local row = math.max(1, math.floor((ui.height - height) / 2) + term_cfg.top_padding)
-    local col = math.max(1, math.floor((ui.width - width) / 2) + term_cfg.left_padding)
-
-    local buf = vim.api.nvim_create_buf(false, true)
-    local win = vim.api.nvim_open_win(buf, true, {
-	relative = "editor",
-	width = width,
-	height = height,
-	row = row,
-	col = col,
-	style = "minimal",
-	border = term_cfg.border and "rounded" or "none",
-    })
-
-    vim.api.nvim_win_set_option(win, "winblend", vim.o.pumblend)
-    vim.api.nvim_win_set_option(win, "winhighlight", "Normal:Pmenu,FloatBorder:Pmenu")
-    vim.api.nvim_win_set_option(win, "cursorline", true)
-    if(term_cfg.number == true) then
-	vim.api.nvim_win_set_option(win, "number", true)
-	if(term_cfg.relativenumber == true) then
-	    vim.api.nvim_win_set_option(win, "relativenumber", true)
-	end
-    end
-    if(term_cfg.scroll == true) then
-	vim.api.nvim_win_set_option(win, "scrolloff", 5)
-    end
-
-    vim.fn.termopen(cmd)
-    vim.api.nvim_buf_set_keymap(buf, "n", M.close_key, "i<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
-    return buf, win
-end
-
-local function write_file(path, content)
-    local file = assert(io.open(path, "w"), "Error creating file: " .. path)
-    file:write(content)
-    file:close()
-    vim.cmd("edit " .. path)
-    print(path .. " created successfully!")
 end
 
 function M.create_project()
@@ -98,7 +41,7 @@ public class Main {
 }
 ]]
 
-	write_file(project_root .. "/src/Main.java", main_java_content)
+	utils.write_file(project_root .. "/src/Main.java", main_java_content)
     end)
 end
 
@@ -113,7 +56,7 @@ public class %s {
 }
 ]], class_name)
 
-	write_file(root_dir .. "/src/" .. class_name .. ".java", java_content)
+	utils.write_file(root_dir .. "/src/" .. class_name .. ".java", java_content)
     end)
 end
 
@@ -130,7 +73,7 @@ function M.build()
         print("Compilation successful!")
     else
         print("Error during compilation. Opening terminal for details...")
-        local term_buf = M.open_float_terminal(compile_command)
+        local term_buf = utils.open_float_terminal(compile_command)
         vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
         vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, vim.split(compile_status, "\n", { trimempty = true }))
         vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
@@ -140,7 +83,7 @@ end
 function M.run()
     local project_root = vim.fn.expand("%:p:h"):match("(.*)/src")
     if not project_root then return print("Error: Must be inside the 'src' directory.") end
-    M.open_float_terminal("java -cp " .. project_root .. "/build" .. " Main")
+    utils.open_float_terminal("java -cp " .. project_root .. "/build" .. " Main")
 end
 
 return M

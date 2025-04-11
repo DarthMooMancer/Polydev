@@ -1,4 +1,6 @@
 local M = {}
+local utils = require("Polydev.utils")
+
 M.html_build = nil
 M.html_run = nil
 
@@ -8,14 +10,6 @@ M.config = {
 
 function M.setup(opts)
     M.config = vim.tbl_deep_extend("force", M.config, opts or {})
-end
-
-local function write_file(path, content)
-    local file = assert(io.open(path, "w"), "Error creating file: " .. path)
-    file:write(content)
-    file:close()
-    vim.cmd("edit " .. path)
-    print(path .. " created successfully!")
 end
 
 function M.create_project()
@@ -38,7 +32,7 @@ function M.create_project()
 </html>
 ]]
 
-	write_file(project_root .. "index.html", main_html_content)
+	utils.write_file(project_root .. "index.html", main_html_content)
     end)
 end
 
@@ -60,7 +54,7 @@ function M.create_new_file()
 </html>
 ]])
 
-	write_file("./" .. page .. ".html", html_content)
+	utils.write_file("./" .. page .. ".html", html_content)
     end)
 end
 

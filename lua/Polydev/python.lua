@@ -1,5 +1,6 @@
 local M = {}
-M.close_key = nil
+local utils = require("Polydev.utils")
+
 M.c_run = nil
 M.new_pip_module = nil
 M.run_custom = nil
@@ -7,27 +8,15 @@ M.run_custom = nil
 M.config = {
     project_root = "~/Projects/Python",
     keybinds = {
-	["<Esc>"] = "CloseTerminal",
 	["<leader>pr"] = "PythonRun",
 	["<leader>pb"] = "PythonPip",
 	["<leader>pc"] = "PythonCustom"
     },
-    terminal = {
-	right_padding = 0,
-	bottom_padding = 0,
-	left_padding = 0,
-	top_padding = 0,
-	border = true,
-	number = true,
-	relativenumber = true,
-	scroll = true,
-    }
 }
 
 function M.setup(opts)
     M.config = vim.tbl_deep_extend("force", M.config, opts or {})
     for key, command in pairs(M.config.keybinds) do
-	if command == "CloseTerminal" then M.close_key = key end
 	if command == "PythonRun" then M.c_run = key end
 	if command == "PythonPip" then M.new_pip_module = key end
 	if command == "PythonCustom" then M.run_custom = key end
@@ -50,52 +39,6 @@ function M.setup(opts)
     vim.keymap.set("n", M.c_run, ":PythonRun<CR>", { silent = true })
     vim.keymap.set("n", M.new_pip_module, ":PythonPip<CR>", { silent = true })
     vim.keymap.set("n", M.run_custom, ":PythonCustom<CR>", { silent = true })
-end
-
-function M.open_float_terminal(cmd)
-    local ui = vim.api.nvim_list_uis()[1]
-    local term_cfg = M.config.terminal
-
-    local width = math.max(1, math.floor(ui.width * 0.9) - term_cfg.left_padding - term_cfg.right_padding)
-    local height = math.max(1, math.floor(ui.height * 0.9) - term_cfg.top_padding - term_cfg.bottom_padding)
-    local row = math.max(1, math.floor((ui.height - height) / 2) + term_cfg.top_padding)
-    local col = math.max(1, math.floor((ui.width - width) / 2) + term_cfg.left_padding)
-
-    local buf = vim.api.nvim_create_buf(false, true)
-    local win = vim.api.nvim_open_win(buf, true, {
-	relative = "editor",
-	width = width,
-	height = height,
-	row = row,
-	col = col,
-	style = "minimal",
-	border = term_cfg.border and "rounded" or "none",
-    })
-
-    vim.api.nvim_win_set_option(win, "winblend", vim.o.pumblend)
-    vim.api.nvim_win_set_option(win, "winhighlight", "Normal:Pmenu,FloatBorder:Pmenu")
-    vim.api.nvim_win_set_option(win, "cursorline", true)
-    if(term_cfg.number == true) then
-	vim.api.nvim_win_set_option(win, "number", true)
-	if(term_cfg.relativenumber == true) then
-	    vim.api.nvim_win_set_option(win, "relativenumber", true)
-	end
-    end
-    if(term_cfg.scroll == true) then
-	vim.api.nvim_win_set_option(win, "scrolloff", 5)
-    end
-
-    vim.fn.termopen(cmd)
-    vim.api.nvim_buf_set_keymap(buf, "n", M.close_key, "i<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
-    return buf, win
-end
-
-local function write_file(path, content)
-    local file = assert(io.open(path, "w"), "Error creating file: " .. path)
-    file:write(content)
-    file:close()
-    vim.cmd("edit " .. path)
-    print(path .. " created successfully!")
 end
 
 function M.get_project_root()
@@ -121,7 +64,7 @@ function M.create_project()
 	    vim.fn.mkdir(project_root .. path, "p")
 	end
 
-	write_file(project_root .. "/main.py", [[
+	utils.write_file(project_root .. "/main.py", [[
 def main():
     print("Hello, World!")
 
@@ -129,9 +72,9 @@ if __name__ == "__main__":
     main()
 ]])
 
-	write_file(project_root .. "/include/__init__.py", "")
-	write_file(project_root .. "/requirements.txt", "")
-	write_file(project_root .. "/setup.py", string.format([[
+	utils.write_file(project_root .. "/include/__init__.py", "")
+	utils.write_file(project_root .. "/requirements.txt", "")
+	utils.write_file(project_root .. "/setup.py", string.format([[
 from setuptools import setup, find_packages
 
 setup(
@@ -170,7 +113,7 @@ function M.create_new_file()
 	end
 
 	local file_path = root_dir .. "/include/" .. file_name
-	write_file(file_path, "")
+	utils.write_file(file_path, "")
     end)
 end
 
@@ -180,24 +123,10 @@ function M.install_dependency()
 	    return print("Pip canceled")
 	end
 
-	M.open_float_terminal("pip install " .. pip_module)
+	utils.open_float_terminal("pip install " .. pip_module)
     end)
 end
 
--- function M.run()
---     local root = M.get_project_root()
---     if not root then return print("Error: Project root not found.") end
---
---     local main_file = root .. "/main.py"
---     if vim.fn.filereadable(main_file) == 0 then return print("Error: main.py not found in project root.") end
---
---     -- Check if virtual environment exists
---     local venv_path = root .. "/venv/bin/activate"
---     local venv_cmd = vim.fn.filereadable(venv_path) == 1 and "source " .. venv_path .. " && " or ""
---
---     M.open_float_terminal(venv_cmd .. "python3 " .. main_file)
--- end
---
 function M.custom_run()
     vim.ui.input({ prompt = "Enter File Name: " }, function(custom_file)
 	if not custom_file or custom_file == "" then
@@ -217,7 +146,7 @@ function M.custom_run()
 	    venv_cmd = vim.fn.filereadable(venv_bash) == 1 and "source " .. venv_bash .. " && " or ""
 	end
 
-	M.open_float_terminal(venv_cmd .. "python3 " .. custom_file .. ".py")
+	utils.open_float_terminal(venv_cmd .. "python3 " .. custom_file .. ".py")
     end)
 end
 
@@ -244,7 +173,7 @@ function M.run()
         venv_cmd = vim.fn.filereadable(venv_bash) == 1 and "source " .. venv_bash .. " && " or ""
     end
 
-    M.open_float_terminal(venv_cmd .. "python3 " .. main_file)
+    utils.open_float_terminal(venv_cmd .. "python3 " .. main_file)
 end
 
 return M
