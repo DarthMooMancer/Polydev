@@ -66,7 +66,7 @@ require("Polydev"}.language.setup({
 ```
 
 ## Terminal
-!!! I plan on making the terminal settings a global setting instead of language specific, just need to figure out how
+* I plan on making the terminal settings a global setting instead of language specific, just need to figure out how
 * The terminal has a couple of options that can be customized and with more to come
     - Each is set to 0 by default
         * **_right_padding:_** Padding for the right width of the terminal
