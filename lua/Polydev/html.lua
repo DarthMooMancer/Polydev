@@ -26,15 +26,15 @@ function M.create_project()
 	local main_html_content = [[
 <!DOCTYPE html>
 <html>
-<head>
-<title>Page Title</title>
-</head>
-<body>
+    <head>
+	<title>Page Title</title>
+    </head>
+    <body>
 
-<h1>My First Heading</h1>
-<p>My first paragraph.</p>
+	<h1>My First Heading</h1>
+	<p>My first paragraph.</p>
 
-</body>
+    </body>
 </html>
 ]]
 
@@ -48,15 +48,15 @@ function M.create_new_file()
 	local html_content = string.format([[
 <!DOCTYPE html>
 <html>
-<head>
-<title>Page Title</title>
-</head>
-<body>
+    <head>
+	<title>Page Title</title>
+    </head>
+    <body>
 
-<h1>My First Heading</h1>
-<p>My first paragraph.</p>
+	<h1>My First Heading</h1>
+	<p>My first paragraph.</p>
 
-</body>
+    </body>
 </html>
 ]])
 
