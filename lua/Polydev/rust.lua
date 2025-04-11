@@ -2,7 +2,6 @@ local M = {}
 M.close_key = nil
 M.rust_build = nil
 M.rust_run = nil
-M.new_rust_file = nil
 
 M.config = {
     project_root = "~/Projects/Rust",
@@ -10,7 +9,6 @@ M.config = {
 	["<Esc>"] = "CloseTerminal",
 	["<leader>pb"] = "RustBuild",
 	["<leader>pr"] = "RustRun",
-	["<leader>nf"] = "NewRustFile",
     },
     terminal = {
 	right_padding = 0,
@@ -30,16 +28,13 @@ function M.setup(opts)
 	if command == "CloseTerminal" then M.close_key = key end
 	if command == "RustBuild" then M.rust_build = key end
 	if command == "RustRun" then M.rust_run = key end
-	if command == "NewRustFile" then M.new_rust_file = key end
     end
 
-    vim.api.nvim_create_user_command("NewRustFile", M.create_new_file, {})
     vim.api.nvim_create_user_command("RustBuild", M.build, {})
     vim.api.nvim_create_user_command("RustRun", M.run, {})
 
     vim.keymap.set("n", M.rust_build, ":RustBuild<CR>", { silent = true })
     vim.keymap.set("n", M.rust_run, ":RustRun<CR>", { silent = true })
-    vim.keymap.set("n", M.new_rust_file, ":NewRustFile<CR>", { silent = true })
 end
 
 function M.open_float_terminal(cmd)

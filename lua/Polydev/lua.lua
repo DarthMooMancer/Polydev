@@ -1,14 +1,12 @@
 local M = {}
 M.close_key = nil
 M.lua_run = nil
-M.new_lua_file = nil
 
 M.config = {
     project_root = "~/Projects/Lua",
     keybinds = {
         ["<Esc>"] = "CloseTerminal",
         ["<leader>pr"] = "LuaRun",
-        ["<leader>nf"] = "NewLuaFile",
     },
     terminal = {
         right_padding = 0,
@@ -44,13 +42,10 @@ function M.setup(opts)
     for key, command in pairs(M.config.keybinds) do
         if command == "CloseTerminal" then M.close_key = key end
         if command == "LuaRun" then M.lua_run = key end
-        if command == "NewLuaFile" then M.new_lua_file = key end
     end
 
-    vim.api.nvim_create_user_command("NewLuaFile", M.create_new_file, {})
     vim.api.nvim_create_user_command("LuaRun", M.run, {})
     vim.keymap.set("n", M.lua_run, ":LuaRun<CR>", { silent = true })
-    vim.keymap.set("n", M.new_lua_file, ":NewLuaFile<CR>", { silent = true })
 end
 
 function M.open_float_terminal(cmd)

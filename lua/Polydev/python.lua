@@ -1,7 +1,6 @@
 local M = {}
 M.close_key = nil
 M.c_run = nil
-M.new_python_file = nil
 M.new_pip_module = nil
 M.run_custom = nil
 
@@ -10,7 +9,6 @@ M.config = {
     keybinds = {
 	["<Esc>"] = "CloseTerminal",
 	["<leader>pr"] = "PythonRun",
-	["<leader>nf"] = "NewPythonFile",
 	["<leader>pb"] = "PythonPip",
 	["<leader>pc"] = "PythonCustom"
     },
@@ -31,7 +29,6 @@ function M.setup(opts)
     for key, command in pairs(M.config.keybinds) do
 	if command == "CloseTerminal" then M.close_key = key end
 	if command == "PythonRun" then M.c_run = key end
-	if command == "NewPythonFile" then M.new_python_file = key end
 	if command == "PythonPip" then M.new_pip_module = key end
 	if command == "PythonCustom" then M.run_custom = key end
     end
@@ -46,13 +43,11 @@ function M.setup(opts)
     end
 
     vim.api.nvim_create_user_command("PythonPip", M.install_dependency, {})
-    vim.api.nvim_create_user_command("NewPythonFile", M.create_new_file, {})
     vim.api.nvim_create_user_command("PythonRun", M.run, {})
     vim.api.nvim_create_user_command("PythonCustom", M.custom_run, {})
 
 
     vim.keymap.set("n", M.c_run, ":PythonRun<CR>", { silent = true })
-    vim.keymap.set("n", M.new_python_file, ":NewPythonFile<CR>", { silent = true })
     vim.keymap.set("n", M.new_pip_module, ":PythonPip<CR>", { silent = true })
     vim.keymap.set("n", M.run_custom, ":PythonCustom<CR>", { silent = true })
 end

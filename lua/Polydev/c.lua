@@ -2,7 +2,6 @@ local M = {}
 M.close_key = nil
 M.c_build = nil
 M.c_run = nil
-M.new_c_file = nil
 M.new_c_header_file = nil
 
 M.config = {
@@ -11,7 +10,6 @@ M.config = {
 	["<Esc>"] = "CloseTerminal",
 	["<leader>pb"] = "CBuild",
 	["<leader>pr"] = "CRun",
-	["<leader>nf"] = "NewCFile",
 	["<leader>nh"] = "NewCHeaderFile",
     },
     terminal = {
@@ -33,18 +31,15 @@ function M.setup(opts)
 	if command == "CloseTerminal" then M.close_key = key end
 	if command == "CBuild" then M.c_build = key end
 	if command == "CRun" then M.c_run = key end
-	if command == "NewCFile" then M.new_c_file = key end
 	if command == "NewCHeaderFile" then M.new_c_header_file = key end
     end
 
     vim.api.nvim_create_user_command("NewCHeaderFile", M.create_new_header_file, {})
-    vim.api.nvim_create_user_command("NewCFile", M.create_new_file, {})
     vim.api.nvim_create_user_command("CBuild", M.build, {})
     vim.api.nvim_create_user_command("CRun", M.run, {})
 
     vim.keymap.set("n", M.c_build, ":CBuild<CR>", { silent = true })
     vim.keymap.set("n", M.c_run, ":CRun<CR>", { silent = true })
-    vim.keymap.set("n", M.new_c_file, ":NewCFile<CR>", { silent = true })
     vim.keymap.set("n", M.new_c_header_file, ":NewCHeaderFile<CR>", { silent = true })
 end
 
