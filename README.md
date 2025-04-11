@@ -19,6 +19,7 @@ The ability to -
 * Python
 * C
 * Lua
+* C++
 
 ## Questions and Contributing
 
