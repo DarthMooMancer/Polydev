@@ -104,7 +104,7 @@ end
 function M.get_project_root()
     local dir = vim.fn.expand("%:p:h")
     while dir ~= "/" do
-	if vim.fn.isdirectory(dir .. "/src") == 1 or vim.fn.filereadable(dir .. "/CMakeLists.txt") == 1 then
+	if vim.fn.isdirectory(dir .. "/src") == 1 then
 	    return dir
 	end
 	dir = vim.fn.fnamemodify(dir, ":h")

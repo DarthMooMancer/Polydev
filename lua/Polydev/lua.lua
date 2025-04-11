@@ -106,7 +106,7 @@ local M = {}
 return M
 ]])
 
-        write_file(project_root .. "/" .. project_name .. ".polydev", "")
+        write_file(project_root .. "/" .. project_name .. ".polydev", "[[DO NOT REMOVE THIS FILE]]")
         vim.cmd("edit " .. project_root .. "/lua/" .. project_name .. "/init.lua")
     end)
 end
