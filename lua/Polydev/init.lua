@@ -14,10 +14,12 @@ function M.load_language_module(lang)
 
     local ok, lang_module = pcall(require, "Polydev." .. lang)
     if ok and lang_module.setup then
-        lang_module.setup()
+        local opts = M.language_opts and M.language_opts[lang] or {}
+        lang_module.setup(opts)
         M.loaded_languages[lang] = lang_module
         return true
     end
+
     return false
 end
 
@@ -45,7 +47,13 @@ function M.create_new_file()
     end)
 end
 
-function M.setup()
+function M.setup(opts)
+    opts = opts or {}
+
+    -- Send config to globals
+    require("Polydev.globals").setup(opts.globals or {})
+     M.language_opts = opts  -- store all opts, including language-specific one
+
     vim.api.nvim_create_user_command("NewProject", M.create_project, {})
     vim.api.nvim_create_user_command("NewFile", M.create_new_file, {})
     vim.keymap.set("n", "<leader>np", ":NewProject<CR>", { silent = true })
