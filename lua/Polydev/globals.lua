@@ -7,7 +7,7 @@ M.config = {
 	left_padding = 0,
 	top_padding = 0,
 	border = true,
-	number = false,
+	number = true,
 	relativenumber = true,
 	scroll = true,
     }
