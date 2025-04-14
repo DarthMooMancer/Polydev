@@ -1,6 +1,7 @@
 local M = {}
 
 M.loaded_languages = {}
+M.globals = require("Polydev.globals")
 M.java = require("Polydev.java")
 M.c = require("Polydev.c")
 M.cpp = require("Polydev.cpp")
@@ -8,14 +9,14 @@ M.lua = require("Polydev.lua")
 M.python = require("Polydev.python")
 M.rust = require("Polydev.rust")
 M.html = require("Polydev.html")
-M.globals = require("Polydev.globals")
 
-function M.load_language_module(lang)
+function M.load_language_module(lang, opts)
     if M.loaded_languages[lang] then return true end
 
     local ok, lang_module = pcall(require, "Polydev." .. lang)
     if ok and lang_module.setup then
-        lang_module.setup()
+        local lang_opts = opts and opts[lang] or {}
+        lang_module.setup(lang_opts)
         M.loaded_languages[lang] = lang_module
         return true
     end
@@ -46,7 +47,7 @@ function M.create_new_file()
     end)
 end
 
-function M.setup()
+function M.setup(opts)
     vim.api.nvim_create_user_command("NewProject", M.create_project, {})
     vim.api.nvim_create_user_command("NewFile", M.create_new_file, {})
     vim.keymap.set("n", "<leader>np", ":NewProject<CR>", { silent = true })
@@ -55,7 +56,7 @@ function M.setup()
 	pattern = "*",
 	callback = function()
 	    local filetype = vim.bo.filetype
-	    M.load_language_module(filetype)
+	    M.load_language_module(filetype, opts)
 	end,
     })
 end
