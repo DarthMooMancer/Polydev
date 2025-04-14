@@ -1,6 +1,23 @@
 local M = {}
 local term_cfg = require("Polydev.globals").config.terminal
 
+function M.deep_merge_with_defaults(user_opts, default_opts)
+    local result = vim.deepcopy(default_opts or {})
+
+    local function merge(user, default)
+        for k, v in pairs(default) do
+            if type(v) == "table" and type(user[k]) == "table" then
+                merge(user[k], v)
+            elseif user[k] == nil then
+                user[k] = v
+            end
+        end
+    end
+
+    merge(user_opts or {}, result)
+    return user_opts or result
+end
+
 function M.write_file(path, content)
     local file = assert(io.open(path, "w"), "Error creating file: " .. path)
     file:write(content)
