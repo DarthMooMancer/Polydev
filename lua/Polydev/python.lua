@@ -15,8 +15,7 @@ M.config = {
 }
 
 function M.setup(opts)
-    M.config = utils.deep_merge_with_defaults(opts, M.config)
-
+    M.config = vim.tbl_deep_extend("force", M.config, opts or {})
     for key, command in pairs(M.config.keybinds) do
 	if command == "PythonRun" then M.c_run = key end
 	if command == "PythonPip" then M.new_pip_module = key end

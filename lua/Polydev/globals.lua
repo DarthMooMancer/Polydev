@@ -14,7 +14,10 @@ M.config = {
 }
 
 function M.setup(opts)
-    M.config = vim.tbl_deep_extend("force", M.config, opts or {})
+    opts = opts or {}
+
+    -- Make sure nested tables are deep-merged
+    M.config.terminal = vim.tbl_deep_extend("force", M.config.terminal, opts.terminal or {})
 end
 
 return M
