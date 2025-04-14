@@ -48,6 +48,13 @@ function M.create_new_file()
 end
 
 function M.setup(opts)
+    opts = opts or {}
+
+    -- Merge globals if provided
+    if opts.globals then
+        M.globals.config = vim.tbl_deep_extend("force", M.globals.config, opts.globals)
+    end
+
     vim.api.nvim_create_user_command("NewProject", M.create_project, {})
     vim.api.nvim_create_user_command("NewFile", M.create_new_file, {})
     vim.keymap.set("n", "<leader>np", ":NewProject<CR>", { silent = true })
