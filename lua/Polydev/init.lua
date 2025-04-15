@@ -1,14 +1,14 @@
 local M = {}
 
 M.loaded_languages = {}
-M.globals = require("Polydev.globals")
-M.java = require("Polydev.java")
-M.c = require("Polydev.c")
-M.cpp = require("Polydev.cpp")
-M.lua = require("Polydev.lua")
-M.python = require("Polydev.python")
-M.rust = require("Polydev.rust")
-M.html = require("Polydev.html")
+-- M.globals = require("Polydev.globals")
+-- M.java = require("Polydev.java")
+-- M.c = require("Polydev.c")
+-- M.cpp = require("Polydev.cpp")
+-- M.lua = require("Polydev.lua")
+-- M.python = require("Polydev.python")
+-- M.rust = require("Polydev.rust")
+-- M.html = require("Polydev.html")
 
 function M.load_language_module(lang, opts)
     if M.loaded_languages[lang] then return true end
