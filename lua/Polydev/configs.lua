@@ -1,6 +1,14 @@
 local M = {}
 
 M.defaults = {
+    python = {
+	project_root = "~/Projects/Python",
+	keybinds = {
+	    ["<leader>pr"] = "PythonRun",
+	    ["<leader>pb"] = "PythonPip",
+	    ["<leader>pc"] = "PythonCustom"
+	},
+    },
     terminal = {
 	right_padding = 0,
 	bottom_padding = 0,
@@ -11,16 +19,16 @@ M.defaults = {
 	relativenumber = true,
 	scroll = true,
     }
-    -- java = { indent = 4 },
-    -- python = { formatter = "black", linting = true },
-    -- lua = { diagnostics = true },
-    -- c = { compiler = "gcc" },
-    -- cpp = { compiler = "g++" },
-    -- rust = { edition = "2021" },
-    -- html = { use_tailwind = false },
 }
 
--- This will be updated by setup()
-M.user_config = vim.deepcopy(M.defaults)
+M.user_config = {}
+
+function M.setup(user_opts)
+    M.user_config = vim.tbl_deep_extend("force", {}, M.defaults, user_opts or {})
+end
+
+function M.get(lang)
+    return M.user_config[lang] or {}
+end
 
 return M

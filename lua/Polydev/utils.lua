@@ -1,5 +1,6 @@
 local M = {}
 local term_cfg = require("Polydev.configs").defaults.terminal
+local config = require("Polydev.configs")
 
 function M.write_file(path, content)
     local file = assert(io.open(path, "w"), "Error creating file: " .. path)

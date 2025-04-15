@@ -1,26 +1,14 @@
-local config = require("Polydev.config")
 local utils = require("Polydev.utils")
+local config = require("Polydev.configs")
 local M = {}
 
-M.c_run = nil
-M.new_pip_module = nil
-M.run_custom = nil
-
-M.config = {
-    project_root = "~/Projects/Python",
-    keybinds = {
-	["<leader>pr"] = "PythonRun",
-	["<leader>pb"] = "PythonPip",
-	["<leader>pc"] = "PythonCustom"
-    },
-}
+M.keybinds = {}
+M.opts = nil
 
 function M.setup(opts)
-    M.config = vim.tbl_deep_extend("force", M.config, opts or {})
-    for key, command in pairs(M.config.keybinds) do
-	if command == "PythonRun" then M.c_run = key end
-	if command == "PythonPip" then M.new_pip_module = key end
-	if command == "PythonCustom" then M.run_custom = key end
+    M.opts = vim.tbl_deep_extend("force", {}, config.get("python"), opts or {})
+    for key, command in pairs(M.opts.keybinds) do
+	M.keybinds[command] = key
     end
 
     local root = M.get_project_root()
@@ -34,12 +22,13 @@ function M.setup(opts)
 
     vim.api.nvim_create_user_command("PythonPip", M.install_dependency, {})
     vim.api.nvim_create_user_command("PythonRun", M.run, {})
-    vim.api.nvim_create_user_command("PythonCustom", M.custom_run, {})
 
-
-    vim.keymap.set("n", M.c_run, ":PythonRun<CR>", { silent = true })
-    vim.keymap.set("n", M.new_pip_module, ":PythonPip<CR>", { silent = true })
-    vim.keymap.set("n", M.run_custom, ":PythonCustom<CR>", { silent = true })
+    if M.keybinds.PythonRun then
+	vim.keymap.set("n", M.keybinds.PythonRun, ":PythonRun<CR>", { silent = true })
+    end
+    if M.keybinds.PythonPip then
+	vim.keymap.set("n", M.keybinds.PythonPip, ":PythonPip<CR>", { silent = true })
+    end
 end
 
 function M.get_project_root()
@@ -60,7 +49,7 @@ function M.create_project()
 	    return
 	end
 
-	local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
+	local project_root = vim.fn.expand(M.opts.project_root) .. "/" .. project_name
 	for _, path in ipairs({ "/include" }) do
 	    vim.fn.mkdir(project_root .. path, "p")
 	end
@@ -99,25 +88,23 @@ setup(
 end
 
 function M.create_new_file()
-    local opts = config.user_config.python
-    print("Creating Python project with formatter: " .. opts.formatter)
-	--    vim.ui.input({ prompt = "Enter file name: " }, function(file_name)
-	-- if not file_name or file_name == "" then
-	--     return print("File creation canceled.")
-	-- end
-	--
-	-- if not file_name:match("%.py$") then
-	--     file_name = file_name .. ".py"
-	-- end
-	--
-	-- local root_dir = M.get_project_root()
-	-- if not root_dir then
-	--     return print("Error: Project root not found.")
-	-- end
-	--
-	-- local file_path = root_dir .. "/include/" .. file_name
-	-- utils.write_file(file_path, "")
-	--    end)
+    vim.ui.input({ prompt = "Enter file name: " }, function(file_name)
+	if not file_name or file_name == "" then
+	    return print("File creation canceled.")
+	end
+
+	if not file_name:match("%.py$") then
+	    file_name = file_name .. ".py"
+	end
+
+	local root_dir = M.get_project_root()
+	if not root_dir then
+	    return print("Error: Project root not found.")
+	end
+
+	local file_path = root_dir .. "/include/" .. file_name
+	utils.write_file(file_path, "")
+    end)
 end
 
 function M.install_dependency()
@@ -130,38 +117,15 @@ function M.install_dependency()
     end)
 end
 
-function M.custom_run()
-    vim.ui.input({ prompt = "Enter File Name: " }, function(custom_file)
-	if not custom_file or custom_file == "" then
-	    return print("Run canceled")
-	end
-
-	local root = M.get_project_root()
-	-- Detect current shell
-	local shell = vim.fn.getenv("SHELL") or ""
-	local venv_cmd
-
-	if shell:match("fish") then
-	    local venv_fish = root .. "/venv/bin/activate.fish"
-	    venv_cmd = vim.fn.filereadable(venv_fish) == 1 and "source " .. venv_fish .. " && " or ""
-	else
-	    local venv_bash = root .. "/venv/bin/activate"
-	    venv_cmd = vim.fn.filereadable(venv_bash) == 1 and "source " .. venv_bash .. " && " or ""
-	end
-
-	utils.open_float_terminal(venv_cmd .. "python3 " .. custom_file .. ".py")
-    end)
-end
-
 function M.run()
     local root = M.get_project_root()
     if not root then
-        return print("Error: Project root not found.")
+	return print("Error: Project root not found.")
     end
 
     local main_file = root .. "/main.py"
     if vim.fn.filereadable(main_file) == 0 then
-        return print("Error: main.py not found in project root.")
+	return print("Error: main.py not found in project root.")
     end
 
     -- Detect current shell
@@ -169,11 +133,11 @@ function M.run()
     local venv_cmd
 
     if shell:match("fish") then
-        local venv_fish = root .. "/venv/bin/activate.fish"
-        venv_cmd = vim.fn.filereadable(venv_fish) == 1 and "source " .. venv_fish .. " && " or ""
+	local venv_fish = root .. "/venv/bin/activate.fish"
+	venv_cmd = vim.fn.filereadable(venv_fish) == 1 and "source " .. venv_fish .. " && " or ""
     else
-        local venv_bash = root .. "/venv/bin/activate"
-        venv_cmd = vim.fn.filereadable(venv_bash) == 1 and "source " .. venv_bash .. " && " or ""
+	local venv_bash = root .. "/venv/bin/activate"
+	venv_cmd = vim.fn.filereadable(venv_bash) == 1 and "source " .. venv_bash .. " && " or ""
     end
 
     utils.open_float_terminal(venv_cmd .. "python3 " .. main_file)

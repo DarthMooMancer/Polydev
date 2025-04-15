@@ -49,6 +49,7 @@ end
 
 function M.setup(opts)
     opts = opts or {}
+    M.config.setup(opts)
     for lang, user_opts in pairs(opts) do
 	local default = M.config.defaults[lang] or {}
 	M.config.user_config[lang] = vim.tbl_deep_extend("force", default, user_opts)
