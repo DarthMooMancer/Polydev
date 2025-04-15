@@ -2,6 +2,7 @@ local M = {}
 
 M.loaded_languages = {}
 M.config = require("Polydev.configs")
+M.utils = require("Polydev.utils")
 M.java = require("Polydev.languages.java")
 M.c = require("Polydev.languages.c")
 M.cpp = require("Polydev.languages.cpp")

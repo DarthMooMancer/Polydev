@@ -6,7 +6,12 @@ M.defaults = {
 	keybinds = {
 	    ["<leader>pr"] = "PythonRun",
 	    ["<leader>pb"] = "PythonPip",
-	    ["<leader>pc"] = "PythonCustom"
+	},
+    },
+    lua = {
+	project_root = "~/Projects/Lua",
+	keybinds = {
+	    ["<leader>pr"] = "LuaRun",
 	},
     },
     terminal = {
