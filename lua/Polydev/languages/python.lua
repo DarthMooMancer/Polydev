@@ -1,5 +1,6 @@
-local M = {}
+local config = require("Polydev.config")
 local utils = require("Polydev.utils")
+local M = {}
 
 M.c_run = nil
 M.new_pip_module = nil
@@ -98,23 +99,25 @@ setup(
 end
 
 function M.create_new_file()
-    vim.ui.input({ prompt = "Enter file name: " }, function(file_name)
-	if not file_name or file_name == "" then
-	    return print("File creation canceled.")
-	end
-
-	if not file_name:match("%.py$") then
-	    file_name = file_name .. ".py"
-	end
-
-	local root_dir = M.get_project_root()
-	if not root_dir then
-	    return print("Error: Project root not found.")
-	end
-
-	local file_path = root_dir .. "/include/" .. file_name
-	utils.write_file(file_path, "")
-    end)
+    local opts = config.user_config.python
+    print("Creating Python project with formatter: " .. opts.formatter)
+	--    vim.ui.input({ prompt = "Enter file name: " }, function(file_name)
+	-- if not file_name or file_name == "" then
+	--     return print("File creation canceled.")
+	-- end
+	--
+	-- if not file_name:match("%.py$") then
+	--     file_name = file_name .. ".py"
+	-- end
+	--
+	-- local root_dir = M.get_project_root()
+	-- if not root_dir then
+	--     return print("Error: Project root not found.")
+	-- end
+	--
+	-- local file_path = root_dir .. "/include/" .. file_name
+	-- utils.write_file(file_path, "")
+	--    end)
 end
 
 function M.install_dependency()

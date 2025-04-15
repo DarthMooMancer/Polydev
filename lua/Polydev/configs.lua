@@ -1,6 +1,6 @@
 local M = {}
 
-M.config = {
+M.defaults = {
     terminal = {
 	right_padding = 0,
 	bottom_padding = 0,
@@ -11,13 +11,16 @@ M.config = {
 	relativenumber = true,
 	scroll = true,
     }
+    -- java = { indent = 4 },
+    -- python = { formatter = "black", linting = true },
+    -- lua = { diagnostics = true },
+    -- c = { compiler = "gcc" },
+    -- cpp = { compiler = "g++" },
+    -- rust = { edition = "2021" },
+    -- html = { use_tailwind = false },
 }
 
-function M.setup(opts)
-    opts = opts or {}
-
-    -- Make sure nested tables are deep-merged
-    M.config.terminal = vim.tbl_deep_extend("force", M.config.terminal, opts.terminal or {})
-end
+-- This will be updated by setup()
+M.user_config = vim.deepcopy(M.defaults)
 
 return M

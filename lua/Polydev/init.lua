@@ -1,7 +1,7 @@
 local M = {}
 
 M.loaded_languages = {}
-M.configs = require("Polydev.configs")
+M.config = require("Polydev.configs")
 M.java = require("Polydev.languages.java")
 M.c = require("Polydev.languages.c")
 M.cpp = require("Polydev.languages.cpp")
@@ -49,6 +49,10 @@ end
 
 function M.setup(opts)
     opts = opts or {}
+    for lang, user_opts in pairs(opts) do
+	local default = M.config.defaults[lang] or {}
+	M.config.user_config[lang] = vim.tbl_deep_extend("force", default, user_opts)
+    end
 
     vim.api.nvim_create_user_command("NewProject", M.create_project, {})
     vim.api.nvim_create_user_command("NewFile", M.create_new_file, {})
