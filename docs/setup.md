@@ -84,17 +84,15 @@ require("Polydev"}.language.setup({
 return {
     ...
     opts = {
-        <language> = {
-            terminal = {
-                right_padding = 0,
-                bottom_padding = 0,
-                left_padding = 0,
-                top_padding = 0,
-                border = true,
-                number = true,
-                relativenumber = true,
-                scroll = true,
-            }
+        terminal = {
+            right_padding = 0,
+            bottom_padding = 0,
+            left_padding = 0,
+            top_padding = 0,
+            border = true,
+            number = true,
+            relativenumber = true,
+            scroll = true,
         }
     }
     ...
@@ -105,7 +103,7 @@ return {
 
 ```lua
 -- These are just defaults, so no need to copy them
-require("Polydev").language.setup({
+require("Polydev").setup({
     terminal = {
         right_padding = 0,
         bottom_padding = 0,
