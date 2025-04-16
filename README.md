@@ -1,8 +1,6 @@
 # Polydev
 A multi-lingual plugin that adds some nice features to neovim for managing, creating, building and runnning projects all within neovim.
 
-Documentation is over at [Polydev Documentation](https://darthmoomancer.github.io/Polydev/)
-
 ![Polydev-c](https://github.com/user-attachments/assets/365dd673-6b1f-4ccc-ac1f-c5131d055fd9)
 
 ### Quick Features
@@ -13,6 +11,8 @@ The ability to -
 * Run those files
 * Builtin terminal for running code
 * And More!
+
+Documentation is over at [Polydev Documentation](https://darthmoomancer.github.io/Polydev/)
 
 ### Currently Supported (And working) Languages
 * Java
