@@ -1,20 +1,54 @@
-## Keybinds
+### Python Setup for Polydev 🐍
+
+#### Keybinds 🎮
+You can easily customize the keybinds for your Python projects using Polydev.
+
+| Keybind             | Action                                            |
+|---------------------|---------------------------------------------------|
+| `<leader>pr`        | Run the Python project in your active terminal    |
+| `<leader>pb`        | Install dependencies using pip                    |
+
+#### Configuration Example:
+
 ```lua
 require("Polydev").python.setup({
   keybinds = {
-    ["<Esc>"] = "CloseTerminal",
-    ["<leader>pr"] = "PythonRun",
-    ["<leader>nf"] = "NewPythonFile",
-    ["<leader>pb"] = "PythonPip"
+    ["<leader>pr"] = "PythonRun",  -- Run the Python project
+    ["<leader>pb"] = "PythonPip"   -- Install dependencies using pip
   }
 })
 ```
 
-## Python Features
-* A feature that is added to the python language for this plugin is to be able to install dependencies with pip within the terminal. You can even update pip. Just type your dependency you want and boom it is installed or not depending on if python likes you.
-* Each project with python creates a new virtual environment and automatically uses it so you dont have to worry, just install modules as you like.
+---
 
-## File Structure
+#### Python Features 🚀
+
+Here are some cool features available for Python projects using Polydev:
+
+- **Automatic Virtual Environment Creation** 🔧  
+Each Python project automatically sets up and uses a new virtual environment. You don’t need to worry about environment management. Just install your dependencies with `pip` as needed.
+
+- **Dependency Management with Pip** 📦  
+Need to install Python modules? Simply type the name of the module in the terminal, and Polydev will take care of the installation using `pip`. You can even update `pip` if required, ensuring smooth installation.
+
+- **Effortless Dependency Handling** ⚡  
+You no longer need to manually activate or deactivate virtual environments. With Polydev, the environment is set up and activated automatically, simplifying your workflow.
+
+---
+
+#### File Structure 📂
+Here’s the recommended structure for your Python projects using Polydev:
+
+| Directory/File Path        | Description                                          |
+|----------------------------|------------------------------------------------------|
+| `requirements.txt`          | File for listing project dependencies                |
+| `setup.py`                  | Python project setup file                            |
+| `tests/`                    | Folder containing test files                         |
+| `venv/`                     | Virtual environment folder                           |
+| `main.py`                   | Main Python file for your project                    |
+
+#### Example Structure:
+
 ```md
 Projects/
 └── Python/
@@ -24,5 +58,6 @@ Projects/
         ├── setup.py
         ├── tests/
         └── venv/
-
 ```
+
+---
