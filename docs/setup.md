@@ -1,85 +1,98 @@
-# Setup and Customizing
 
-## Project Name
-* You can change the default directory for the project. The project can be made from anywhere you want.
-* It will automatically make the new Root Directory, so you don't have to worry about making it.
+# Setup and Customizing Polydev
 
-### Lazy
+## 🔧 Project Name Customization
+You can easily customize the default directory for your project! The project can be created from any directory, and Polydev will automatically create the required project root directory for you.
+
+> **Note:** `project_root` allows you to customize where your project will be stored. If you don't specify it, the default is `~/Projects/Language`.
+
+---
+### LazyVim Example
+
 ```lua
 return {
     ...
     opts = {
         <language> = {
             project_root = "~/Home/..." -- Default: ~/Projects/Language
-
         }
     }
     ...
 }
 ```
 
-### Others
+### Packer Example
+
 ```lua
 require("Polydev").language.setup({
     project_root = "~/Home/..." -- Default: ~/Projects/Language
 })
 ```
 
-## Keybinds
-* Every language has the almost same keybinds so it is easy to remember keybinds and not have to remember thousands of keybinds.
-* Some languages have separate functions (python has a pip keybind for example) adding more keybinds
 
-```
-Key/
-├── *Universal, cannot be changed through specific language settings
-└── *Per-language, can be changed separately by language if wanted
-```
+## ⌨ Keybinds Customization
+Polydev allows you to easily manage keybinds, providing a uniform way to interact with different languages. Most keybinds are the same across languages, while some have language-specific ones (e.g., Python's pip keybind).
 
-### Lazy
+### Keybind Categories
+| Keybind Type      | Description                                      |
+|-------------------|--------------------------------------------------|
+| **Universal**     | Cannot be changed through specific language settings (e.g., `<leader>nf` for a new file). |
+| **Per-language**  | Can be customized per language (e.g., `<leader>pb` for language build). |
+
+### LazyVim Example
+
 ```lua
 return {
     ...
     opts = {
         <language> = {
-            ["<Esc>"] = "CloseTerminal", -- Planned to be *Universal -- However can be changed per language for now 
-            ["<leader>pb"] = "languageBuild", -- *Per-language
-            ["<leader>pr"] = "languageRun", -- *Per-language
-            ["<leader>nf"] = "NewLanguageFile", --*Universal -- such as .c files
-            ["<leader>nh"] = "NewLanguageSecondaryFile", --*Universal -- such as .h files
+            ["<Esc>"] = "CloseTerminal",  -- Universal, can be changed per language for now
+            ["<leader>pb"] = "languageBuild",  -- Per-language
+            ["<leader>pr"] = "languageRun",   -- Per-language
+            ["<leader>nf"] = "NewLanguageFile",  -- Universal
+            ["<leader>nh"] = "NewLanguageSecondaryFile",  -- Universal
         }
     }
     ...
 }
 ```
 
-### Others
+### Packer Example
+
 ```lua
-require("Polydev"}.language.setup({
-    keybinds = [
-        ["<Esc>"] = "CloseTerminal", -- Planned to be *Universal -- However can be changed per language for now 
-        ["<leader>pb"] = "languageBuild", -- *Per-language
-        ["<leader>pr"] = "languageRun", -- *Per-language
-        ["<leader>nf"] = "NewLanguageFile", --*Universal -- such as .c files
-        ["<leader>nh"] = "NewLanguageSecondaryFile", --*Universal -- such as .h files
-}
+require("Polydev").language.setup({
+    keybinds = {
+        ["<Esc>"] = "CloseTerminal",  -- Universal, can be changed per language for now
+        ["<leader>pb"] = "languageBuild",  -- Per-language
+        ["<leader>pr"] = "languageRun",   -- Per-language
+        ["<leader>nf"] = "NewLanguageFile",  -- Universal
+        ["<leader>nh"] = "NewLanguageSecondaryFile",  -- Universal
+    }
 })
 ```
 
-## Terminal
-* I plan on making the terminal settings a global setting instead of language specific, just need to figure out how
-* The terminal has a couple of options that can be customized and with more to come
-    - Each is set to 0 by default
-        * **_right_padding:_** Padding for the right width of the terminal
-        * **_left_padding:_** Padding for the left width of the terminal
-        * **_top_padding:_** Padding for the top height of the terminal
-        * **_bottom_padding:_** Padding for the bottom padding of the terminal
-    - Each is enabled by default
-        * **_border:_** Adds a rounded border to the window
-        * **_number:_** Adds numbers to side of terminal
-        * **_relativenumber:_** Relative numbers indicate distances from the cursor, only works if number is enabled
-        * **_scroll:_** Allows scrolling in terminal
+---
 
-### Lazy
+## 🖥 Terminal Customization
+You can further tweak the terminal settings to suit your preferences! These options allow you to adjust padding, borders, numbers, and scrolling behavior.
+
+### Available Terminal Settings
+| Setting          | Default Value   | Description                                             |
+|------------------|-----------------|---------------------------------------------------------|
+| **right_padding** | `0`             | Padding for the right width of the terminal.            |
+| **left_padding**  | `0`             | Padding for the left width of the terminal.             |
+| **top_padding**   | `0`             | Padding for the top height of the terminal.             |
+| **bottom_padding**| `0`             | Padding for the bottom height of the terminal.          |
+| **border**        | `true`          | Adds a rounded border to the window.                    |
+| **number**        | `true`          | Displays line numbers in the terminal.                  |
+| **relativenumber**| `true`          | Displays relative numbers based on cursor position.     |
+| **scroll**        | `true`          | Enables scroll functionality in the terminal.           |
+
+> **Note:** These terminal settings allow you to personalize the terminal view and improve usability. You can easily adjust the padding, borders, and other aspects to your preference.
+
+---
+### LazyVim Example
+
 ```lua
 return {
     ...
@@ -99,10 +112,9 @@ return {
 }
 ```
 
-### Others
+### Packer Example
 
 ```lua
--- These are just defaults, so no need to copy them
 require("Polydev").setup({
     terminal = {
         right_padding = 0,
@@ -116,3 +128,9 @@ require("Polydev").setup({
     }
 })
 ```
+
+
+## 🚀 Final Thoughts and Customizations
+This guide provided you with the basic configuration steps for setting up Polydev with your preferred package manager and customizing key aspects like project names, keybinds, and terminal settings.
+
+You can further explore other Polydev features and modify the configuration to suit your development workflow.
