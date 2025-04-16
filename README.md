@@ -54,5 +54,3 @@ Got ideas? 💡 Have a feature you’d love to see or a language you want to see
 Your feedback and contributions are key to making Polydev even better! Thank you for being part of the journey. 🙏
 
 ---
-
-Feel free to customize it further as needed!
