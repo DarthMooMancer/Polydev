@@ -7,26 +7,33 @@
 ----------
 
 ```lua
-require {
-  "DarthMooMancer/Polydev",
-  config = function()
-    require("Polydev").setup()
-    --require("Polydev").language.setup({
-        -- configs
-      --})
-  end
+return {
+    "DarthMooMancer/Polydev",
+    opts = {
+        <language> = {
+            ...
+        },
+        terminal = {
+            ...
+        }
+    }
 }
 ```
 
 ## Mini.Deps
 ------------
+
 ```lua
 MiniDeps.add({
-  source = 'DarthMooMancer/Polydev',
+    source = 'DarthMooMancer/Polydev',
 })
 
-require("Polydev").setup()
---require("Polydev").language.setup({
-  -- configs
---})
+require("Polydev").setup({
+    <language> = {
+        ...
+    },
+    terminal = {
+        ...
+    }
+})
 ```
