@@ -3,7 +3,8 @@ A multi-lingual plugin that adds some nice features to neovim for managing, crea
 
 !!! Documentation is over at [Polydev Documentation](https://darthmoomancer.github.io/Polydev/)
 
-![Python-polydev-720](https://github.com/user-attachments/assets/b66f46e8-901f-4a46-8e79-10b688d4109a)
+![Polydev-c](https://github.com/user-attachments/assets/365dd673-6b1f-4ccc-ac1f-c5131d055fd9)
+
 
 
 ### Quick Features
