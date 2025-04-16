@@ -1,29 +1,24 @@
-local M = {}
 local utils = require("Polydev.utils")
+local M = {}
 
-M.rust_build = nil
-M.rust_run = nil
-
-M.config = {
-    project_root = "~/Projects/Rust",
-    keybinds = {
-	["<leader>pb"] = "RustBuild",
-	["<leader>pr"] = "RustRun",
-    },
-}
+M.keybinds = {}
+M.opts = nil
 
 function M.setup(opts)
-    M.config = vim.tbl_deep_extend("force", M.config, opts or {})
-    for key, command in pairs(M.config.keybinds) do
-	if command == "RustBuild" then M.rust_build = key end
-	if command == "RustRun" then M.rust_run = key end
+    M.opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get("rust"), opts or {})
+    for key, command in pairs(M.opts.keybinds) do
+	M.keybinds[command] = key
     end
 
     vim.api.nvim_create_user_command("RustBuild", M.build, {})
     vim.api.nvim_create_user_command("RustRun", M.run, {})
 
-    vim.keymap.set("n", M.rust_build, ":RustBuild<CR>", { silent = true })
-    vim.keymap.set("n", M.rust_run, ":RustRun<CR>", { silent = true })
+    if M.keybinds.RustRun then
+	vim.keymap.set("n", M.keybinds.RustRun, ":RustRun<CR>", { silent = true })
+    end
+    if M.keybinds.RustBuild then
+	vim.keymap.set("n", M.keybinds.RustBuild, ":RustBuild<CR>", { silent = true })
+    end
 end
 
 function M.create_project()

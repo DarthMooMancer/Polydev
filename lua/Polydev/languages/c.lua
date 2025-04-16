@@ -1,37 +1,29 @@
-local M = {}
 local utils = require("Polydev.utils")
+local M = {}
 
-M.c_build = nil
-M.c_run = nil
-M.new_c_header_file = nil
-
-M.config = {
-    project_root = "~/Projects/C",
-    keybinds = {
-	["<leader>pb"] = "CBuild",
-	["<leader>pr"] = "CRun",
-	["<leader>nh"] = "NewCHeaderFile",
-    },
-    build_attributes = ""
-}
+M.keybinds = {}
+M.opts = nil
 
 function M.setup(opts)
-    M.config = vim.tbl_deep_extend("force", M.config, opts or {})
-    for key, command in pairs(M.config.keybinds) do
-	if command == "CBuild" then M.c_build = key end
-	if command == "CRun" then M.c_run = key end
-	if command == "NewCHeaderFile" then M.new_c_header_file = key end
+    M.opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get("c"), opts or {})
+    for key, command in pairs(M.opts.keybinds) do
+	M.keybinds[command] = key
     end
 
     vim.api.nvim_create_user_command("NewCHeaderFile", M.create_new_header_file, {})
     vim.api.nvim_create_user_command("CBuild", M.build, {})
     vim.api.nvim_create_user_command("CRun", M.run, {})
 
-    vim.keymap.set("n", M.c_build, ":CBuild<CR>", { silent = true })
-    vim.keymap.set("n", M.c_run, ":CRun<CR>", { silent = true })
-    vim.keymap.set("n", M.new_c_header_file, ":NewCHeaderFile<CR>", { silent = true })
+    if M.keybinds.CBuild then
+	vim.keymap.set("n", M.keybinds.CBuild, ":CBuild<CR>", { silent = true })
+    end
+    if M.keybinds.CRun then
+	vim.keymap.set("n", M.keybinds.CRun, ":CRun<CR>", { silent = true })
+    end
+    if M.keybinds.NewCHeaderFile then
+	vim.keymap.set("n", M.keybinds.NewCHeaderFile, ":NewCHeaderFile<CR>", { silent = true })
+    end
 end
-
 
 function M.create_project()
     vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
@@ -40,7 +32,7 @@ function M.create_project()
 	    return
 	end
 
-	local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
+	local project_root = vim.fn.expand(M.opts.project_root) .. "/" .. project_name
 	for _, path in ipairs({ "/src", "/build", "/include" }) do
 	    vim.fn.mkdir(project_root .. path, "p")
 	end
@@ -108,6 +100,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 ]]))
 	vim.cmd("edit " .. project_root .. "/src/main.c")
+	vim.fn.system(string.format("cd %s/build/ && cmake .. && cmake --build .", project_root))
     end)
 end
 

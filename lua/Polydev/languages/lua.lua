@@ -1,12 +1,11 @@
 local utils = require("Polydev.utils")
-local config = require("Polydev.configs")
 local M = {}
 
 M.keybinds = {}
 M.opts = nil
 
 function M.setup(opts)
-    M.opts = vim.tbl_deep_extend("force", {}, config.get("lua"), opts or {})
+    M.opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get("lua"), opts or {})
     for key, command in pairs(M.opts.keybinds) do
 	M.keybinds[command] = key
     end
@@ -29,14 +28,13 @@ function M.get_project_root()
 end
 
 function M.get_project_name()
-    local root = M.get_project_root()
-    if not root then return nil end
-    local polydev_file = vim.fn.glob(root .. "/*.polydev")
+    local polydev_file = vim.fn.glob((M.get_project_root() or "") .. "/*.polydev")
     return polydev_file:match("([^/]+)%.polydev$")
 end
 
 function M.create_project()
-    vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
+    vim.ui.input({ prompt = "Enter project name: " },
+    function(project_name)
         if not project_name or project_name == "" then return print("Project creation canceled.") end
         local project_root = vim.fn.expand(M.opts.project_root) .. "/" .. project_name
         for _, path in ipairs({ "/lua/" .. project_name }) do vim.fn.mkdir(project_root .. path, "p") end
@@ -75,4 +73,3 @@ function M.run()
 end
 
 return M
-

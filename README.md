@@ -13,13 +13,13 @@ The ability to -
 * Build those files
 * Run those files
 * Builtin terminal for running code
+* And More!
 
 ### Currently Supported (And working) Languages
 * Java
 * Python
-* C
+* C/C++
 * Lua
-* C++
 
 ## Questions and Contributing
 

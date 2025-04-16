@@ -1,21 +1,16 @@
-local M = {}
 local utils = require("Polydev.utils")
+local M = {}
 
-M.html_build = nil
-M.html_run = nil
-
-M.config = {
-    project_root = "~/Projects/Html",
-}
+M.opts = nil
 
 function M.setup(opts)
-    M.config = vim.tbl_deep_extend("force", M.config, opts or {})
+    M.opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get("html"), opts or {})
 end
 
 function M.create_project()
     vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
 	if not project_name or project_name == "" then return print("Project creation canceled.") end
-	local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
+	local project_root = vim.fn.expand(M.opts.project_root) .. "/" .. project_name
 
 	local main_html_content = [[
 <!DOCTYPE html>
@@ -31,7 +26,6 @@ function M.create_project()
     </body>
 </html>
 ]]
-
 	utils.write_file(project_root .. "index.html", main_html_content)
     end)
 end

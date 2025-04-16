@@ -1,35 +1,28 @@
-local M = {}
 local utils = require("Polydev.utils")
+local M = {}
 
-M.c_build = nil
-M.c_run = nil
-M.new_c_header_file = nil
-
-M.config = {
-    project_root = "~/Projects/C",
-    keybinds = {
-	["<leader>pb"] = "CBuild",
-	["<leader>pr"] = "CRun",
-	["<leader>nh"] = "NewCHeaderFile",
-    },
-    build_attributes = ""
-}
+M.keybinds = {}
+M.opts = nil
 
 function M.setup(opts)
-    M.config = vim.tbl_deep_extend("force", M.config, opts or {})
-    for key, command in pairs(M.config.keybinds) do
-	if command == "CBuild" then M.c_build = key end
-	if command == "CRun" then M.c_run = key end
-	if command == "NewCHeaderFile" then M.new_c_header_file = key end
+    M.opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get("cpp"), opts or {})
+    for key, command in pairs(M.opts.keybinds) do
+	M.keybinds[command] = key
     end
 
-    vim.api.nvim_create_user_command("NewCHeaderFile", M.create_new_header_file, {})
-    vim.api.nvim_create_user_command("CBuild", M.build, {})
-    vim.api.nvim_create_user_command("CRun", M.run, {})
+    vim.api.nvim_create_user_command("NewCppHeaderFile", M.create_new_header_file, {})
+    vim.api.nvim_create_user_command("CppBuild", M.build, {})
+    vim.api.nvim_create_user_command("CppRun", M.run, {})
 
-    vim.keymap.set("n", M.c_build, ":CBuild<CR>", { silent = true })
-    vim.keymap.set("n", M.c_run, ":CRun<CR>", { silent = true })
-    vim.keymap.set("n", M.new_c_header_file, ":NewCHeaderFile<CR>", { silent = true })
+    if M.keybinds.CppBuild then
+	vim.keymap.set("n", M.keybinds.CppBuild, ":CppBuild<CR>", { silent = true })
+    end
+    if M.keybinds.CppRun then
+	vim.keymap.set("n", M.keybinds.CppRun, ":CppRun<CR>", { silent = true })
+    end
+    if M.keybinds.NewCppHeaderFile then
+	vim.keymap.set("n", M.keybinds.NewCppHeaderFile, ":NewCppHeaderFile<CR>", { silent = true })
+    end
 end
 
 function M.create_project()
@@ -39,7 +32,7 @@ function M.create_project()
 	    return
 	end
 
-	local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
+	local project_root = vim.fn.expand(M.opts.project_root) .. "/" .. project_name
 	for _, path in ipairs({ "/src", "/build", "/include" }) do
 	    vim.fn.mkdir(project_root .. path, "p")
 	end
@@ -63,7 +56,7 @@ int main() {
 cmake_minimum_required(VERSION 3.10)
 project(%s)
 include_directories(include)
-set(SOURCES src/main.c)
+set(SOURCES src/main.cpp)
 add_executable(%s ${SOURCES})
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_C_STANDARD 23)
@@ -84,7 +77,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+	"CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       }
     }
   ]
@@ -99,13 +92,15 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
       "name": "default",
       "inherits": "vcpkg",
       "environment": {
-        "VCPKG_ROOT": "/Users/<USER>/vcpkg"
+	"VCPKG_ROOT": "/Users/<USER>/vcpkg"
       }
     }
   ]
 }
 
 ]]))
+	vim.fn.system(string.format("cd %s/build/ && cmake .. && cmake --build .", project_root))
+
 	vim.cmd("edit " .. project_root .. "/src/main.cpp")
     end)
 end

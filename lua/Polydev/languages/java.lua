@@ -1,36 +1,30 @@
-local M = {}
 local utils = require("Polydev.utils")
+local M = {}
 
-M.java_build = nil
-M.java_run = nil
-
-M.config = {
-    project_root = "~/Projects/Java",
-    keybinds = {
-	["<leader>pb"] = "JavaBuild",
-	["<leader>pr"] = "JavaRun",
-    },
-}
+M.keybinds = {}
+M.opts = nil
 
 function M.setup(opts)
-    M.config = vim.tbl_deep_extend("force", M.config, opts or {})
-
-    for key, command in pairs(M.config.keybinds) do
-	if command == "JavaBuild" then M.java_build = key end
-	if command == "JavaRun" then M.java_run = key end
+    M.opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get("java"), opts or {})
+    for key, command in pairs(M.opts.keybinds) do
+	M.keybinds[command] = key
     end
-
-    vim.keymap.set("n", M.java_build, ":JavaBuild<CR>", { silent = true })
-    vim.keymap.set("n", M.java_run, ":JavaRun<CR>", { silent = true })
 
     vim.api.nvim_create_user_command("JavaBuild", M.build, {})
     vim.api.nvim_create_user_command("JavaRun", M.run, {})
+
+    if M.keybinds.JavaRun then
+	vim.keymap.set("n", M.keybinds.JavaRun, ":JavaRun<CR>", { silent = true })
+    end
+    if M.keybinds.JavaBuild then
+	vim.keymap.set("n", M.keybinds.JavaBuild, ":JavaBuild<CR>", { silent = true })
+    end
 end
 
 function M.create_project()
     vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
 	if not project_name or project_name == "" then return print("Project creation canceled.") end
-	local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
+	local project_root = vim.fn.expand(M.opts.project_root) .. "/" .. project_name
 	for _, path in ipairs({ "/src", "/build" }) do vim.fn.mkdir(project_root .. path, "p") end
 
 	local main_java_content = [[
@@ -40,7 +34,6 @@ public class Main {
     }
 }
 ]]
-
 	utils.write_file(project_root .. "/src/Main.java", main_java_content)
     end)
 end
