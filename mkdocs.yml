@@ -3,10 +3,10 @@ nav:
   - Home: index.md
   - Installation: installation.md
   - Setup: setup.md
-  - Examples: examples.md
   - Language Specific Docs:
     - Java: languages/java.md
     - C: languages/c.md
+    - Cpp: languages/cpp.md
     - Lua: languages/lua.md
     - Python: languages/python.md
 theme:
