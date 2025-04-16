@@ -21,6 +21,8 @@ The ability to -
 * C/C++
 * Lua
 
+## Things planned
+* The use of rust to speed up some aspects of the plugin
 ## Questions and Contributing
 
 If you want to contribute, make a PR or issue and I will answer as soon as I see it. If there is a language that you want added for easier use, please voice it. If you have questions, just ask in issues or discussions and I will answer them.
