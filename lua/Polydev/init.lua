@@ -1,16 +1,21 @@
+---@module "Polydev.configs"
+local config = require("Polydev.configs")
+
+---@module "Polydev.utils"
+local utils = require("Polydev.utils")
+
+---@module "Polydev.templates"
+local templates = require("Polydev.templates")
+
+---@type table
 local M = {}
 
+---@type table
 M.loaded_languages = {}
-M.config = require("Polydev.configs")
-M.utils = require("Polydev.utils")
-M.java = require("Polydev.languages.java")
-M.c = require("Polydev.languages.c")
-M.cpp = require("Polydev.languages.cpp")
-M.lua = require("Polydev.languages.lua")
-M.python = require("Polydev.languages.python")
-M.rust = require("Polydev.languages.rust")
-M.html = require("Polydev.languages.html")
 
+---@param lang string
+---@param opts table?
+---@return boolean
 function M.load_language_module(lang, opts)
     if M.loaded_languages[lang] then return true end
 
@@ -25,11 +30,12 @@ function M.load_language_module(lang, opts)
 end
 
 function M.create_project()
+    local opts = {}
     vim.ui.input({ prompt = "Enter language for project: " }, function(lang)
 	if not lang or lang == "" then return print("Project creation canceled.") end
-
-	if M.load_language_module(lang) and M.loaded_languages[lang].create_project then
-	    M.loaded_languages[lang].create_project()
+	opts = vim.tbl_deep_extend("force", {}, config.get(lang), opts or {})
+	if M.load_language_module(lang) and templates.projects[lang] and templates.projects[lang].run then
+	    templates.create_project(lang, opts.project_root)
 	else
 	    print("Error: No project creation method for " .. lang)
 	end
@@ -48,13 +54,14 @@ function M.create_new_file()
     end)
 end
 
+---@param opts table
 function M.setup(opts)
     opts = opts or {}
-    M.config.setup(opts)
-    M.utils.setup(opts)
+    config.setup(opts)
+    utils.setup(opts)
     for lang, user_opts in pairs(opts) do
-	local default = M.config.defaults[lang] or {}
-	M.config.user_config[lang] = vim.tbl_deep_extend("force", default, user_opts)
+	local default = config.defaults[lang] or {}
+	config.user_config[lang] = vim.tbl_deep_extend("force", default, user_opts)
     end
 
     vim.api.nvim_create_user_command("NewProject", M.create_project, {})
@@ -70,4 +77,5 @@ function M.setup(opts)
     })
 end
 
+---@return table
 return M

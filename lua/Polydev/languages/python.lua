@@ -42,51 +42,6 @@ function M.get_project_root()
     return nil
 end
 
-function M.create_project()
-    vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
-	if not project_name or project_name == "" then
-	    print("Project creation canceled.")
-	    return
-	end
-
-	local project_root = vim.fn.expand(M.opts.project_root) .. "/" .. project_name
-	for _, path in ipairs({ "/include" }) do
-	    vim.fn.mkdir(project_root .. path, "p")
-	end
-
-	utils.write_file(project_root .. "/main.py", [[
-def main():
-    print("Hello, World!")
-
-if __name__ == "__main__":
-    main()
-]])
-
-	utils.write_file(project_root .. "/include/__init__.py", "")
-	utils.write_file(project_root .. "/requirements.txt", "")
-	utils.write_file(project_root .. "/setup.py", string.format([[
-from setuptools import setup, find_packages
-
-setup(
-    name="%s",
-    version="0.1.0",
-    packages=find_packages(),
-    install_requires=[],
-    python_requires=">=3.6",
-)
-]], project_name))
-
-	vim.cmd("edit " .. project_root .. "/main.py")
-	local venv_path = project_root .. "/venv"
-	vim.fn.system("python3 -m venv " .. venv_path)
-	vim.g.python3_host_prog = venv_path .. "/bin/python"
-	vim.fn.setenv("VIRTUAL_ENV", venv_path)
-	vim.fn.setenv("PATH", venv_path .. "/bin:" .. vim.fn.getenv("PATH"))
-
-	print("Virtual environment activated for " .. project_name)
-    end)
-end
-
 function M.create_new_file()
     vim.ui.input({ prompt = "Enter file name: " }, function(file_name)
 	if not file_name or file_name == "" then

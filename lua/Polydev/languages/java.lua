@@ -21,23 +21,6 @@ function M.setup(opts)
     end
 end
 
-function M.create_project()
-    vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
-	if not project_name or project_name == "" then return print("Project creation canceled.") end
-	local project_root = vim.fn.expand(M.opts.project_root) .. "/" .. project_name
-	for _, path in ipairs({ "/src", "/build" }) do vim.fn.mkdir(project_root .. path, "p") end
-
-	local main_java_content = [[
-public class Main {
-    public static void main(String[] args) {
-	System.out.println("Hello, World!");
-    }
-}
-]]
-	utils.write_file(project_root .. "/src/Main.java", main_java_content)
-    end)
-end
-
 function M.create_new_file()
     vim.ui.input({ prompt = "Enter class name: " }, function(class_name)
 	if not class_name or class_name == "" then return print("Class creation canceled.") end

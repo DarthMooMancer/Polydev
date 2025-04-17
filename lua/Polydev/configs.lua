@@ -1,9 +1,10 @@
 local M = {}
+
 ---@class Keybinds
 ---@field [string] string
 ---
----@class Language
----@field project_root string
+---@class ConfigsLanguage
+---@field project_root? string
 ---@field keybinds? Keybinds -- ? makes fields optional
 ---@field build_attributes? string
 ---
@@ -17,13 +18,13 @@ local M = {}
 ---@field relativenumber boolean
 ---
 ---@class Defaults
----@field html Language
----@field rust Language
----@field java Language
----@field python Language
----@field lua Language
----@field c Language
----@field cpp Language
+---@field html ConfigsLanguage
+---@field rust ConfigsLanguage
+---@field java ConfigsLanguage
+---@field python ConfigsLanguage
+---@field lua ConfigsLanguage
+---@field c ConfigsLanguage
+---@field cpp ConfigsLanguage
 ---@field terminal Terminal 
 
 ---@type Defaults
@@ -87,12 +88,14 @@ M.defaults = {
     }
 }
 
+---@type string[]
 M.user_config = {}
 
 function M.setup(user_opts)
     M.user_config = vim.tbl_deep_extend("force", {}, M.defaults, user_opts or {})
 end
 
+---@param lang string
 function M.get(lang)
     return M.user_config[lang] or {}
 end
