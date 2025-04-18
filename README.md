@@ -41,6 +41,7 @@ And more on the way! Stay tuned for future updates.
 We're always working to make Polydev better. Here’s a sneak peek at some exciting plans:
 
 - 🚀 **Rust Integration**: Leverage Rust to speed up certain aspects of the plugin for faster performance and better scalability.
+- **Project Manager**: Want to make a way to open projects quickly from anywhere and easier to create plugins with one menu instead of multiple commands
 
 ---
 
