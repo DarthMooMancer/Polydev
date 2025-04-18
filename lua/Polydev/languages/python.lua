@@ -42,26 +42,6 @@ function M.get_project_root()
     return nil
 end
 
-function M.create_new_file()
-    vim.ui.input({ prompt = "Enter file name: " }, function(file_name)
-	if not file_name or file_name == "" then
-	    return print("File creation canceled.")
-	end
-
-	if not file_name:match("%.py$") then
-	    file_name = file_name .. ".py"
-	end
-
-	local root_dir = M.get_project_root()
-	if not root_dir then
-	    return print("Error: Project root not found.")
-	end
-
-	local file_path = root_dir .. "/include/" .. file_name
-	utils.write_file(file_path, "")
-    end)
-end
-
 function M.install_dependency()
     vim.ui.input({ prompt = "Enter pip module: " }, function(pip_module)
 	if not pip_module or pip_module == "" then

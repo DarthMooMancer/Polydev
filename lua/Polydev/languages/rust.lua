@@ -21,24 +21,6 @@ function M.setup(opts)
     end
 end
 
-function M.create_project()
-    vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
-	if not project_name or project_name == "" then return print("Project creation canceled.") end
-	local project_root = vim.fn.expand(M.config.project_root) .. "/" .. project_name
-	vim.fn.system("cargo new " .. project_root)
-	vim.cmd("edit " .. project_root .. "/src/main.rs")
-    end)
-end
-
-function M.create_new_file()
-    vim.ui.input({ prompt = "Enter file name: " }, function(class_name)
-	if not class_name or class_name == "" then return print("File creation canceled.") end
-	local root_dir = M.get_project_root()
-	if not root_dir then return print("Error: Project root not found.") end
-	utils.write_file(root_dir .. "/src/" .. class_name .. ".rs", "")
-    end)
-end
-
 function M.get_project_root()
     local dir = vim.fn.expand("%:p:h")
     while dir ~= "/" do

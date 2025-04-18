@@ -46,8 +46,8 @@ function M.create_new_file()
     vim.ui.input({ prompt = "Enter language for new file: " }, function(lang)
 	if not lang or lang == "" then return print("File creation canceled.") end
 
-	if M.load_language_module(lang) and M.loaded_languages[lang].create_new_file then
-	    M.loaded_languages[lang].create_new_file()
+	if M.load_language_module(lang) and templates.files[lang] and templates.files[lang].run then
+	    templates.create_new_file(lang)
 	else
 	    print("Error: No File creation method for " .. lang)
 	end

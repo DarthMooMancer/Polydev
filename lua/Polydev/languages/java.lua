@@ -21,21 +21,6 @@ function M.setup(opts)
     end
 end
 
-function M.create_new_file()
-    vim.ui.input({ prompt = "Enter class name: " }, function(class_name)
-	if not class_name or class_name == "" then return print("Class creation canceled.") end
-	local root_dir = vim.fn.expand("%:p:h"):match("(.*)/src")
-	if not root_dir then return print("Error: src directory not found.") end
-	local java_content = string.format([[
-public class %s {
-    // New File
-}
-]], class_name)
-
-	utils.write_file(root_dir .. "/src/" .. class_name .. ".java", java_content)
-    end)
-end
-
 function M.build()
     local project_root = vim.fn.expand("%:p:h"):match("(.*)/src")
     if not project_root then return print("Error: Could not detect project root directory.") end

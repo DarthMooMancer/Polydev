@@ -1,14 +1,15 @@
+---@type table
 local M = {}
 
----@class Keybinds
+---@class KeybindConfigs
 ---@field [string] string
 ---
----@class ConfigsLanguage
+---@class LanguageConfigs
 ---@field project_root? string
----@field keybinds? Keybinds -- ? makes fields optional
+---@field keybinds? KeybindConfigs -- ? makes fields optional
 ---@field build_attributes? string
 ---
----@class Terminal
+---@class TerminalConfigs
 ---@field right_padding integer
 ---@field left_padding integer
 ---@field bottom_padding integer
@@ -18,14 +19,14 @@ local M = {}
 ---@field relativenumber boolean
 ---
 ---@class Defaults
----@field html ConfigsLanguage
----@field rust ConfigsLanguage
----@field java ConfigsLanguage
----@field python ConfigsLanguage
----@field lua ConfigsLanguage
----@field c ConfigsLanguage
----@field cpp ConfigsLanguage
----@field terminal Terminal 
+---@field html LanguageConfigs
+---@field rust LanguageConfigs
+---@field java LanguageConfigs
+---@field python LanguageConfigs
+---@field lua LanguageConfigs
+---@field c LanguageConfigs
+---@field cpp LanguageConfigs
+---@field terminal TerminalConfigs
 
 ---@type Defaults
 M.defaults = {
@@ -91,13 +92,16 @@ M.defaults = {
 ---@type string[]
 M.user_config = {}
 
+---@param user_opts table
 function M.setup(user_opts)
     M.user_config = vim.tbl_deep_extend("force", {}, M.defaults, user_opts or {})
 end
 
 ---@param lang string
+---@return string|table
 function M.get(lang)
     return M.user_config[lang] or {}
 end
 
+---@return table
 return M
