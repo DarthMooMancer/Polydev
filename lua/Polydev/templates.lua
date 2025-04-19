@@ -1,6 +1,10 @@
+--
+--The main source of the plugin in which runs the creation of projects and files for languages
+--
+
 ---@module 'Polydev.utils'
 local utils = require("Polydev.utils")
----
+
 ---@type table 
 local M = {}
 
@@ -84,7 +88,7 @@ return M
     },
     c = {
 	run = function(project_name, project_root)
-	    local full_project_root = vim.fn.expand(M.opts.project_root) .. "/" .. project_name
+	    local full_project_root = vim.fn.expand(project_root) .. "/" .. project_name
 	    for _, path in ipairs({ "/src", "/build", "/include" }) do vim.fn.mkdir(full_project_root .. path, "p") end
 	    utils.write_file(full_project_root .. "/build/" .. project_name .. ".polydev", project_name)
 	    utils.write_file(full_project_root .. "/src/main.c", [[
@@ -269,7 +273,7 @@ M.files = {
 public class %s {
     // New File
 }
-]], class_name)
+]], file_name)
 
 	    utils.write_file(root_dir .. "/src/" .. file_name .. ".java", java_content)
 	end

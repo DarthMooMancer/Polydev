@@ -1,10 +1,19 @@
+---@module "Polydev.utils"
 local utils = require("Polydev.utils")
+
+---@module "Polydev.configs"
 local config = require("Polydev.configs")
+
+---@tyep table
 local M = {}
 
+---@tyep table
 M.keybinds = {}
+
+---@type nil|table
 M.opts = nil
 
+---@param opts table
 function M.setup(opts)
     M.opts = vim.tbl_deep_extend("force", {}, config.get("python"), opts or {})
     for key, command in pairs(M.opts.keybinds) do
@@ -31,6 +40,7 @@ function M.setup(opts)
     end
 end
 
+---@return string|nil
 function M.get_project_root()
     local dir = vim.fn.expand("%:p:h")
     while dir ~= "/" do
@@ -42,6 +52,7 @@ function M.get_project_root()
     return nil
 end
 
+---@return string|nil
 function M.install_dependency()
     vim.ui.input({ prompt = "Enter pip module: " }, function(pip_module)
 	if not pip_module or pip_module == "" then
@@ -55,11 +66,13 @@ end
 function M.run()
     local root = M.get_project_root()
     if not root then
+	---@return nil
 	return print("Error: Project root not found.")
     end
 
     local main_file = root .. "/main.py"
     if vim.fn.filereadable(main_file) == 0 then
+	---@return nil
 	return print("Error: main.py not found in project root.")
     end
 
@@ -78,4 +91,5 @@ function M.run()
     utils.open_float_terminal(venv_cmd .. "python3 " .. main_file)
 end
 
+---@return table
 return M

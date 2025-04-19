@@ -10,6 +10,7 @@ local M = {}
 ---@field build_attributes? string
 ---
 ---@class TerminalConfigs
+---@field presets string
 ---@field right_padding integer
 ---@field left_padding integer
 ---@field bottom_padding integer
@@ -79,6 +80,7 @@ M.defaults = {
 	build_attributes = "",
     },
     terminal = {
+	presets = "center",
 	right_padding = 0,
 	bottom_padding = 0,
 	left_padding = 0,

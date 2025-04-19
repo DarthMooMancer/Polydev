@@ -40,6 +40,8 @@ function M.run()
     local function get_project_name()
 	return vim.fn.glob((M.get_project_root() or "") .. "/*.polydev"):match("([^/]+)%.polydev$")
     end
+
+    ---@return string
     if not get_project_root() or not get_project_name() then return print("Error: Project root not found.") end
     local init_lua_path = get_project_root() .. "/lua/" .. get_project_name() .. "/init.lua"
     if vim.fn.filereadable(init_lua_path) == 1 then

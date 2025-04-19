@@ -1,11 +1,22 @@
+---@module "Polydev.presets"
+local presets = require("Polydev.presets")
+
+---@type table
 local M = {}
 
+---@type table
 M.opts = {}
 
+---@type table|nil
+local presets_opts = {}
+
+---@param opts table
 function M.setup(opts)
     M.opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get("terminal"), opts or {})
 end
 
+---@param path string
+---@param content string
 function M.write_file(path, content)
     local file = assert(io.open(path, "w"), "Error creating file: " .. path)
     file:write(content)
@@ -14,13 +25,24 @@ function M.write_file(path, content)
     print(path .. " created successfully!")
 end
 
+local function set_presets_opts()
+    if presets.getPresets(M.opts.presets) ~= nil then
+	presets_opts = presets.getPresets(M.opts.presets)
+    else
+	presets_opts = M.opts
+    end
+end
+
+---@param cmd string
+---@return boolean, table
 function M.open_float_terminal(cmd)
+    set_presets_opts()
     local ui = vim.api.nvim_list_uis()[1]
 
-    local width = math.max(1, math.floor(ui.width * 0.9) - M.opts.left_padding or 0 - M.opts.right_padding or 0)
-    local height = math.max(1, math.floor(ui.height * 0.9) - M.opts.top_padding or 0 - M.opts.bottom_padding or 0)
-    local row = math.max(1, math.floor((ui.height - height) / 2) + (M.opts.top_padding or 0))
-    local col = math.max(1, math.floor((ui.width - width) / 2) + (M.opts.left_padding or 0))
+    local width = math.max(1, math.floor(ui.width * 0.9) - presets_opts.left_padding - presets_opts.right_padding)
+    local height = math.max(1, math.floor(ui.height * 0.9) - presets_opts.top_padding - presets_opts.bottom_padding)
+    local row = math.max(1, math.floor((ui.height - height) / 2) + (presets_opts.top_padding))
+    local col = math.max(1, math.floor((ui.width - width) / 2) + (presets_opts.left_padding))
 
     local buf = vim.api.nvim_create_buf(false, true)
     local win = vim.api.nvim_open_win(buf, true, {
@@ -49,4 +71,5 @@ function M.open_float_terminal(cmd)
     return buf, win
 end
 
+---@return table
 return M
