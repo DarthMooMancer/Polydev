@@ -13,19 +13,23 @@ This is the **recommended** way if you're using [Lazy.nvim](https://github.com/f
 
 ```lua
 {
-  "DarthMooMancer/Polydev",
-  opts = {
-    lua = {
-      project_root = "~/Projects/Lua",
-      keybinds = {
-        ["<leader>pr"] = "LuaRun",
-      },
+    "DarthMooMancer/Polydev",
+    dependencies = {
+        "MunifTanjim/nui.nvim",
+        "nvim-lua/plenary.nvim"
     },
-    terminal = {
-      border = true,
-      number = true,
+    opts = {
+        lua = {
+            project_root = "~/Projects/Lua",
+            keybinds = {
+                ["<leader>pr"] = "LuaRun",
+            },
+        },
+        terminal = {
+            border = true,
+            number = true,
+        },
     },
-  },
 }
 ```
 
@@ -38,20 +42,26 @@ This is the **recommended** way if you're using [Lazy.nvim](https://github.com/f
 For users of [mini.nvim](https://github.com/echasnovski/mini.nvim)'s dependency manager:
 
 ```lua
-MiniDeps.add({ source = "DarthMooMancer/Polydev" })
+MiniDeps.add({
+    source = "DarthMooMancer/Polydev"
+    depends = {
+        "MunifTanjim/nui.nvim",
+        "nvim-lua/plenary.nvim"
+    }
+})
 
 require("Polydev").setup({
-  rust = {
-    project_root = "~/Projects/Rust",
-    keybinds = {
-      ["<leader>pb"] = "RustBuild",
-      ["<leader>pr"] = "RustRun",
+    rust = {
+        project_root = "~/Projects/Rust",
+        keybinds = {
+            ["<leader>pb"] = "RustBuild",
+            ["<leader>pr"] = "RustRun",
+        },
     },
-  },
-  terminal = {
-    border = true,
-    number = true,
-  },
+    terminal = {
+        border = true,
+        number = true,
+    },
 })
 ```
 
@@ -63,21 +73,25 @@ For fans of [Packer.nvim](https://github.com/wbthomason/packer.nvim):
 
 ```lua
 use({
-  "DarthMooMancer/Polydev",
-  config = function()
-    require("Polydev").setup({
-      python = {
-        project_root = "~/Projects/Python",
-        keybinds = {
-          ["<leader>pb"] = "PythonPip",
-          ["<leader>pr"] = "PythonRun",
-        },
-      },
-      terminal = {
-        relativenumber = true,
-      },
-    })
-  end,
+    "DarthMooMancer/Polydev",
+    requires = {
+        "MunifTanjim/nui.nvim",
+        "nvim-lua/plenary.nvim"
+    },
+    config = function()
+        require("Polydev").setup({
+            python = {
+                project_root = "~/Projects/Python",
+                keybinds = {
+                    ["<leader>pb"] = "PythonPip",
+                    ["<leader>pr"] = "PythonRun",
+                },
+            },
+            terminal = {
+                relativenumber = true,
+            },
+        })
+    end,
 })
 ```
 
@@ -89,20 +103,22 @@ Even if you're still using [vim-plug](https://github.com/junegunn/vim-plug), you
 
 ```vim
 Plug 'DarthMooMancer/Polydev'
+Plug 'MunifTanjim/nui.nvim'
+Plug 'nvim-lua/plenary.nvim'
 
 lua << EOF
-  require("Polydev").setup({
+require("Polydev").setup({
     c = {
-      project_root = "~/Projects/C",
-      keybinds = {
-        ["<leader>pb"] = "CBuild",
-        ["<leader>pr"] = "CRun",
-      },
+        project_root = "~/Projects/C",
+        keybinds = {
+            ["<leader>pb"] = "CBuild",
+            ["<leader>pr"] = "CRun",
+        },
     },
     terminal = {
-      number = true,
+        number = true,
     },
-  })
+})
 EOF
 ```
 
@@ -120,8 +136,8 @@ Then in your config:
 
 ```lua
 require("Polydev").setup({
-  terminal = {
-    border = true,
-  },
+    terminal = {
+        border = true,
+    },
 })
 ```

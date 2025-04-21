@@ -9,7 +9,7 @@ local utils = require("Polydev.utils")
 local M = {}
 
 ---@class TemplateLanguage
----@field run fun(project_name: string, project_root: string): nil
+---@field run fun(project_name: string, project_root: string): string
 
 ---@class Projects
 ---@field java TemplateLanguage
@@ -35,7 +35,7 @@ public class Main {
 }
 ]]
 	    utils.write_file(full_project_root .. "/src/Main.java", main_java_content)
-	    return nil
+	    return full_project_root
 	end
     },
     python = {
@@ -69,7 +69,7 @@ setup(
 	    vim.fn.setenv("VIRTUAL_ENV", venv_path)
 	    vim.fn.setenv("PATH", venv_path .. "/bin:" .. vim.fn.getenv("PATH"))
 	    print("Virtual environment activated for " .. project_name)
-	    return nil
+	    return full_project_root
 	end
     },
     lua = {
@@ -83,7 +83,7 @@ return M
 ]])
 	    utils.write_file(full_project_root .. "/" .. project_name .. ".polydev", "[[DO NOT REMOVE THIS FILE]]")
 	    vim.cmd("edit " .. full_project_root .. "/lua/" .. project_name .. "/init.lua")
-	    return nil
+	    return full_project_root
 	end
     },
     c = {
@@ -150,6 +150,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 ]]))
 	    vim.cmd("edit " .. full_project_root .. "/src/main.c")
 	    vim.fn.system(string.format("cd %s/build/ && cmake .. && cmake --build .", full_project_root))
+	    return full_project_root
 	end
     },
     cpp = {
@@ -218,7 +219,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 ]]))
 	    vim.fn.system(string.format("cd %s/build/ && cmake .. && cmake --build .", full_project_root))
 	    vim.cmd("edit " .. full_project_root .. "/src/main.cpp")
-	    return nil
+	    return full_project_root
 	end
     },
     rust = {
@@ -226,6 +227,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 	    local full_project_root = vim.fn.expand(project_root) .. "/" .. project_name
 	    vim.fn.system("cargo new " .. full_project_root)
 	    vim.cmd("edit " .. full_project_root .. "/src/main.rs")
+	    return full_project_root
 	end
     },
     html = {
@@ -246,6 +248,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 </html>
 ]]
 	    utils.write_file(full_project_root .. "index.html", main_html_content)
+	    return full_project_root
 	end
     },
 }
@@ -376,12 +379,15 @@ public class %s {
     }
 }
 
+---@type string
+M.dir = ""
+
 ---@param lang TemplatesLanguageName
 ---@param project_root string
 function M.create_project(lang, project_root)
     vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
 	if not project_name or project_name == "" then return print("Project creation canceled.") end
-	M.projects[lang].run(project_name, project_root)
+	M.dir = M.projects[lang].run(project_name, project_root)
     end)
 end
 

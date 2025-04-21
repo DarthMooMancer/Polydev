@@ -1,5 +1,8 @@
 # Setup and Customizing Polydev
 
+## Project Manager
+Follows the netrw keybinds and allows for project management all in one spot
+
 ## 🔧 Project Name Customization
 You can easily customize the default directory for your project! The project can be created from any directory, and Polydev will automatically create the required project root directory for you.
 
@@ -44,11 +47,10 @@ return {
     ...
     opts = {
         <language> = {
-            ["<Esc>"] = "CloseTerminal",  -- Universal, can be changed per language for now
             ["<leader>pb"] = "languageBuild",  -- Per-language
             ["<leader>pr"] = "languageRun",   -- Per-language
-            ["<leader>nf"] = "NewLanguageFile",  -- Universal
             ["<leader>nh"] = "NewLanguageSecondaryFile",  -- Universal
+            ["<leader>po"] = "OpenSmartTable", -- Universal
         }
     }
     ...
@@ -60,11 +62,10 @@ return {
 ```lua
 require("Polydev").language.setup({
     keybinds = {
-        ["<Esc>"] = "CloseTerminal",  -- Universal, can be changed per language for now
         ["<leader>pb"] = "languageBuild",  -- Per-language
         ["<leader>pr"] = "languageRun",   -- Per-language
-        ["<leader>nf"] = "NewLanguageFile",  -- Universal
         ["<leader>nh"] = "NewLanguageSecondaryFile",  -- Universal
+        ["<leader>po"] = "OpenSmartTable", -- Universal
     }
 })
 ```
