@@ -1,7 +1,7 @@
 ---@type table
 local M = {}
 
----@type table|nil
+---@type table
 local opts = {}
 
 ---@class Preset
@@ -11,7 +11,7 @@ local opts = {}
 ---@field bottom_padding integer
 
 ---@type Preset
-local centered = {
+local center = {
     left_padding = 0,
     right_padding = 0,
     top_padding = 0,
@@ -19,7 +19,7 @@ local centered = {
 }
 
 ---@type Preset
-local center_paneled = {
+local center_panel = {
     left_padding = 0,
     right_padding = 100,
     top_padding = 0,
@@ -35,7 +35,7 @@ local right_panel = {
 }
 
 ---@type Preset
-local cornered = {
+local corner = {
     left_padding = 100,
     right_padding = 0,
     top_padding = 25,
@@ -44,18 +44,18 @@ local cornered = {
 }
 
 ---@param preset string
----@return table|nil
+---@return table
 function M.getPresets(preset)
-    if preset == "custom" then
-	opts = nil
-    elseif preset == "centered" then
-	opts = centered
+	--    if preset == "custom" then
+	-- opts = nil
+    if preset == "centered" then
+	opts = center
     elseif preset == "center_panel" then
-	opts = center_paneled
+	opts = center_panel
     elseif preset == "right_panel" then
 	opts = right_panel
     elseif preset == "cornered" then
-	opts = cornered
+	opts = corner
     else
 	print("Preset option: " .. preset .. " does not exist")
     end

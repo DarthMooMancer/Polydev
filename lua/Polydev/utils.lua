@@ -7,7 +7,7 @@ local M = {}
 ---@type table
 M.opts = {}
 
----@type table|nil
+---@type table
 local presets_opts = {}
 
 ---@param opts table
@@ -25,18 +25,12 @@ function M.write_file(path, content)
     print(path .. " created successfully!")
 end
 
-local function set_presets_opts()
-    if presets.getPresets(M.opts.presets) ~= nil then
-	presets_opts = presets.getPresets(M.opts.presets)
-    else
-	presets_opts = M.opts
-    end
-end
-
 ---@param cmd string
 ---@return boolean, table
 function M.open_float_terminal(cmd)
-    set_presets_opts()
+    if presets.getPresets(M.opts.presets) ~= nil then
+	presets_opts = presets.getPresets(M.opts.presets)
+    end
     local ui = vim.api.nvim_list_uis()[1]
 
     local width = math.max(1, math.floor(ui.width * 0.9) - presets_opts.left_padding - presets_opts.right_padding)

@@ -1,4 +1,3 @@
-
 # Setup and Customizing Polydev
 
 ## 🔧 Project Name Customization
@@ -28,7 +27,6 @@ require("Polydev").language.setup({
     project_root = "~/Home/..." -- Default: ~/Projects/Language
 })
 ```
-
 
 ## ⌨ Keybinds Customization
 Polydev allows you to easily manage keybinds, providing a uniform way to interact with different languages. Most keybinds are the same across languages, while some have language-specific ones (e.g., Python's pip keybind).
@@ -79,6 +77,7 @@ You can further tweak the terminal settings to suit your preferences! These opti
 ### Available Terminal Settings
 | Setting          | Default Value   | Description                                             |
 |------------------|-----------------|---------------------------------------------------------|
+| **presets**       | `centered`      | Presets for where the terminal is placed in the buffer  |
 | **right_padding** | `0`             | Padding for the right width of the terminal.            |
 | **left_padding**  | `0`             | Padding for the left width of the terminal.             |
 | **top_padding**   | `0`             | Padding for the top height of the terminal.             |
@@ -90,6 +89,14 @@ You can further tweak the terminal settings to suit your preferences! These opti
 
 > **Note:** These terminal settings allow you to personalize the terminal view and improve usability. You can easily adjust the padding, borders, and other aspects to your preference.
 
+### Available Presets
+| Preset | Placement |
+|--------|-----------|
+| **center** | `completely centerd in the screen with a small amount of padding on each side of the buffer` |
+| **right_panel** | `takes up about a third of the right side from top to bottom with a small amount of padding` |
+| **center_panel** | `takes up about a third of the center from top to bottom with a small amount of padding` |
+| **corner** | `takes up about a fourth of the bottom right corner with a small amount of padding` |
+
 ---
 ### LazyVim Example
 
@@ -98,6 +105,7 @@ return {
     ...
     opts = {
         terminal = {
+            presets = "centered"
             right_padding = 0,
             bottom_padding = 0,
             left_padding = 0,
@@ -117,6 +125,7 @@ return {
 ```lua
 require("Polydev").setup({
     terminal = {
+        presets = "centered"
         right_padding = 0,
         bottom_padding = 0,
         left_padding = 0,
@@ -128,7 +137,6 @@ require("Polydev").setup({
     }
 })
 ```
-
 
 ## 🚀 Final Thoughts and Customizations
 This guide provided you with the basic configuration steps for setting up Polydev with your preferred package manager and customizing key aspects like project names, keybinds, and terminal settings.
