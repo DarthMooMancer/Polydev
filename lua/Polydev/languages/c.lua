@@ -11,12 +11,8 @@ function M.setup(opts)
     end
 
     vim.api.nvim_create_user_command("NewCHeaderFile", M.create_new_header_file, {})
-    vim.api.nvim_create_user_command("CBuild", M.build, {})
     vim.api.nvim_create_user_command("CRun", M.run, {})
 
-    if M.keybinds.CBuild then
-	vim.keymap.set("n", M.keybinds.CBuild, ":CBuild<CR>", { silent = true })
-    end
     if M.keybinds.CRun then
 	vim.keymap.set("n", M.keybinds.CRun, ":CRun<CR>", { silent = true })
     end
@@ -56,27 +52,29 @@ function M.get_project_root()
     end
 end
 
-function M.build()
+function M.run()
     local root = M.get_project_root()
     if not root then return print("Error: Project root not found.") end
     local build_dir = root .. "/build"
 
     local cmd = "cd " .. build_dir .. " && cmake --build ."
-    local term_buf = utils.open_float_terminal(cmd)
-    vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
     local output = vim.fn.system(cmd)
     local success = vim.v.shell_error == 0
-    vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, vim.list_extend({ success and "Compilation successful!" or "Error during compilation:" }, vim.split(output, "\n", { trimempty = true })))
-    vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
-end
 
-function M.run()
-    local root = M.get_project_root()
-    if not root then return print("Error: Project root not found.") end
-    local build_dir = root .. "/build"
-    local files = vim.fn.glob(build_dir .. "/*.polydev", true, true)
-    if #files == 0 then return print("Error: No .polydev file found in build directory.") end
-    utils.open_float_terminal("cd " .. build_dir .. " && ./" .. files[1]:match("([^/]+)%.polydev$"))
+    if not success then
+	local term_buf = utils.open_float_terminal(cmd)
+	vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
+	vim.api.nvim_buf_set_lines(term_buf, 0, -1, false,
+	    vim.list_extend({ "Error during compilation:" }, vim.split(output, "\n", { trimempty = true }))
+	)
+	vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
+    end
+
+    if success then
+	local files = vim.fn.glob(build_dir .. "/*.polydev", true, true)
+	if #files == 0 then return print("Error: No .polydev file found in build directory.") end
+	utils.open_float_terminal("cd " .. build_dir .. " && ./" .. files[1]:match("([^/]+)%.polydev$"))
+    end
 end
 
 return M

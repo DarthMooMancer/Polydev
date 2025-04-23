@@ -8,7 +8,7 @@ local M = {}
 ---@field project_root? string
 ---@field keybinds? KeybindConfigs -- ? makes fields optional
 ---@field build_attributes? string
----
+
 ---@class TerminalConfigs
 ---@field presets string
 ---@field right_padding integer
@@ -18,8 +18,12 @@ local M = {}
 ---@field border boolean
 ---@field number boolean
 ---@field relativenumber boolean
----
+
+---@class GlobalsConfigs
+---@field keybinds KeybindConfigs
+
 ---@class Defaults
+---@field globals GlobalsConfigs
 ---@field html LanguageConfigs
 ---@field rust LanguageConfigs
 ---@field java LanguageConfigs
@@ -31,6 +35,11 @@ local M = {}
 
 ---@type Defaults
 M.defaults = {
+    globals = {
+	keybinds = {
+	    ["<leader>po"] = "PolydevManager",
+	}
+    },
     html = {
 	project_root = "~/Projects/Html",
     },

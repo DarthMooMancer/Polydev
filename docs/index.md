@@ -23,7 +23,7 @@ Modern development often involves juggling multiple languages. Setting up simila
 - 🌐 **Language Support**: Define custom settings per language including `project_root`, `keybinds`, and `build_attributes`.
 - 🪟 **Floating Terminals**: Run builds and executions in a Neovim floating terminal.
 - 🧱 **Scaffolding**: Automatically create the appropriate directory and file layout for new projects.
-- 🎹 **Keybind Mapping**: Rebind keys to execute project-specific commands like `Build`, `Run`, or `Test`.
+- 🎹 **Keybind Mapping**: Rebind keys to execute project-specific commands like `Run`, or `Test`.
 - 🔌 **Pluggable**: Designed to easily integrate with other tools or extend with your own commands and language presets.
 
 ## 👥 Target Audience
@@ -46,7 +46,7 @@ Say you're a developer who works with Rust, Lua, and Python. Instead of remember
 
 1. 🏗 Sets up your directory based on language conventions.
 2. 📄 Generates boilerplate files.
-3. 🎛 Maps `<leader>pr` to `Run`, `<leader>pb` to `Build`, and so on.
+3. 🎛 Maps `<leader>pr` to `Run`, `<leader>po` to `Open Polydev Project Manager`, and so on.
 4. 🖥 Opens a floating terminal to show your output.
 
 ## 🏷 Versioning

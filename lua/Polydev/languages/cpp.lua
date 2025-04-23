@@ -11,17 +11,23 @@ function M.setup(opts)
     end
 
     vim.api.nvim_create_user_command("NewCppHeaderFile", M.create_new_header_file, {})
-    vim.api.nvim_create_user_command("CppBuild", M.build, {})
     vim.api.nvim_create_user_command("CppRun", M.run, {})
 
-    if M.keybinds.CppBuild then
-	vim.keymap.set("n", M.keybinds.CppBuild, ":CppBuild<CR>", { silent = true })
-    end
     if M.keybinds.CppRun then
 	vim.keymap.set("n", M.keybinds.CppRun, ":CppRun<CR>", { silent = true })
     end
     if M.keybinds.NewCppHeaderFile then
 	vim.keymap.set("n", M.keybinds.NewCppHeaderFile, ":NewCppHeaderFile<CR>", { silent = true })
+    end
+end
+
+function M.get_project_root()
+    local dir = vim.fn.expand("%:p:h")
+    while dir ~= "/" do
+	if vim.fn.isdirectory(dir .. "/src") == 1 or vim.fn.filereadable(dir .. "/CMakeLists.txt") == 1 then
+	    return dir
+	end
+	dir = vim.fn.fnamemodify(dir, ":h")
     end
 end
 
@@ -46,37 +52,29 @@ void example_function();
     end)
 end
 
-function M.get_project_root()
-    local dir = vim.fn.expand("%:p:h")
-    while dir ~= "/" do
-	if vim.fn.isdirectory(dir .. "/src") == 1 or vim.fn.filereadable(dir .. "/CMakeLists.txt") == 1 then
-	    return dir
-	end
-	dir = vim.fn.fnamemodify(dir, ":h")
-    end
-end
-
-function M.build()
+function M.run()
     local root = M.get_project_root()
     if not root then return print("Error: Project root not found.") end
     local build_dir = root .. "/build"
 
     local cmd = "cd " .. build_dir .. " && cmake --build ."
-    local term_buf = utils.open_float_terminal(cmd)
-    vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
     local output = vim.fn.system(cmd)
     local success = vim.v.shell_error == 0
-    vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, vim.list_extend({ success and "Compilation successful!" or "Error during compilation:" }, vim.split(output, "\n", { trimempty = true })))
-    vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
-end
 
-function M.run()
-    local root = M.get_project_root()
-    if not root then return print("Error: Project root not found.") end
-    local build_dir = root .. "/build"
-    local files = vim.fn.glob(build_dir .. "/*.polydev", true, true)
-    if #files == 0 then return print("Error: No .polydev file found in build directory.") end
-    utils.open_float_terminal("cd " .. build_dir .. " && ./" .. files[1]:match("([^/]+)%.polydev$"))
+    if not success then
+	local term_buf = utils.open_float_terminal(cmd)
+	vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
+	vim.api.nvim_buf_set_lines(term_buf, 0, -1, false,
+	    vim.list_extend({ "Error during compilation:" }, vim.split(output, "\n", { trimempty = true }))
+	)
+	vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
+    end
+
+    if success then
+	local files = vim.fn.glob(build_dir .. "/*.polydev", true, true)
+	if #files == 0 then return print("Error: No .polydev file found in build directory.") end
+	utils.open_float_terminal("cd " .. build_dir .. " && ./" .. files[1]:match("([^/]+)%.polydev$"))
+    end
 end
 
 return M

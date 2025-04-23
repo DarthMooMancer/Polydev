@@ -5,7 +5,6 @@ You can customize the keybinds for your Java projects in Polydev.
 
 | Keybind             | Action                                              |
 |---------------------|-----------------------------------------------------|
-| `<leader>pb`        | Build all Java files in the `src` directory         |
 | `<leader>pr`        | Run `Main.java` from the `out` folder in your project |
 | `<leader>nf`        | Create a new Java file in the `src` folder          |
 
@@ -15,7 +14,6 @@ You can customize the keybinds for your Java projects in Polydev.
 -- These are defaults, so no need to copy them
 require("Polydev").java.setup({
   keybinds = {
-    ["<leader>pb"] = "JavaBuild",  -- Build all Java files in the src directory
     ["<leader>pr"] = "JavaRun",    -- Run Main.java in the out folder
     ["<leader>nf"] = "NewJavaFile" -- Create a new Java file in the src folder
   }

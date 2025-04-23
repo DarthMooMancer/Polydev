@@ -1,7 +1,19 @@
 # Setup and Customizing Polydev
 
 ## Project Manager
-Follows the netrw keybinds and allows for project management all in one spot
+> Note: The project manager closely follows the netrw keybinds and allows for project management all in one spot
+
+| Binding          | Description   |
+|------------------|-----------------|
+| **Enter** | `Open file / Enter directory` |
+| **../** | `Go to parent directory` |
+| **/**    | `Filter (fuzzy search)` |
+| **a**    | `Create new folder` |
+| **%**    | `Create new file` |
+| **d**    | `Create new project` |
+| **R**    | `Rename file/folder` |
+| **D**    | `Delete file/folder` |
+| **q**    | `Quit popup` |
 
 ## 🔧 Project Name Customization
 You can easily customize the default directory for your project! The project can be created from any directory, and Polydev will automatically create the required project root directory for you.
@@ -37,8 +49,8 @@ Polydev allows you to easily manage keybinds, providing a uniform way to interac
 ### Keybind Categories
 | Keybind Type      | Description                                      |
 |-------------------|--------------------------------------------------|
-| **Universal**     | Cannot be changed through specific language settings (e.g., `<leader>nf` for a new file). |
-| **Per-language**  | Can be customized per language (e.g., `<leader>pb` for language build). |
+| **Universal**     | Cannot be changed through specific language settings (e.g., `<leader>po` for project manager). |
+| **Per-language**  | Can be customized per language (e.g., `<leader>pr` for language run). |
 
 ### LazyVim Example
 
@@ -47,10 +59,9 @@ return {
     ...
     opts = {
         <language> = {
-            ["<leader>pb"] = "languageBuild",  -- Per-language
             ["<leader>pr"] = "languageRun",   -- Per-language
             ["<leader>nh"] = "NewLanguageSecondaryFile",  -- Universal
-            ["<leader>po"] = "OpenSmartTable", -- Universal
+            ["<leader>po"] = "PolydevManager", -- Universal
         }
     }
     ...
@@ -62,10 +73,9 @@ return {
 ```lua
 require("Polydev").language.setup({
     keybinds = {
-        ["<leader>pb"] = "languageBuild",  -- Per-language
         ["<leader>pr"] = "languageRun",   -- Per-language
         ["<leader>nh"] = "NewLanguageSecondaryFile",  -- Universal
-        ["<leader>po"] = "OpenSmartTable", -- Universal
+        ["<leader>po"] = "PolydevManager", -- Universal
     }
 })
 ```
@@ -78,11 +88,7 @@ You can further tweak the terminal settings to suit your preferences! These opti
 ### Available Terminal Settings
 | Setting          | Default Value   | Description                                             |
 |------------------|-----------------|---------------------------------------------------------|
-| **presets**       | `centered`      | Presets for where the terminal is placed in the buffer  |
-| **right_padding** | `0`             | Padding for the right width of the terminal.            |
-| **left_padding**  | `0`             | Padding for the left width of the terminal.             |
-| **top_padding**   | `0`             | Padding for the top height of the terminal.             |
-| **bottom_padding**| `0`             | Padding for the bottom height of the terminal.          |
+| **presets**       | `center`      | Presets for where the terminal is placed in the buffer  |
 | **border**        | `true`          | Adds a rounded border to the window.                    |
 | **number**        | `true`          | Displays line numbers in the terminal.                  |
 | **relativenumber**| `true`          | Displays relative numbers based on cursor position.     |
@@ -106,11 +112,7 @@ return {
     ...
     opts = {
         terminal = {
-            presets = "centered"
-            right_padding = 0,
-            bottom_padding = 0,
-            left_padding = 0,
-            top_padding = 0,
+            presets = "center"
             border = true,
             number = true,
             relativenumber = true,
@@ -126,11 +128,7 @@ return {
 ```lua
 require("Polydev").setup({
     terminal = {
-        presets = "centered"
-        right_padding = 0,
-        bottom_padding = 0,
-        left_padding = 0,
-        top_padding = 0,
+        presets = "center"
         border = true,
         number = true,
         relativenumber = true,

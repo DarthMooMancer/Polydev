@@ -16,6 +16,13 @@ function M.setup(opts)
 end
 
 ---@param path string
+---@return boolean
+function M.is_dir(path)
+  local stat = vim.loop.fs_stat(path)
+  return stat and stat.type == "directory"
+end
+
+---@param path string
 ---@param content string
 function M.write_file(path, content)
     local file = assert(io.open(path, "w"), "Error creating file: " .. path)

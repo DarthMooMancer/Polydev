@@ -3,22 +3,25 @@
 Polydev can be installed using any plugin manager of your choice—or even manually. Below are some examples for popular managers to get you started.
 
 > ⚠️ **Disclaimer**: The `opts` and configuration values shown below are simply examples. You can customize them based on your preferences or even omit them entirely if not needed.
+
 > 💡 **Heads up!** Many language presets in Polydev require a file named `<project_name>.polydev` in your project root. If it's missing, Polydev will let you know (loudly 😅).
+
+> **Note**: Languages that require to build just need to be run, building is builtin to the run command
 
 ---
 
 ## 🛌 Lazy.nvim
 
-This is the **recommended** way if you're using [Lazy.nvim](https://github.com/folke/lazy.nvim):
+> This is the **recommended** way if you're using [Lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ```lua
-{
+return {
     "DarthMooMancer/Polydev",
     dependencies = {
         "MunifTanjim/nui.nvim",
         "nvim-lua/plenary.nvim"
     },
-    opts = {
+    opts = { -- Below are just example values
         lua = {
             project_root = "~/Projects/Lua",
             keybinds = {
@@ -32,8 +35,6 @@ This is the **recommended** way if you're using [Lazy.nvim](https://github.com/f
     },
 }
 ```
-
-> ✅ Keep the `opts` key! It’s the modern way of setting up plugins in Lazy.
 
 ---
 
@@ -54,7 +55,6 @@ require("Polydev").setup({
     rust = {
         project_root = "~/Projects/Rust",
         keybinds = {
-            ["<leader>pb"] = "RustBuild",
             ["<leader>pr"] = "RustRun",
         },
     },
@@ -111,7 +111,6 @@ require("Polydev").setup({
     c = {
         project_root = "~/Projects/C",
         keybinds = {
-            ["<leader>pb"] = "CBuild",
             ["<leader>pr"] = "CRun",
         },
     },

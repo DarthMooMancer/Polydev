@@ -2,6 +2,7 @@ local config = require("Polydev.configs")
 local utils = require("Polydev.utils")
 local templates = require("Polydev.templates")
 local Popup = require("nui.popup")
+local Layout = require("nui.layout")
 local event = require("nui.utils.autocmd").event
 local Path = require("plenary.path")
 
@@ -51,7 +52,7 @@ local function get_entries(path)
 	    is_project = is_project
 	})
     end
-    table.sort(result, function(a, b) 
+    table.sort(result, function(a, b)
 	-- Sort projects first, then directories, then files
 	if a.is_project ~= b.is_project then
 	    return a.is_project
@@ -86,27 +87,123 @@ local function open_filtered_table()
     local entries = get_entries(cwd)
     local current_view = vim.deepcopy(entries)
 
-    local popup = Popup({
+    local popup, search, preview, keybinds = Popup({
 	enter = true,
 	focusable = true,
 	border = {
-	    style = "rounded",
+	    style = "rounded", -- "double", "none", "rounded", "shadow", "single" or "solid".
 	    text = { top = " Project Manager ", top_align = "center" },
 	    highlight = "Normal",
 	},
 	position = "50%",
-	size = { width = 60, height = 14 },
+	buf_options = { modifiable = true, readonly = false },
+    }), Popup({
+	enter = false,
+	focusable = true,
+	border = {
+	    style = "rounded", -- "double", "none", "rounded", "shadow", "single" or "solid".
+	    text = { top = " Search ", top_align = "center" },
+	    highlight = "Normal",
+	},
+	buf_options = { modifiable = true, readonly = false },
+    }), Popup({
+	enter = false,
+	focusable = false,
+	border = {
+	    style = "rounded",
+	    text = { top = " Preview ", top_align = "center" },
+	    highlight = "Normal",
+	},
+	position = "50%",
+	buf_options = { modifiable = true, readonly = false },
+    }), Popup({
+	enter = false,
+	focusable = false,
+	border = {
+	    style = "rounded",
+	    text = { top = " Keybinds ", top_align = "center" },
+	    highlight = "Normal",
+	},
+	position = "50%",
 	buf_options = { modifiable = true, readonly = false },
     })
 
+    local layout = Layout({
+	position = "50%",
+	size = { width = "70%", height = "70%" },
+    },
+    Layout.Box({
+	Layout.Box(search, { size = "10%" }),
+	Layout.Box({
+	    Layout.Box({
+		Layout.Box(popup, { size = "55%" }),
+		Layout.Box(keybinds, {size = "45%" }),
+	    }, { dir = "col", size = "50%" }),
+	    Layout.Box(preview, { size = "50%" }),
+	}, { dir = "row", size = "90%" }),
+    }, { dir = "col" })
+    )
+    layout:mount()
+
     local function get_selected_entry()
-	local row = vim.api.nvim_win_get_cursor(0)[1] - 1
+	local row = vim.api.nvim_win_get_cursor(popup.winid)[1] - 1
 	return current_view[row], row
     end
+
+    local function update_preview()
+	if not preview.bufnr then return end
+	vim.api.nvim_buf_set_lines(preview.bufnr, 0, -1, false, {}) -- Clear
+
+	local entry = get_selected_entry()
+	if not entry then return end
+
+	if entry.type == "file" or entry.type == "project" then
+	    -- Preview file contents (first 100 lines)
+	    local lines = {}
+	    local fd = io.open(entry.full_path, "r")
+	    if fd then
+		for i = 1, 100 do
+		    local line = fd:read("*line")
+		    if not line then break end
+		    table.insert(lines, line)
+		end
+		fd:close()
+	    else
+		table.insert(lines, "[Failed to read file]")
+	    end
+	    vim.api.nvim_buf_set_lines(preview.bufnr, 0, -1, false, lines)
+	elseif entry.type == "directory" then
+	    -- List contents of directory
+	    local contents = get_entries(entry.full_path)
+	    local lines = {}
+	    for _, item in ipairs(contents) do
+		table.insert(lines, string.format("- %s", item.name))
+	    end
+	    if #lines == 0 then
+		table.insert(lines, "[Empty folder]")
+	    end
+	    vim.api.nvim_buf_set_lines(preview.bufnr, 0, -1, false, lines)
+	end
+    end
+
+    vim.api.nvim_create_autocmd("CursorMoved", {
+	buffer = popup.bufnr,
+	callback = function()
+	    vim.schedule(update_preview)
+	end,
+    })
 
     local function refresh()
 	entries = get_entries(cwd)
 	local root = vim.fn.expand("~/Projects")
+
+	-- If we're not in the Projects folder, redirect to Projects
+	if not cwd:find(root, 1, true) then
+	    cwd = root
+	    entries = get_entries(cwd)
+	end
+
+	-- Only add ".." if we're inside Projects and not at the root
 	if cwd ~= root then
 	    table.insert(entries, 1, {
 		name = "../",
@@ -122,14 +219,12 @@ local function open_filtered_table()
 	if not popup.bufnr then return end
 	vim.api.nvim_buf_set_lines(popup.bufnr, 0, -1, false, {})
 	for i, item in ipairs(current_view) do
-	    local line = string.format("%-3d | %-30s | %-6s", i, item.name, item.type)
+	    local line = string.format("%-2d | %-27s | %-6s", i, item.name, item.type)
 	    vim.api.nvim_buf_set_lines(popup.bufnr, -1, -1, false, { line })
 	end
 
 	-- Add key mappings legend
 	local hints = {
-	    "",
-	    "Keybinds:",
 	    "  <CR>     : Open file / Enter directory",
 	    "  <BS>     : Go to parent directory",
 	    "  /        : Filter (fuzzy search)",
@@ -141,21 +236,42 @@ local function open_filtered_table()
 	    "  q        : Quit popup",
 	}
 
-	vim.api.nvim_buf_set_lines(popup.bufnr, -1, -1, false, hints)
+	if not keybinds.bufnr then return end
+	vim.api.nvim_buf_set_lines(keybinds.bufnr, 0, -1, false, {})
+
+	vim.api.nvim_buf_set_lines(keybinds.bufnr, -1, -1, false, hints)
+	update_preview()
     end
 
     local function prompt_filter()
-	vim.ui.input({ prompt = "Search: " }, function(input)
-	    if input then
+	vim.api.nvim_buf_set_lines(search.bufnr, 0, -1, false, { "" })
+	vim.api.nvim_buf_set_option(search.bufnr, "modifiable", true)
+	if search.winid and vim.api.nvim_win_is_valid(search.winid) then
+	    vim.api.nvim_set_current_win(search.winid)
+	end
+	vim.cmd("startinsert")
+
+	vim.keymap.set("i", "<CR>", function()
+	    local input = vim.api.nvim_buf_get_lines(search.bufnr, 0, 1, false)[1]
+	    if input and input ~= "" then
 		current_view = fuzzy_filter(entries, input)
 		render()
 	    end
-	end)
+	    vim.api.nvim_buf_set_lines(search.bufnr, 0, -1, false, { "" })
+	    vim.api.nvim_set_current_win(popup.winid)
+	    vim.cmd("stopinsert")  -- exit insert mode
+	end, { buffer = search.bufnr, noremap = true })
+
+	vim.keymap.set("i", "<Esc>", function()
+	    vim.api.nvim_set_current_win(popup.winid)
+	    vim.cmd("stopinsert") -- ensure we are in normal mode
+	end, { buffer = search.bufnr, noremap = true })
     end
+
+    popup:map("n", "/", function() vim.schedule(prompt_filter) end)
 
     -- Mappings
     popup:map("n", "q", function() popup:unmount() end)
-    popup:map("n", "/", prompt_filter)
 
     -- Creates a new folder
     popup:map("n", "a", function()
@@ -190,9 +306,10 @@ local function open_filtered_table()
 	    if M.load_language_module(lang) and templates.files[lang] and templates.files[lang].run then
 		vim.ui.input({ prompt = "Enter file name: " }, function(file_name)
 		    if not file_name or file_name == "" then return print("File creation canceled.") end
-		    templates.files[lang].run(file_name)
-		    refresh()
-		    render()
+		    popup:unmount()
+		    vim.schedule(function()
+			templates.files[lang].run(file_name)
+		    end)
 		end)
 	    else
 		print("Error: No File creation method for " .. lang)
@@ -207,10 +324,11 @@ local function open_filtered_table()
 	    if not lang or lang == "" then return print("Project creation canceled.") end
 	    opts = vim.tbl_deep_extend("force", {}, config.get(lang), opts or {})
 	    if M.load_language_module(lang) and templates.projects[lang] and templates.projects[lang].run then
-		templates.create_project(lang, opts.project_root)
-		vim.cmd("cd " .. templates.dir .. "/src")
-		refresh()
-		render()
+		popup:unmount()
+		vim.schedule(function()
+		    templates.create_project(lang, opts.project_root)
+		end)
+
 	    else
 		print("Error: No project creation method for " .. lang)
 	    end
@@ -242,7 +360,10 @@ local function open_filtered_table()
 	    render()
 	end
 	if entry and entry.type == "file" then
-	    vim.cmd("edit " .. entry.name)
+	    popup:unmount()
+	    vim.schedule(function()
+		vim.cmd("edit " .. vim.fn.fnameescape(entry.full_path))
+	    end)
 	end
     end)
 
@@ -255,11 +376,35 @@ local function open_filtered_table()
 	end
     end)
 
-    popup:on(event.BufLeave, function() popup:unmount() end)
+    popup:on(event.BufLeave, function()
+	vim.defer_fn(function()
+	    if not (popup.winid and vim.api.nvim_win_is_valid(popup.winid)) and
+		not (search.winid and vim.api.nvim_win_is_valid(search.winid)) then
+		popup:unmount()
+	    end
+	end, 50)
+    end)
 
     popup:mount()
     refresh()
     render()
+end
+
+---@type table
+M.keybinds = {}
+
+local function setupKeybinds(opts)
+    M.opts = {}
+
+    M.opts = vim.tbl_deep_extend("force", {}, config.get("globals"), opts or {})
+    for key, command in pairs(M.opts.keybinds) do
+	M.keybinds[command] = key
+    end
+
+    vim.api.nvim_create_user_command("PolydevProjectManagerOpen", open_filtered_table, {})
+    if M.keybinds.PolydevManager then
+	vim.keymap.set("n", M.keybinds.PolydevManager, ":PolydevProjectManagerOpen<CR>", { silent = true })
+    end
 end
 
 ---@param opts table
@@ -272,8 +417,8 @@ function M.setup(opts)
 	config.user_config[lang] = vim.tbl_deep_extend("force", default, user_opts)
     end
 
-    vim.api.nvim_create_user_command("OpenSmartTable", open_filtered_table, {})
-    vim.keymap.set("n", "<leader>po", ":OpenSmartTable<CR>", { silent = true })
+    setupKeybinds(opts)
+
     vim.api.nvim_create_autocmd("FileType", {
 	pattern = "*",
 	callback = function()

@@ -10,7 +10,6 @@ You can customize keybinds for your C projects with Polydev.
 
 | Keybind             | Action                                           |
 |---------------------|--------------------------------------------------|
-| `<leader>pb`        | Build all C files in the `src` directory         |
 | `<leader>pr`        | Run `<Project_name>` in your build directory     |
 | `<leader>nh`        | Create a new header file in the current project’s `src` folder |
 
@@ -19,7 +18,6 @@ You can customize keybinds for your C projects with Polydev.
 ```lua
 require("Polydev").c.setup({
   keybinds = {
-    ["<leader>pb"] = "CBuild",    -- Build all C files in the src directory
     ["<leader>pr"] = "CRun",      -- Run <Project_name> in your build directory
     ["<leader>nh"] = "NewCHeaderFile"  -- Create a new header file in the current project’s src folder
   }
