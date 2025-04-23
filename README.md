@@ -15,6 +15,7 @@ Polydev helps you work smarter, not harder. With this plugin, you can:
 - ⚙️ **Build Your Files**: Compile and prepare your projects directly within Neovim.
 - 🎮 **Run Your Code**: Execute your code and see results without leaving your terminal.
 - 🖥️ **Built-in Terminal**: A terminal integrated directly into Neovim for running commands, scripts, or code.
+- 🖥️ **Built-in Project Manager**: A window integrated directly into Neovim for creating projects, files, deleting files, renaming files and more.
 - 🌱 **More to Come**: Ongoing development means new features and improvements are always on the horizon!
 
 **Need more info?** Check out the full [Polydev Documentation](https://darthmoomancer.github.io/Polydev/) for setup instructions, configurations, and usage details.
@@ -41,7 +42,6 @@ And more on the way! Stay tuned for future updates.
 We're always working to make Polydev better. Here’s a sneak peek at some exciting plans:
 
 - 🚀 **Rust Integration**: Leverage Rust to speed up certain aspects of the plugin for faster performance and better scalability.
-- **Project Manager**: Want to make a way to open projects quickly from anywhere and easier to create plugins with one menu instead of multiple commands
 
 ---
 
