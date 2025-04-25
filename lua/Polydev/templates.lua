@@ -92,16 +92,12 @@ return M
 	    for _, path in ipairs({ "/src", "/build", "/include" }) do vim.fn.mkdir(full_project_root .. path, "p") end
 	    utils.write_file(full_project_root .. "/build/" .. project_name .. ".polydev", project_name)
 	    utils.write_file(full_project_root .. "/src/main.c", [[
-/* If you have vcpkg and want to use it:
-vcpkg new --application
-vcpkg add port <package_name>
-*/
-
 #include <stdio.h>
 
-int main() {
-  printf("%s", "Hello World");
-  return 0;
+int
+main() {
+    printf("%s", "Hello World");
+    return 0;
 }
 ]])
 	    utils.write_file(full_project_root .. "/CMakeLists.txt", string.format([[
@@ -161,16 +157,11 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 	    end
 	    utils.write_file(full_project_root .. "/build/" .. project_name .. ".polydev", project_name)
 	    utils.write_file(full_project_root .. "/src/main.cpp", [[
-/* If you have vcpkg and want to use it:
-vcpkg new --application
-vcpkg add port <package_name>
-*/
-
 #include <iostream>
 
 int main() {
-  std::cout << "Hello World" << std::endl;
-  return 0;
+    std::cout << "Hello World" << std::endl;
+    return 0;
 }
 ]])
 	    utils.write_file(full_project_root .. "/CMakeLists.txt", string.format([[

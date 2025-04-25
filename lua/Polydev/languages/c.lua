@@ -21,6 +21,16 @@ function M.setup(opts)
     end
 end
 
+function M.get_project_root()
+    local dir = vim.fn.expand("%:p:h")
+    while dir ~= "/" do
+	if vim.fn.isdirectory(dir .. "/src") == 1 or vim.fn.filereadable(dir .. "/CMakeLists.txt") == 1 then
+	    return dir
+	end
+	dir = vim.fn.fnamemodify(dir, ":h")
+    end
+end
+
 function M.create_new_header_file()
     vim.ui.input({ prompt = "Enter header file name: " }, function(header_name)
 	if not header_name then return print("Header file creation canceled.") end
@@ -40,16 +50,6 @@ void example_function();
 ]], guard_macro, guard_macro, guard_macro)
 	utils.write_file(root_dir .. "/include/" .. header_name .. ".h", content)
     end)
-end
-
-function M.get_project_root()
-    local dir = vim.fn.expand("%:p:h")
-    while dir ~= "/" do
-	if vim.fn.isdirectory(dir .. "/src") == 1 or vim.fn.filereadable(dir .. "/CMakeLists.txt") == 1 then
-	    return dir
-	end
-	dir = vim.fn.fnamemodify(dir, ":h")
-    end
 end
 
 function M.run()

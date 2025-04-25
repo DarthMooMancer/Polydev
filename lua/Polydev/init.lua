@@ -246,14 +246,14 @@ local function open_filtered_table()
     local function prompt_filter()
 	vim.api.nvim_buf_set_lines(search.bufnr, 0, -1, false, { "" })
 	vim.api.nvim_buf_set_option(search.bufnr, "modifiable", true)
-	if search.winid and vim.api.nvim_win_is_valid(search.winid) then
+	if vim.api.nvim_win_is_valid(search.winid) then
 	    vim.api.nvim_set_current_win(search.winid)
 	end
 	vim.cmd("startinsert")
 
 	vim.keymap.set("i", "<CR>", function()
 	    local input = vim.api.nvim_buf_get_lines(search.bufnr, 0, 1, false)[1]
-	    if input and input ~= "" then
+	    if input ~= "" then
 		current_view = fuzzy_filter(entries, input)
 		render()
 	    end
@@ -287,7 +287,7 @@ local function open_filtered_table()
     -- Deletes Folder and confirms deletion
     popup:map("n", "D", function()
 	local entry = get_selected_entry()
-	if entry and not entry.is_up then
+	if not entry.is_up then
 	    vim.ui.input({ prompt = "(y/N) Defaults to N: " .. entry.name }, function(input)
 		if input == "y" or input == "Y" then
 		    vim.fn.delete(entry.full_path, "rf")
@@ -338,7 +338,7 @@ local function open_filtered_table()
     -- Renames Files and Folders
     popup:map("n", "R", function()
 	local entry = get_selected_entry()
-	if entry and not entry.is_up then
+	if not entry.is_up then
 	    vim.ui.input({ prompt = "Rename:", default = entry.name }, function(input)
 		if input then
 		    local new_path = cwd .. "/" .. input
@@ -353,13 +353,13 @@ local function open_filtered_table()
     -- Changes working directory or edits a file
     popup:map("n", "<CR>", function()
 	local entry = get_selected_entry()
-	if entry and entry.type == "directory" then
+	if entry.type == "directory" then
 	    cwd = entry.full_path
 	    vim.cmd("cd " .. cwd)
 	    refresh()
 	    render()
 	end
-	if entry and entry.type == "file" then
+	if entry.type == "file" then
 	    popup:unmount()
 	    vim.schedule(function()
 		vim.cmd("edit " .. vim.fn.fnameescape(entry.full_path))
@@ -378,8 +378,11 @@ local function open_filtered_table()
 
     popup:on(event.BufLeave, function()
 	vim.defer_fn(function()
-	    if not (popup.winid and vim.api.nvim_win_is_valid(popup.winid)) and
-		not (search.winid and vim.api.nvim_win_is_valid(search.winid)) then
+	    local function is_valid_win(winid)
+		return type(winid) == "number" and vim.api.nvim_win_is_valid(winid)
+	    end
+
+	    if not is_valid_win(popup.winid) and not is_valid_win(search.winid) then
 		popup:unmount()
 	    end
 	end, 50)
