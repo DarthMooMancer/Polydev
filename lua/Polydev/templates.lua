@@ -113,37 +113,6 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 # find_package(SDL3 CONFIG REQUIRED) # An example of how to import libraries from vcpkg
 # target_link_libraries(Game PRIVATE SDL3::SDL3)
 ]], project_name, project_name))
-	    utils.write_file(full_project_root .. "/CMakePresets.json", string.format([[
-# For the purposes of vcpkg, DO NOT REMOVE, but feel free to change as needed
-{
-  "version": 2,
-  "configurePresets": [
-    {
-      "name": "vcpkg",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build",
-      "cacheVariables": {
-	"CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
-      }
-    }
-  ]
-}
-]]))
-	    utils.write_file(full_project_root .. "/CMakeUserPresets.json", string.format([[
-{
-  "version": 2,
-  "configurePresets": [
-    {
-      "name": "default",
-      "inherits": "vcpkg",
-      "environment": {
-	"VCPKG_ROOT": "/Users/<USER>/vcpkg"
-      }
-    }
-  ]
-}
-
-]]))
 	    vim.cmd("edit " .. full_project_root .. "/src/main.c")
 	    vim.fn.system(string.format("cd %s/build/ && cmake .. && cmake --build .", full_project_root))
 	    return full_project_root
@@ -177,37 +146,6 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 # find_package(SDL3 CONFIG REQUIRED) # An example of how to import libraries from vcpkg
 # target_link_libraries(Game PRIVATE SDL3::SDL3)
 ]], project_name, project_name))
-	    utils.write_file(full_project_root .. "/CMakePresets.json", string.format([[
-# For the purposes of vcpkg, DO NOT REMOVE, but feel free to change as needed
-{
-  "version": 2,
-  "configurePresets": [
-    {
-      "name": "vcpkg",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build",
-      "cacheVariables": {
-	"CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
-      }
-    }
-  ]
-}
-]]))
-	    utils.write_file(full_project_root .. "/CMakeUserPresets.json", string.format([[
-{
-  "version": 2,
-  "configurePresets": [
-    {
-      "name": "default",
-      "inherits": "vcpkg",
-      "environment": {
-	"VCPKG_ROOT": "/Users/<USER>/vcpkg"
-      }
-    }
-  ]
-}
-
-]]))
 
 	    utils.write_file(full_project_root .. "/.gitignore", string.format([[
 build/
