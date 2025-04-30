@@ -208,6 +208,10 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 }
 
 ]]))
+
+	    utils.write_file(full_project_root .. "/.gitignore", string.format([[
+build/
+]]))
 	    vim.fn.system(string.format("cd %s/build/ && cmake .. && cmake --build .", full_project_root))
 	    vim.cmd("edit " .. full_project_root .. "/src/main.cpp")
 	    return full_project_root
