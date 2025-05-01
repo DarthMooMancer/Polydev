@@ -225,15 +225,15 @@ local function open_filtered_table()
 
 	-- Add key mappings legend
 	local hints = {
-	    "  <CR>     : Open file / Enter directory",
-	    "  <BS>     : Go to parent directory",
-	    "  /        : Filter (fuzzy search)",
-	    "  a        : Create new folder",
-	    "  %        : Create new file",
-	    "  d        : Create new project",
-	    "  R        : Rename file/folder",
-	    "  D        : Delete file/folder",
-	    "  q        : Quit popup",
+	    "  <CR>     : Open/Enter",
+	    "  <BS>     : Return",
+	    "  /        : Search",
+	    "  a        : New folder",
+	    "  %        : New file",
+	    "  d        : New project",
+	    "  R        : Rename",
+	    "  D        : Delete",
+	    "  q        : Quit",
 	}
 
 	if not keybinds.bufnr then return end
@@ -328,7 +328,6 @@ local function open_filtered_table()
 		vim.schedule(function()
 		    templates.create_project(lang, opts.project_root)
 		end)
-
 	    else
 		print("Error: No project creation method for " .. lang)
 	    end
