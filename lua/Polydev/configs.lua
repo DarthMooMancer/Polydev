@@ -11,10 +11,6 @@ local M = {}
 
 ---@class TerminalConfigs
 ---@field presets string
----@field right_padding integer
----@field left_padding integer
----@field bottom_padding integer
----@field top_padding integer
 ---@field border boolean
 ---@field number boolean
 ---@field relativenumber boolean
@@ -89,11 +85,7 @@ M.defaults = {
 	build_attributes = "",
     },
     terminal = {
-	presets = "center",
-	right_padding = 0,
-	bottom_padding = 0,
-	left_padding = 0,
-	top_padding = 0,
+	presets = "centered",
 	border = true,
 	number = true,
 	relativenumber = true,

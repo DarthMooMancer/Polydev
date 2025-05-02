@@ -1,11 +1,5 @@
---
---The main source of the plugin in which runs the creation of projects and files for languages
---
-
----@module 'Polydev.utils'
 local utils = require("Polydev.utils")
 
----@type table 
 local M = {}
 
 ---@class TemplateLanguage
