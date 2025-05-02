@@ -55,15 +55,14 @@ function M.open_float_terminal(cmd)
 	style = "minimal",
 	border = M.opts.border and "rounded" or "none",
     })
-
-    vim.api.nvim_win_set_option(win, "winblend", vim.o.pumblend)
-    vim.api.nvim_win_set_option(win, "winhighlight", "Normal:Pmenu,FloatBorder:Pmenu")
-    vim.api.nvim_win_set_option(win, "cursorline", true)
-    vim.api.nvim_win_set_option(win, "scrolloff", 5)
+    vim.api.nvim_set_option_value("winblend", vim.o.pumblend, { win = win })
+    vim.api.nvim_set_option_value("winhighlight", "Normal:Pmenu,FloatBorder:Pmenu", { win = win })
+    vim.api.nvim_set_option_value("cursorline", true, { win = win })
+    vim.api.nvim_set_option_value("scrolloff", 5, { win = win })
     if(M.opts.number == true) then
-	vim.api.nvim_win_set_option(win, "number", true)
+	vim.api.nvim_win_set_option("number", true, { win = win })
 	if(M.opts.relativenumber == true) then
-	    vim.api.nvim_win_set_option(win, "relativenumber", true)
+	    vim.api.nvim_win_set_option("relativenumber", true, { win = win })
 	end
     end
 
