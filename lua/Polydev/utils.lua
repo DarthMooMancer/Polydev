@@ -60,9 +60,9 @@ function M.open_float_terminal(cmd)
     vim.api.nvim_set_option_value("cursorline", true, { win = win })
     vim.api.nvim_set_option_value("scrolloff", 5, { win = win })
     if(M.opts.number == true) then
-	vim.api.nvim_win_set_option("number", true, { win = win })
+	vim.api.nvim_set_option_value("number", true, { win = win })
 	if(M.opts.relativenumber == true) then
-	    vim.api.nvim_win_set_option("relativenumber", true, { win = win })
+	    vim.api.nvim_set_option_value("relativenumber", true, { win = win })
 	end
     end
 
