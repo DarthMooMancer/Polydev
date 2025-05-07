@@ -6,26 +6,23 @@ local Layout = require("nui.layout")
 local event = require("nui.utils.autocmd").event
 local Path = require("plenary.path")
 
----@type table
 local M = {}
 
----@type table
 M.loaded_languages = {}
 
----@param lang string
----@param opts table?
----@return boolean
+---@type table
+M.keybinds = {}
+
+-- Load language opts based on filetype
 function M.load_language_module(lang, opts)
     if M.loaded_languages[lang] then return true end
 
-    local ok, lang_module = pcall(require, "Polydev.languages." .. lang)
-    if ok and lang_module.setup then
-	local lang_opts = opts and opts[lang] or {}
-	lang_module.setup(lang_opts)
-	M.loaded_languages[lang] = lang_module
-	return true
-    end
-    return false
+    local ok, mod = pcall(require, "Polydev.languages." .. lang)
+    if not ok or type(mod.setup) ~= "function" then return false end
+
+    mod.setup(opts and opts[lang] or {})
+    M.loaded_languages[lang] = mod
+    return true
 end
 
 -- Get entries in a given path
@@ -391,9 +388,6 @@ local function open_filtered_table()
     refresh()
     render()
 end
-
----@type table
-M.keybinds = {}
 
 local function setupKeybinds(opts)
     M.opts = {}

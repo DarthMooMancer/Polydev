@@ -1,10 +1,5 @@
 ### C Setup for Polydev 🛠️
 
-#### Key Notes ⚠️
-> **Important**: The first time you build a project, it might throw an error. This is expected behavior. Simply rerun the build, and if errors persist, it may be an issue with your project setup rather than the plugin.
-
----
-
 #### Keybinds 🎮
 You can customize keybinds for your C projects with Polydev.
 

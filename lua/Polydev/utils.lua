@@ -7,9 +7,6 @@ local M = {}
 ---@type table
 M.opts = {}
 
----@type table
-local presets_opts = {}
-
 ---@param opts table
 function M.setup(opts)
     M.opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get("terminal"), opts or {})
@@ -29,15 +26,14 @@ function M.write_file(path, content)
     file:write(content)
     file:close()
     vim.cmd("edit " .. path)
-    print(path .. " created successfully!")
 end
 
 ---@param cmd string
----@return boolean, table
+---@return boolean?, table?, nil?
 function M.open_float_terminal(cmd)
-    if presets.getPresets(M.opts.presets) ~= nil then
-	presets_opts = presets.getPresets(M.opts.presets)
-    end
+    local presets_opts = {}
+    if presets.getPresets(M.opts.presets) == nil then return nil end
+    presets_opts = presets.getPresets(M.opts.presets)
     local ui = vim.api.nvim_list_uis()[1]
 
     local width = math.max(1, math.floor(ui.width * 0.9) - presets_opts.left_padding - presets_opts.right_padding)
@@ -59,9 +55,9 @@ function M.open_float_terminal(cmd)
     vim.api.nvim_set_option_value("winhighlight", "Normal:Pmenu,FloatBorder:Pmenu", { win = win })
     vim.api.nvim_set_option_value("cursorline", true, { win = win })
     vim.api.nvim_set_option_value("scrolloff", 5, { win = win })
-    if(M.opts.number == true) then
+    if(M.opts.number) then
 	vim.api.nvim_set_option_value("number", true, { win = win })
-	if(M.opts.relativenumber == true) then
+	if(M.opts.relativenumber) then
 	    vim.api.nvim_set_option_value("relativenumber", true, { win = win })
 	end
     end
