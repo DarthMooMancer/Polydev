@@ -38,7 +38,7 @@ function M.run()
 
     ---@return string
     local function get_project_name()
-	return vim.fn.glob((M.get_project_root() or "") .. "/*.polydev"):match("([^/]+)%.polydev$")
+	return vim.fn.glob((get_project_root() or "") .. "/*.polydev"):match("([^/]+)%.polydev$")
     end
 
     ---@return string

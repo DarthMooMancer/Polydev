@@ -6,12 +6,13 @@ M.opts = nil
 
 function M.setup(opts)
     M.opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get("cpp"), opts or {})
+    vim.api.nvim_create_user_command("NewCppHeaderFile", M.create_new_header_file, {})
+    vim.api.nvim_create_user_command("CppRun", M.run, {})
+    
     for key, command in pairs(M.opts.keybinds) do
 	M.keybinds[command] = key
     end
 
-    vim.api.nvim_create_user_command("NewCppHeaderFile", M.create_new_header_file, {})
-    vim.api.nvim_create_user_command("CppRun", M.run, {})
 
     if M.keybinds.CppRun then
 	vim.keymap.set("n", M.keybinds.CppRun, ":CppRun<CR>", { silent = true })

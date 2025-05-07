@@ -1,26 +1,18 @@
----@module "Polydev.presets"
 local presets = require("Polydev.presets")
 
----@type table
 local M = {}
 
----@type table
 M.opts = {}
 
----@param opts table
 function M.setup(opts)
     M.opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get("terminal"), opts or {})
 end
 
----@param path string
----@return boolean
 function M.is_dir(path)
   local stat = vim.loop.fs_stat(path)
   return stat and stat.type == "directory"
 end
 
----@param path string
----@param content string
 function M.write_file(path, content)
     local file = assert(io.open(path, "w"), "Error creating file: " .. path)
     file:write(content)
@@ -28,8 +20,6 @@ function M.write_file(path, content)
     vim.cmd("edit " .. path)
 end
 
----@param cmd string
----@return boolean?, table?, nil?
 function M.open_float_terminal(cmd)
     local presets_opts = {}
     if presets.getPresets(M.opts.presets) == nil then return nil end
