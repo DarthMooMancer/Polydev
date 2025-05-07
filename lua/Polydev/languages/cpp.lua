@@ -22,20 +22,20 @@ function M.setup(opts)
 end
 
 function M.get_project_root()
-    local dir = vim.fn.expand("%:p:h")
-    while dir ~= "/" do
-	if vim.fn.isdirectory(dir .. "/src") == 1 or vim.fn.filereadable(dir .. "/CMakeLists.txt") == 1 then
-	    return dir
-	end
-	dir = vim.fn.fnamemodify(dir, ":h")
-    end
+    local result = vim.fs.find({ "src", "CMakeLists.txt" }, {
+        upward = true,
+        stop = vim.loop.os_homedir(),
+        path = vim.fs.dirname(vim.api.nvim_buf_get_name(0)),
+    })
+    return result[1] and vim.fs.dirname(result[1]) or nil
 end
+
+local root = M.get_project_root()
 
 function M.create_new_header_file()
     vim.ui.input({ prompt = "Enter header file name: " }, function(header_name)
 	if not header_name then return print("Header file creation canceled.") end
-	local root_dir = M.get_project_root()
-	if not root_dir then return print("Error: Project root not found.") end
+	if not root then return print("Error: Project root not found.") end
 	local guard_macro = header_name:upper():gsub("[^A-Z0-9]", "_") .. "_HPP"
 	local content = string.format([[
 #ifndef %s
@@ -48,12 +48,11 @@ void example_function();
 
 #endif // %s
 ]], guard_macro, guard_macro, guard_macro)
-	utils.write_file(root_dir .. "/include/" .. header_name .. ".hpp", content)
+	utils.write_file(root .. "/include/" .. header_name .. ".hpp", content)
     end)
 end
 
 function M.run()
-    local root = M.get_project_root()
     if not root then return print("Error: Project root not found.") end
     local build_dir = root .. "/build"
 
