@@ -2,7 +2,7 @@ local M = {}
 
 local opts = {}
 
-M.presets = {
+local presets = {
     centered = {
 	left_padding = 0,
 	right_padding = 0,
@@ -31,13 +31,13 @@ M.presets = {
 
 function M.getPresets(preset)
     if preset == "centered" then
-	opts = M.presets.centered
+	opts = presets.centered
     elseif preset == "center_panel" then
-	opts = M.presets.center_panel
+	opts = presets.center_panel
     elseif preset == "right_panel" then
-	opts = M.presets.right_panel
+	opts = presets.right_panel
     elseif preset == "cornered" then
-	opts = M.presets.cornered
+	opts = presets.cornered
     elseif preset == nil then
 	print("Preset returns nil value")
     else

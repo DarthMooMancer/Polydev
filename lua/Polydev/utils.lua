@@ -1,5 +1,3 @@
-local presets = require("Polydev.presets")
-
 local M = {}
 
 M.opts = {}
@@ -21,9 +19,11 @@ function M.write_file(path, content)
 end
 
 function M.open_float_terminal(cmd)
+    local presets = require("Polydev.presets")
     local presets_opts = {}
-    if presets.getPresets(M.opts.presets) == nil then return nil end
-    presets_opts = presets.getPresets(M.opts.presets)
+
+    if presets.getPresets(M.opts.preset) == nil then return nil end
+    presets_opts = presets.getPresets(M.opts.preset)
     local ui = vim.api.nvim_list_uis()[1]
 
     local width = math.max(1, math.floor(ui.width * 0.9) - presets_opts.left_padding - presets_opts.right_padding)

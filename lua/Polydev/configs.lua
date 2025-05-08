@@ -55,7 +55,7 @@ M.defaults = {
 	build_attributes = "",
     },
     terminal = {
-	presets = "centered",
+	preset = "centered",
 	border = true,
 	number = true,
 	relativenumber = true,

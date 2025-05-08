@@ -96,7 +96,7 @@ keybinds = {
 ## **Terminal Configuration**
 ```lua
 terminal = {
-    presets = "centered", -- "centered", "center_panel", "right_panel", "cornered"
+    preset = "centered", -- "centered", "center_panel", "right_panel", "cornered"
     border = true,
     number = true,
     relativenumber = true -- requires number to be true
