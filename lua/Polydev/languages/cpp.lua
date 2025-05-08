@@ -13,7 +13,6 @@ function M.setup(opts)
 	M.keybinds[command] = key
     end
 
-
     if M.keybinds.CppRun then
 	vim.keymap.set("n", M.keybinds.CppRun, ":CppRun<CR>", { silent = true })
     end

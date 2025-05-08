@@ -28,8 +28,8 @@ function M.open_float_terminal(cmd)
 
     local width = math.max(1, math.floor(ui.width * 0.9) - presets_opts.left_padding - presets_opts.right_padding)
     local height = math.max(1, math.floor(ui.height * 0.9) - presets_opts.top_padding - presets_opts.bottom_padding)
-    local row = math.max(1, math.floor((ui.height - height) / 2) + (presets_opts.top_padding))
-    local col = math.max(1, math.floor((ui.width - width) / 2) + (presets_opts.left_padding))
+    local row = math.floor((ui.height - height) / 2) + presets_opts.top_padding
+    local col = math.floor((ui.width - width) / 2) + presets_opts.left_padding
 
     local buf = vim.api.nvim_create_buf(false, true)
     local win = vim.api.nvim_open_win(buf, true, {
@@ -57,5 +57,4 @@ function M.open_float_terminal(cmd)
     return buf, win
 end
 
----@return table
 return M

@@ -38,6 +38,8 @@ function M.getPresets(preset)
 	opts = M.presets.right_panel
     elseif preset == "cornered" then
 	opts = M.presets.cornered
+    elseif preset == nil then
+	print("Preset returns nil value")
     else
 	print("Preset option: " .. preset .. " does not exist")
     end

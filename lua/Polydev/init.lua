@@ -1,31 +1,19 @@
 local config = require("Polydev.configs")
-local utils = require("Polydev.utils")
-local templates = require("Polydev.templates")
-local Popup = require("nui.popup")
-local Layout = require("nui.layout")
-local event = require("nui.utils.autocmd").event
-local Path = require("plenary.path")
 
 local M = {}
 
-M.loaded_languages = {}
-
----@type table
-M.keybinds = {}
-
--- Load language opts based on filetype
-function M.load_language_module(lang, opts)
-    if M.loaded_languages[lang] then return true end
+local loaded_languages = {}
+local function load_language_module(lang, opts)
+    if loaded_languages[lang] then return true end
 
     local ok, mod = pcall(require, "Polydev.languages." .. lang)
     if not ok or type(mod.setup) ~= "function" then return false end
 
     mod.setup(opts and opts[lang] or {})
-    M.loaded_languages[lang] = mod
+    loaded_languages[lang] = mod
     return true
 end
 
--- Get entries in a given path
 local function get_entries(path)
     local result = {}
     local handle = vim.loop.fs_scandir(path)
@@ -65,7 +53,6 @@ local function get_entries(path)
     return result
 end
 
--- Fuzzy search
 local function fuzzy_filter(list, query)
     local result = {}
     query = query:lower()
@@ -77,8 +64,12 @@ local function fuzzy_filter(list, query)
     return result
 end
 
--- Main function
-local function open_filtered_table()
+local function open_project_manager()
+    local templates = require("Polydev.templates")
+    local Popup = require("nui.popup")
+    local Layout = require("nui.layout")
+    local event = require("nui.utils.autocmd").event
+    local Path = require("plenary.path")
     local display_dir = vim.fn.expand(vim.fn.getcwd())
     local cwd = display_dir
     local entries = get_entries(cwd)
@@ -300,7 +291,7 @@ local function open_filtered_table()
 	vim.ui.input({ prompt = "Enter language for new file: " }, function(lang)
 	    if not lang or lang == "" then return print("File creation canceled.") end
 
-	    if M.load_language_module(lang) and templates.files[lang] and templates.files[lang].run then
+	    if load_language_module(lang) and templates.files[lang] and templates.files[lang].run then
 		vim.ui.input({ prompt = "Enter file name: " }, function(file_name)
 		    if not file_name or file_name == "" then return print("File creation canceled.") end
 		    popup:unmount()
@@ -320,7 +311,7 @@ local function open_filtered_table()
 	vim.ui.input({ prompt = "Enter language for project: " }, function(lang)
 	    if not lang or lang == "" then return print("Project creation canceled.") end
 	    opts = vim.tbl_deep_extend("force", {}, config.get(lang), opts or {})
-	    if M.load_language_module(lang) and templates.projects[lang] and templates.projects[lang].run then
+	    if load_language_module(lang) and templates.projects[lang] and templates.projects[lang].run then
 		popup:unmount()
 		vim.schedule(function()
 		    templates.create_project(lang, opts.project_root)
@@ -391,23 +382,23 @@ end
 
 local function setupKeybinds(opts)
     M.opts = {}
+    local keybinds = {}
 
     M.opts = vim.tbl_deep_extend("force", {}, config.get("globals"), opts or {})
     for key, command in pairs(M.opts.keybinds) do
-	M.keybinds[command] = key
+	keybinds[command] = key
     end
 
-    vim.api.nvim_create_user_command("PolydevProjectManagerOpen", open_filtered_table, {})
-    if M.keybinds.PolydevManager then
-	vim.keymap.set("n", M.keybinds.PolydevManager, ":PolydevProjectManagerOpen<CR>", { silent = true })
+    vim.api.nvim_create_user_command("PolydevProjectManagerOpen", open_project_manager, {})
+    if keybinds.PolydevManager then
+	vim.keymap.set("n", keybinds.PolydevManager, ":PolydevProjectManagerOpen<CR>", { silent = true })
     end
 end
 
----@param opts table
 function M.setup(opts)
     opts = opts or {}
     config.setup(opts)
-    utils.setup(opts)
+    require("Polydev.utils").setup(opts)
     for lang, user_opts in pairs(opts) do
 	local default = config.defaults[lang] or {}
 	config.user_config[lang] = vim.tbl_deep_extend("force", default, user_opts)
@@ -419,10 +410,9 @@ function M.setup(opts)
 	pattern = "*",
 	callback = function()
 	    local filetype = vim.bo.filetype
-	    M.load_language_module(filetype, opts)
+	    load_language_module(filetype, opts)
 	end,
     })
 end
 
----@return table
 return M

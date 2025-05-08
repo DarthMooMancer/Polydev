@@ -1,27 +1,4 @@
-### Python Setup for Polydev 🐍
-
-#### Keybinds 🎮
-You can easily customize the keybinds for your Python projects using Polydev.
-
-| Keybind             | Action                                            |
-|---------------------|---------------------------------------------------|
-| `<leader>pr`        | Run the Python project in your active terminal    |
-| `<leader>pb`        | Install dependencies using pip                    |
-
-#### Configuration Example:
-
-```lua
-require("Polydev").python.setup({
-  keybinds = {
-    ["<leader>pr"] = "PythonRun",  -- Run the Python project
-    ["<leader>pb"] = "PythonPip"   -- Install dependencies using pip
-  }
-})
-```
-
----
-
-#### Python Features 🚀
+### **Python Features**
 
 Here are some cool features available for Python projects using Polydev:
 
@@ -36,7 +13,7 @@ You no longer need to manually activate or deactivate virtual environments. With
 
 ---
 
-#### File Structure 📂
+#### **File Structure**
 Here’s the recommended structure for your Python projects using Polydev:
 
 | Directory/File Path        | Description                                          |
@@ -47,7 +24,7 @@ Here’s the recommended structure for your Python projects using Polydev:
 | `venv/`                     | Virtual environment folder                           |
 | `main.py`                   | Main Python file for your project                    |
 
-#### Example Structure:
+#### **Tree Structure**:
 
 ```md
 Projects/
