@@ -1,25 +1,8 @@
-### C Setup for Polydev 🛠️
-
-#### Keybinds 🎮
-You can customize keybinds for your C projects with Polydev.
-
-| Keybind             | Action                                           |
-|---------------------|--------------------------------------------------|
-| `<leader>pr`        | Run `<Project_name>` in your build directory     |
-| `<leader>nh`        | Create a new header file in the current project’s `src` folder |
-
-#### Configuration Example:
-
+### **Build**
 ```lua
-require("Polydev").c.setup({
-  keybinds = {
-    ["<leader>pr"] = "CRun",      -- Run <Project_name> in your build directory
-    ["<leader>nh"] = "NewCHeaderFile"  -- Create a new header file in the current project’s src folder
-  }
-})
+-- Adds build attributes when compiling if you need extra arguments
+build_attributes = ""
 ```
-
----
 
 #### File Structure 📂
 This is the recommended file structure for your C projects using Polydev:
@@ -50,5 +33,4 @@ Projects/
         └── include/
             └── *.h
 ```
-
 ---

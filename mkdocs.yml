@@ -9,6 +9,8 @@ nav:
     - Cpp: languages/cpp.md
     - Lua: languages/lua.md
     - Python: languages/python.md
+    - Rust: languages/rust.md
+    - Html: languages/html.md
 theme:
   name: material
   features:
