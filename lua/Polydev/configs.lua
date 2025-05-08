@@ -43,6 +43,7 @@ M.defaults = {
 	    ["<leader>pr"] = "CRun",
 	    ["<leader>nh"] = "NewCHeaderFile",
 	},
+	build_attributes = "",
     },
     cpp = {
 	project_root = "~/Projects/Cpp",
