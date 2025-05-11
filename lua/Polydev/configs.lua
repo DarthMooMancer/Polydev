@@ -19,7 +19,6 @@ M.defaults = {
     java = {
 	project_root = "~/Projects/Java",
 	keybinds = {
-	    ["<leader>pb"] = "JavaBuild",
 	    ["<leader>pr"] = "JavaRun",
 	},
     },
@@ -39,18 +38,16 @@ M.defaults = {
     c = {
 	project_root = "~/Projects/C",
 	keybinds = {
-	    ["<leader>pb"] = "CBuild",
 	    ["<leader>pr"] = "CRun",
-	    ["<leader>nh"] = "NewCHeaderFile",
+	    ["<leader>pb"] = "NewCHeaderFile",
 	},
 	build_attributes = "",
     },
     cpp = {
 	project_root = "~/Projects/Cpp",
 	keybinds = {
-	    ["<leader>pb"] = "CppBuild",
 	    ["<leader>pr"] = "CppRun",
-	    ["<leader>nh"] = "NewCppHeaderFile",
+	    ["<leader>pb"] = "NewCppHeaderFile",
 	},
 	build_attributes = "",
     },

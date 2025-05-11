@@ -82,13 +82,13 @@ keybinds = {
 -- c --
 keybinds = {
     ["<leader>pr"] = "CRun",
-    ["<leader>nh"] = "NewCHeaderFile",
+    ["<leader>pb"] = "NewCHeaderFile",
 }
 
 -- cpp --
 keybinds = {
     ["<leader>pr"] = "CppRun",
-    ["<leader>nh"] = "NewCppHeaderFile",
+    ["<leader>pb"] = "NewCppHeaderFile",
 }
 
 ```
