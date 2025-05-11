@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 # Start from the current directory
 DIR="$(pwd)"
 

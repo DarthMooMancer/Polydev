@@ -11,7 +11,8 @@ function M.is_dir(path)
   return stat and stat.type == "directory"
 end
 
-function M.write_file(path, content)
+function M.write_file(path_segments, content)
+    local path = table.concat(path_segments, "/")
     local file = assert(io.open(path, "w"), "Error creating file: " .. path)
     file:write(content)
     file:close()

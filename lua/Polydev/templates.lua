@@ -16,15 +16,14 @@ local M = {}
 ---@alias TemplatesLanguageName "java" | "python" | "lua" | "c" | "cpp" | "rust" | "html"
 
 local function init_git(path, gitignore_lines)
-    local full_path = vim.fn.expand(path)
-    vim.fn.mkdir(full_path, "p")
+    vim.fn.mkdir(path, "p")
 
     -- Initialize Git
-    vim.fn.system({ "git", "-C", full_path, "init" })
+    vim.fn.system({ "git", "-C", path, "init" })
 
     -- Write .gitignore if provided
     if gitignore_lines and #gitignore_lines > 0 then
-        local gitignore_path = full_path .. "/.gitignore"
+        local gitignore_path = { path, ".gitignore" }
         local contents = table.concat(gitignore_lines, "\n")
         utils.write_file(gitignore_path, contents)
     end
@@ -47,7 +46,7 @@ public class Main {
 		"build/"
 	    }
 	    init_git(full_project_root, java_gitignore)
-	    utils.write_file(full_project_root .. "/src/Main.java", main_java_content)
+	    utils.write_file({full_project_root, "src", "Main.java"}, main_java_content)
 	    return full_project_root
 	end
     },
