@@ -255,7 +255,7 @@ M.aux_files = {
 // Add code here
 
 #endif
-]], guard_macro, guard_macro, guard_macro)
+]], guard_macro, guard_macro)
 	    utils.write_file({ utils.get_project_root(), "include", file_name .. ".hpp" }, content)
 	end
     }
