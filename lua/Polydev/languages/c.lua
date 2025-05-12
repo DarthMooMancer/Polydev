@@ -11,19 +11,23 @@ end
 
 function M.run()
     local root = utils.get_project_root()
+    local build_dir = root .. "/build"
 
-    local cmd = { "cd " .. root, "build", " && cmake --build ." }
-    local output = vim.fn.system(table.concat(cmd, "/"))
+    local cmd = "cd " .. build_dir .. " && cmake --build ."
+    local output = vim.fn.system(cmd)
+    local success = vim.v.shell_error == 0
 
-    if not vim.v.shell_error == 0 then
+    if not success then
 	local term_buf = utils.terminal(cmd)
 	vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
 	vim.api.nvim_buf_set_lines(term_buf, 0, -1, false,
 	    vim.list_extend({ "Error during compilation:" }, vim.split(output, "\n", { trimempty = true }))
 	)
 	vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
-    else
-	utils.terminal({ "cd " .. root, "build" .. " && .", utils.get_project_name() })
+    end
+    if success then
+	local run_cmd = "cd " .. build_dir .. " && ./" .. utils.get_project_name()
+	utils.terminal({ run_cmd })
     end
 end
 
