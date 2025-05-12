@@ -29,15 +29,13 @@ local presets = {
 
 function M.getPresets(preset)
     if preset == "max" then
-	return presets.centered
+	return presets.max
     elseif preset == "center" then
-	return presets.center_panel
+	return presets.center
     elseif preset == "right" then
-	return presets.right_panel
+	return presets.right
     elseif preset == "corner" then
-	return presets.cornered
-    elseif preset == nil then
-	print("Preset returns nil value")
+	return presets.corner
     else
 	print("Preset option: " .. preset .. " does not exist")
     end

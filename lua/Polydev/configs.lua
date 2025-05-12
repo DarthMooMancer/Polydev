@@ -12,7 +12,6 @@ M.defaults = {
     rust = {
 	project_root = "~/Projects/Rust",
 	keybinds = {
-	    ["<leader>pb"] = "RustBuild",
 	    ["<leader>pr"] = "RustRun",
 	},
     },
@@ -39,7 +38,6 @@ M.defaults = {
 	project_root = "~/Projects/C",
 	keybinds = {
 	    ["<leader>pr"] = "CRun",
-	    ["<leader>pb"] = "NewCHeaderFile",
 	},
 	build_attributes = "",
     },
@@ -47,7 +45,6 @@ M.defaults = {
 	project_root = "~/Projects/Cpp",
 	keybinds = {
 	    ["<leader>pr"] = "CppRun",
-	    ["<leader>pb"] = "NewCppHeaderFile",
 	},
 	build_attributes = "",
     },

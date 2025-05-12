@@ -1,25 +1,21 @@
 local M = {}
 
 function M.setup(opts)
-    local opts = opts or {}
     local config = require("Polydev.configs")
     local ui = require("Polydev.ui")
     config.setup(opts)
     require("Polydev.utils").setup(opts)
     for lang, user_opts in pairs(opts) do
-	local default = config.defaults[lang] or {}
-	config.user_config[lang] = vim.tbl_deep_extend("force", default, user_opts)
+	config.user_config[lang] = vim.tbl_deep_extend("force", config.defaults[lang] or {}, user_opts)
     end
 
     vim.api.nvim_create_user_command("PolydevOpen", ui.open_project_manager, {})
-    vim.api.nvim_create_user_command("PolydevGet", require("Polydev.utils").get_project_root, {})
 
     local keys = vim.tbl_deep_extend("force", {}, config.get("globals").keybinds, opts or {})
-    for key, command in pairs(keys) do
+    for key, _ in pairs(keys) do
 	vim.keymap.set("n", key, ":PolydevOpen<CR>", { silent = true })
 	break
     end
-    vim.keymap.set("n", "<leader>tt", ":PolydevGet<CR>", { silent = true })
 
     vim.api.nvim_create_autocmd("FileType", {
 	pattern = "*",
