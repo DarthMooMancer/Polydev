@@ -2,7 +2,8 @@
 
 Polydev is a highly customizable and extensible Neovim plugin aimed at streamlining project creation and management for multiple programming languages. It’s especially suited for developers who work across different languages and want a consistent workflow for initializing, building, and running projects.
 
-![Polydev-c](https://github.com/user-attachments/assets/365dd673-6b1f-4ccc-ac1f-c5131d055fd9)
+![720p-Polydev](https://github.com/user-attachments/assets/4d14911b-4b03-4bb1-889e-c61cd2c342a1)
+
 
 ## ❓ What is Polydev?
 
