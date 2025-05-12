@@ -2,7 +2,7 @@ local utils = require("Polydev.utils")
 local M = {}
 
 M.keybinds = {}
-M.opts = nil
+M.opts = {}
 
 function M.setup(opts)
     M.opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get("rust"), opts or {})
@@ -17,18 +17,8 @@ function M.setup(opts)
     end
 end
 
-local function get_project_root()
-    local dir = vim.fn.expand("%:p:h")
-    while dir ~= "/" do
-	if vim.fn.isdirectory(dir .. "/src") == 1 then
-	    return dir
-	end
-	dir = vim.fn.fnamemodify(dir, ":h")
-    end
-end
-
 function M.run()
-    local root = get_project_root()
+    local root = utils.get_project_root()
     if not root then return print("Error: Project root not found.") end
 
     local cmd = "cargo build"
@@ -42,9 +32,7 @@ function M.run()
 	    vim.list_extend({ "Error during compilation:" }, vim.split(output, "\n", { trimempty = true }))
 	)
 	vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
-    end
-
-    if success then
+    else
 	utils.open_float_terminal("cargo run")
     end
 end

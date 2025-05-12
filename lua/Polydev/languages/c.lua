@@ -17,19 +17,8 @@ function M.setup(opts)
     end
 end
 
-function M.get_project_root()
-    local dir = vim.fn.expand("%:p:h")
-    while dir ~= "/" do
-	if vim.fn.isdirectory(dir .. "/src") == 1 or vim.fn.filereadable(dir .. "/CMakeLists.txt") == 1 then
-	    return dir
-	end
-	dir = vim.fn.fnamemodify(dir, ":h")
-    end
-end
-
 function M.run()
-    local root = M.get_project_root()
-    if not root then return print("Error: Project root not found.") end
+    local root = utils.get_project_root()
     local build_dir = root .. "/build"
 
     local cmd = "cd " .. build_dir .. " && cmake --build ."
@@ -43,12 +32,8 @@ function M.run()
 	    vim.list_extend({ "Error during compilation:" }, vim.split(output, "\n", { trimempty = true }))
 	)
 	vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
-    end
-
-    if success then
-	local files = vim.fn.glob(build_dir .. "/*.polydev", true, true)
-	if #files == 0 then return print("Error: No .polydev file found in build directory.") end
-	utils.open_float_terminal("cd " .. build_dir .. " && ./" .. files[1]:match("([^/]+)%.polydev$"))
+    else
+	utils.open_float_terminal("cd " .. build_dir .. " && ./" .. utils.get_project_name())
     end
 end
 

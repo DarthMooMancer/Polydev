@@ -231,8 +231,8 @@ public class %s {
 M.aux_files = {
     c = {
 	run = function (file_name)
-	    if not file_name then return print("Header file creation canceled.") end
-	    local root_dir = utils.get_project_root()
+	    if not file_name then return print("Header file creation canceled") end
+	    local root = utils.get_project_root()
 	    local guard_macro = file_name:upper():gsub("[^A-Z0-9]", "_") .. "_H"
 	    local content = string.format([[
 #ifndef %s
@@ -242,7 +242,23 @@ M.aux_files = {
 
 #endif
 ]], guard_macro, guard_macro)
-	    utils.write_file({ root_dir, "include", file_name .. ".h" }, content)
+	    utils.write_file({ root, "include", file_name .. ".h" }, content)
+	end
+    },
+    cpp = {
+	run = function(file_name)
+	    if not file_name then return print("Header file creation canceled") end
+	    local root = utils.get_project_root()
+	    local guard_macro = file_name:upper():gsub("[^A-Z0-9]", "_") .. "_HPP"
+	    local content = string.format([[
+#ifndef %s
+#define %s
+
+// Add code here
+
+#endif
+]], guard_macro, guard_macro, guard_macro)
+	    utils.write_file({ root, "include", file_name .. ".hpp" }, content)
 	end
     }
 }

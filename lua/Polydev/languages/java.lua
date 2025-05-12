@@ -2,7 +2,7 @@ local utils = require("Polydev.utils")
 local M = {}
 
 M.keybinds = {}
-M.opts = nil
+M.opts = {}
 
 function M.setup(opts)
     M.opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get("java"), opts or {})
@@ -18,19 +18,18 @@ function M.setup(opts)
 end
 
 function M.run()
-    local project_root = vim.fn.expand("%:p:h"):match("(.*)/src")
-    if not project_root then return print("Error: Must be inside the 'src' directory.") end
-    local out_dir = project_root .. "/build"
+    local root = utils.get_project_root()
+    local out_dir = root .. "/build"
 
     if not utils.is_dir(out_dir) then
 	vim.fn.mkdir(out_dir, "p")
     end
 
-    local compile_command = string.format("javac -d %s %s/*.java", out_dir, project_root .. "/src")
+    local compile_command = string.format("javac -d %s %s/*.java", out_dir, root .. "/src")
     local compile_status = vim.fn.system(compile_command)
 
     if vim.v.shell_error == 0 then
-	utils.open_float_terminal("java -cp " .. project_root .. "/build" .. " Main")
+	utils.open_float_terminal("java -cp " .. root .. "/build" .. " Main")
     else
         print("Error during compilation. Opening terminal for details...")
         local term_buf = utils.open_float_terminal(compile_command)
