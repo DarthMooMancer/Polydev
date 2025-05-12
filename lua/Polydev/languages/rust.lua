@@ -17,14 +17,14 @@ function M.run()
     local output = vim.fn.system(table.concat(cmd))
 
     if not vim.v.shell_error == 0 then
-	local term_buf = utils.open_float_terminal(cmd)
+	local term_buf = utils.terminal(cmd)
 	vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
 	vim.api.nvim_buf_set_lines(term_buf, 0, -1, false,
 	    vim.list_extend({ "Error during compilation:" }, vim.split(output, "\n", { trimempty = true }))
 	)
 	vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
     else
-	utils.open_float_terminal({ "cargo run" })
+	utils.terminal({ "cargo run" })
     end
 end
 

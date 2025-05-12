@@ -12,7 +12,7 @@ end
 function M.run()
     local init_lua_path = utils.get_project_root() .. "/lua/" .. utils.get_project_name() .. "/init.lua"
     if vim.fn.filereadable(init_lua_path) == 1 then
-        utils.open_float_terminal({ "lua " .. init_lua_path })
+        utils.terminal({ "lua " .. init_lua_path })
     end
 end
 

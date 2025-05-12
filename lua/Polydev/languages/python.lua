@@ -27,12 +27,12 @@ end
 function M.install_dependency()
     vim.ui.input({ prompt = "Enter pip module: " }, function(pip_module)
 	if not pip_module or pip_module == "" then return print("Pip canceled") end
-	utils.open_float_terminal({ "pip install " .. pip_module })
+	utils.terminal({ "pip install " .. pip_module })
     end)
 end
 
 function M.run()
-    utils.open_float_terminal({ "python3 " .. utils.get_project_root(), "main.py" })
+    utils.terminal({ "python3 " .. utils.get_project_root(), "main.py" })
 end
 
 return M

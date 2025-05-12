@@ -1,16 +1,18 @@
 local M = {}
-
 M.opts = {}
 
 function M.setup(opts)
     M.opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get("terminal"), opts or {})
 end
 
+---@param path string
+---@return boolean|nil
 function M.is_dir(path)
     local stat = vim.loop.fs_stat(path)
     return stat and stat.type == "directory"
 end
 
+---@return string
 function M.get_project_root()
     local plugin_dir = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h:h:h")
 
@@ -18,11 +20,14 @@ function M.get_project_root()
     return dir
 end
 
+---@return string
 function M.get_project_name()
     local root = M.get_project_root()
     return vim.fn.fnamemodify(root, ":t")
 end
 
+---@param path_segments table
+---@param content string
 function M.write_file(path_segments, content)
     local path = table.concat(path_segments, "/")
     local file = assert(io.open(path, "w"), "Error creating file: " .. path)
@@ -31,6 +36,8 @@ function M.write_file(path_segments, content)
     vim.cmd("edit " .. path)
 end
 
+---@param path string
+---@param gitignore_lines table
 function M.init_git(path, gitignore_lines)
     vim.fn.mkdir(path, "p")
     vim.fn.system({ "git", "-C", path, "init" })
@@ -43,15 +50,15 @@ function M.init_git(path, gitignore_lines)
 end
 
 ---@param cmd table
-function M.open_float_terminal(cmd)
-    local presets = require("Polydev.presets")
-    local presets_opts = presets.getPresets(M.opts.preset)
+---@return integer, integer
+function M.terminal(cmd)
+    local opts = require("Polydev.presets").getPresets(M.opts.preset)
     local ui = vim.api.nvim_list_uis()[1]
 
-    local width = math.max(1, math.floor(ui.width * 0.9) - presets_opts.left_padding - presets_opts.right_padding)
-    local height = math.max(1, math.floor(ui.height * 0.9) - presets_opts.top_padding - presets_opts.bottom_padding)
-    local row = math.floor((ui.height - height) / 2) + presets_opts.top_padding
-    local col = math.floor((ui.width - width) / 2) + presets_opts.left_padding
+    local width = math.max(1, math.floor(ui.width * 0.9) - opts.left_padding - opts.right_padding)
+    local height = math.max(1, math.floor(ui.height * 0.9) - opts.top_padding - opts.bottom_padding)
+    local row = math.floor((ui.height - height) / 2) + opts.top_padding
+    local col = math.floor((ui.width - width) / 2) + opts.left_padding
 
     local buf = vim.api.nvim_create_buf(false, true)
     local win = vim.api.nvim_open_win(buf, true, {
