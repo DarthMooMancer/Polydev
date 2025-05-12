@@ -2,7 +2,7 @@
 
 **Polydev** is a powerful multi-lingual plugin for Neovim that streamlines project management, file creation, building, and running code—all within your favorite terminal editor. Whether you're coding in Java, Python, Lua, Rust, or more, Polydev brings seamless integration and enhanced productivity right to your fingertips.
 
-![Polydev-c](https://github.com/user-attachments/assets/365dd673-6b1f-4ccc-ac1f-c5131d055fd9)
+![720p-Polydev](https://github.com/user-attachments/assets/c8e84056-5080-4ec3-ba15-30be61faaf68)
 
 ---
 
