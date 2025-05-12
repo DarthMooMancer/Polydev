@@ -6,7 +6,7 @@ Polydev can be installed using any plugin manager of your choice — or even man
 
 > **Note: Requires Neovim v0.10 or higher**
 
-> **Recommended: Neovim v0.11 or higher for proper support
+> **Recommended**: Neovim v0.11 or higher for proper support
 
 ---
 
