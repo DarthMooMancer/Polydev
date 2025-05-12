@@ -14,7 +14,6 @@ Here’s the suggested directory structure for your Lua projects with Polydev:
 
 | Directory/File Path        | Description                                         |
 |----------------------------|-----------------------------------------------------|
-| `<Project_name>.polydev`    | Project metadata file that Polydev uses for configuration |
 | `lua/`                      | Directory containing the main Lua project files     |
 | `lua/<Project_name>/init.lua` | The main entry point for your Lua project          |
 
@@ -24,7 +23,6 @@ Here’s the suggested directory structure for your Lua projects with Polydev:
 Projects/
 └── Lua/
     └── Project_Name/
-        ├── <Project_name>.polydev    -- Polydev configuration file
         └── lua/
             └── Project_name/
                 └── init.lua         -- Main Lua file

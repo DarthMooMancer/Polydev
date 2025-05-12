@@ -5,6 +5,7 @@ DIR="$(pwd)"
 # Walk up until we find a marker or reach root
 while [[ ! -f "$DIR/CMakeLists.txt" && \
          ! -f "$DIR/package.json" && \
+         ! -f "$DIR/venv" && \
          ! -d "$DIR/.git" && \
          "$DIR" != "/" ]]; do
   DIR="$(dirname "$DIR")"

@@ -39,9 +39,9 @@ And more on the way! Stay tuned for future updates.
 
 ## 🔮 **Planned Features**
 
-We're always working to make Polydev better. Here’s a sneak peek at some exciting plans:
+I am always working to make Polydev better. Here’s a sneak peek at some exciting plans:
 
-- 🚀 **Rust Integration**: Leverage Rust to speed up certain aspects of the plugin for faster performance and better scalability.
+- Nothing. Just refactoring rn
 
 ---
 

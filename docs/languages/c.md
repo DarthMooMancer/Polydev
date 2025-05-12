@@ -14,7 +14,6 @@ This is the recommended file structure for your C projects using Polydev:
 | `main.c`                    | Main C file for the project                          |
 | `*.c`                       | Additional C source files                           |
 | `build/`                    | Folder where the build artifacts will be generated |
-| `<project_name>.polydev`    | Polydev metadata file (generated during build)      |
 | `include/`                  | Folder for header files                             |
 | `*.h`                       | C header files                                       |
 
@@ -29,7 +28,7 @@ Projects/
         │   ├── main.c
         │   └── *.c
         ├── build/
-        │   └── <project_name>.polydev
+        │   └── <main-executable>
         └── include/
             └── *.h
 ```

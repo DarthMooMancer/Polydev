@@ -1,9 +1,3 @@
-# **Setup**
-
-> 💡 **Heads up!** Many language presets in Polydev require a file named `<project_name>.polydev` in your project root. If it's missing, Polydev will let you know (loudly 😅).
-
-> **Note**: Languages that require to build just need to be run, building is builtin to the run command
-
 ## **Project Manager**
 > Note: The project manager closely follows the netrw keybinds and allows for project management all in one spot
 
@@ -14,6 +8,7 @@
 | **/**    | `Filter (fuzzy search)` |
 | **a**    | `Create new folder` |
 | **%**    | `Create new file` |
+| **x**    | `Create new auxilary file (ex. headers)` |
 | **d**    | `Create new project` |
 | **R**    | `Rename file/folder` |
 | **D**    | `Delete file/folder` |
@@ -82,13 +77,11 @@ keybinds = {
 -- c --
 keybinds = {
     ["<leader>pr"] = "CRun",
-    ["<leader>pb"] = "NewCHeaderFile",
 }
 
 -- cpp --
 keybinds = {
     ["<leader>pr"] = "CppRun",
-    ["<leader>pb"] = "NewCppHeaderFile",
 }
 
 ```
@@ -96,7 +89,7 @@ keybinds = {
 ## **Terminal Configuration**
 ```lua
 terminal = {
-    preset = "centered", -- "centered", "center_panel", "right_panel", "cornered"
+    preset = "max", -- "max", "center", "right", "corner"
     border = true,
     number = true,
     relativenumber = true -- requires number to be true
