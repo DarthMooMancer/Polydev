@@ -9,7 +9,7 @@ function M.setup(opts)
 	config.user_config[lang] = vim.tbl_deep_extend("force", config.defaults[lang] or {}, user_opts)
     end
 
-    vim.api.nvim_create_user_command("PolydevOpen", ui.open_project_manager, {})
+    vim.api.nvim_create_user_command("PolydevOpen", ui.manager, {})
 
     local keys = vim.tbl_deep_extend("force", {}, config.get("globals").keybinds, opts or {})
     for key, _ in pairs(keys) do

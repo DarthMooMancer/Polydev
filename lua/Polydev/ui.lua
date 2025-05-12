@@ -62,7 +62,7 @@ function M.load_language_module(lang, opts)
     return true
 end
 
-function M.open_project_manager()
+function M.manager()
     local templates = require("Polydev.templates")
     local Popup = require("nui.popup")
     local Layout = require("nui.layout")
@@ -216,6 +216,7 @@ function M.open_project_manager()
 	    "  /        : Search",
 	    "  a        : New folder",
 	    "  %        : New file",
+	    "  x        : New auxilary file",
 	    "  d        : New project",
 	    "  R        : Rename",
 	    "  D        : Delete",
