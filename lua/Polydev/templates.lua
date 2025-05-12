@@ -2,20 +2,6 @@ local utils = require("Polydev.utils")
 
 local M = {}
 
-local function init_git(path, gitignore_lines)
-    vim.fn.mkdir(path, "p")
-
-    -- Initialize Git
-    vim.fn.system({ "git", "-C", path, "init" })
-
-    -- Write .gitignore if provided
-    if gitignore_lines and #gitignore_lines > 0 then
-        local gitignore_path = { path, ".gitignore" }
-        local contents = table.concat(gitignore_lines, "\n")
-        utils.write_file(gitignore_path, contents)
-    end
-end
-
 M.projects = {
     java = {
 	run = function(project_name, project_root)
@@ -31,7 +17,7 @@ public class Main {
 	    local gitignore = {
 		"build/"
 	    }
-	    init_git(full_project_root, gitignore)
+	    utils.init_git(full_project_root, gitignore)
 	    utils.write_file({ full_project_root, "src", "Main.java" }, content)
 	end
     },
@@ -62,7 +48,7 @@ setup(
 	    local gitignore = {
 		"venv/"
 	    }
-	    init_git(full_project_root, gitignore)
+	    utils.init_git(full_project_root, gitignore)
 	    vim.cmd("edit " .. full_project_root .. "/main.py")
 	    local venv_path = full_project_root .. "/venv"
 	    vim.fn.system("python3 -m venv " .. venv_path)
@@ -82,7 +68,7 @@ local M = {}
 return M
 ]])
 	    local gitignore = { "" }
-	    init_git(full_project_root, gitignore)
+	    utils.init_git(full_project_root, gitignore)
 	    vim.cmd("edit " .. full_project_root .. "/lua/" .. project_name .. "/init.lua")
 	end
     },
@@ -112,7 +98,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 # target_link_libraries(Game PRIVATE SDL3::SDL3)
 ]], project_name, project_name))
 	    local gitignore = { "build/" }
-	    init_git(full_project_root, gitignore)
+	    utils.init_git(full_project_root, gitignore)
 	    vim.fn.system(string.format("cd %s/build/ && cmake .. && cmake --build .", full_project_root))
 	    vim.cmd("edit " .. full_project_root .. "/src/main.c")
 	end
@@ -146,7 +132,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 ]], project_name, project_name))
 
 	    local gitignore = { "build/" }
-	    init_git(full_project_root, gitignore)
+	    utils.init_git(full_project_root, gitignore)
 	    vim.fn.system(string.format("cd %s/build/ && cmake .. && cmake --build .", full_project_root))
 	    vim.cmd("edit " .. full_project_root .. "/src/main.cpp")
 	end
@@ -183,96 +169,48 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 M.files = {
     java = {
 	run = function (file_name)
-	    local root_dir = vim.fn.expand("%:p:h"):match("(.*)/src")
-	    if not root_dir then return print("Error: src directory not found.") end
-	    local java_content = string.format([[
+	    local root_dir = utils.get_project_root()
+	    utils.write_file({ root_dir, "src", file_name .. ".java" }, string.format([[
 public class %s {
     // New File
 }
-]], file_name)
-
-	    utils.write_file(root_dir .. "/src/" .. file_name .. ".java", java_content)
+]], file_name))
 	end
     },
     python = {
 	run = function (file_name)
-	    if not file_name:match("%.py$") then file_name = file_name .. ".py" end
-	    local root_dir = M.get_project_root()
-	    if not root_dir then return print("Error: Project root not found.") end
-	    local file_path = root_dir .. "/include/" .. file_name
-	    utils.write_file(file_path, "")
+	    local root_dir = utils.get_project_root()
+	    utils.write_file({ root_dir, "include", file_name .. ".py" }, "")
 	end
     },
     lua = {
 	run = function (file_name)
-	    local function get_project_root()
-		local dir = vim.fn.expand("%:p:h")
-		while dir ~= "/" do
-		    local polydev_file = vim.fn.glob(dir .. "/*.polydev")
-		    if polydev_file ~= "" then return dir end
-		    dir = vim.fn.fnamemodify(dir, ":h")
-		end
-		return nil
-	    end
-	    local function get_project_name() return vim.fn.glob((get_project_root() or "") .. "/*.polydev"):match("([^/]+)%.polydev$") end
-	    if not get_project_root() or not get_project_name() then return print("Error: Project root not found.") end
-	    utils.write_file(get_project_root() .. "/lua/" .. get_project_name() .. "/" .. file_name .. ".lua", "")
+	    local root = utils.get_project_root()
+	    utils.write_file({ root, "lua", utils.get_project_name(), file_name .. ".lua"}, "")
 	end
     },
     c = {
 	run = function (file_name)
-	    local function get_project_root()
-		local dir = vim.fn.expand("%:p:h")
-		while dir ~= "/" do
-		    if vim.fn.isdirectory(dir .. "/src") == 1 or vim.fn.filereadable(dir .. "/CMakeLists.txt") == 1 then
-			return dir
-		    end
-		    dir = vim.fn.fnamemodify(dir, ":h")
-		end
-	    end
-
-	    if not file_name or file_name == "" then return print("File creation canceled.") end
-	    local root_dir = get_project_root()
-	    if not root_dir then return print("Error: Project root not found.") end
-	    utils.write_file(root_dir .. "/src/" .. file_name .. ".c", "")
+	    local root_dir = utils.get_project_root()
+	    utils.write_file({ root_dir, "src", file_name .. ".c" }, "")
 	end
 
     },
     cpp = {
 	run = function (file_name)
-	    local function get_project_root()
-		local dir = vim.fn.expand("%:p:h")
-		while dir ~= "/" do
-		    if vim.fn.isdirectory(dir .. "/src") == 1 or vim.fn.filereadable(dir .. "/CMakeLists.txt") == 1 then
-			return dir
-		    end
-		    dir = vim.fn.fnamemodify(dir, ":h")
-		end
-	    end
-	    local root_dir = get_project_root()
-	    if not root_dir then return print("Error: Project root not found.") end
-	    utils.write_file(root_dir .. "/src/" .. file_name .. ".cpp", "")
+	    local root_dir = utils.get_project_root()
+	    utils.write_file({ root_dir, "src", file_name .. ".cpp" }, "")
 	end
     },
     rust = {
 	run = function (file_name)
-	    local function get_project_root()
-		local dir = vim.fn.expand("%:p:h")
-		while dir ~= "/" do
-		    if vim.fn.isdirectory(dir .. "/src") == 1 then
-			return dir
-		    end
-		    dir = vim.fn.fnamemodify(dir, ":h")
-		end
-	    end
-	    local root_dir = get_project_root()
-	    if not root_dir then return print("Error: Project root not found.") end
-	    utils.write_file(root_dir .. "/src/" .. file_name .. ".rs", "")
+	    local root_dir = utils.get_project_root()
+	    utils.write_file({ root_dir, "src", file_name .. ".rs" }, "")
 	end
     },
     html = {
 	run = function (file_name)
-	    local html_content = string.format([[
+	    utils.write_file({ ".", file_name .. ".html" }, string.format([[
 <!DOCTYPE html>
 <html>
     <head>
@@ -285,9 +223,7 @@ public class %s {
 
     </body>
 </html>
-]])
-
-	    utils.write_file("./" .. file_name .. ".html", html_content)
+]]))
 	end
     }
 }

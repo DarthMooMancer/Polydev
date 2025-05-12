@@ -24,12 +24,31 @@ function M.get_project_root()
     return dir
 end
 
+function M.get_project_name()
+    local root = M.get_project_root()
+    return vim.fn.fnamemodify(root, ":t")
+end
+
 function M.write_file(path_segments, content)
     local path = table.concat(path_segments, "/")
     local file = assert(io.open(path, "w"), "Error creating file: " .. path)
     file:write(content)
     file:close()
     vim.cmd("edit " .. path)
+end
+
+function M.init_git(path, gitignore_lines)
+    vim.fn.mkdir(path, "p")
+
+    -- Initialize Git
+    vim.fn.system({ "git", "-C", path, "init" })
+
+    -- Write .gitignore if provided
+    if gitignore_lines and #gitignore_lines > 0 then
+        local gitignore_path = { path, ".gitignore" }
+        local contents = table.concat(gitignore_lines, "\n")
+        M.write_file(gitignore_path, contents)
+    end
 end
 
 function M.open_float_terminal(cmd)
