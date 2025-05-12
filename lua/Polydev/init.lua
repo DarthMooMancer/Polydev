@@ -12,12 +12,14 @@ function M.setup(opts)
     end
 
     vim.api.nvim_create_user_command("PolydevOpen", ui.open_project_manager, {})
+    vim.api.nvim_create_user_command("PolydevGet", require("Polydev.utils").get_project_root, {})
 
     local keys = vim.tbl_deep_extend("force", {}, config.get("globals").keybinds, opts or {})
     for key, command in pairs(keys) do
 	vim.keymap.set("n", key, ":PolydevOpen<CR>", { silent = true })
 	break
     end
+    vim.keymap.set("n", "<leader>tt", ":PolydevGet<CR>", { silent = true })
 
     vim.api.nvim_create_autocmd("FileType", {
 	pattern = "*",

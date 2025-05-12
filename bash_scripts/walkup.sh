@@ -16,5 +16,5 @@ if [[ "$DIR" == "/" ]]; then
   exit 1
 fi
 
-echo "✅ Project root found at: $DIR"
+echo "$DIR"
 

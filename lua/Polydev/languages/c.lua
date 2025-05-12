@@ -10,14 +10,10 @@ function M.setup(opts)
 	M.keybinds[command] = key
     end
 
-    vim.api.nvim_create_user_command("NewCHeaderFile", M.create_new_header_file, {})
     vim.api.nvim_create_user_command("CRun", M.run, {})
 
     if M.keybinds.CRun then
 	vim.keymap.set("n", M.keybinds.CRun, ":CRun<CR>", { silent = true })
-    end
-    if M.keybinds.NewCHeaderFile then
-	vim.keymap.set("n", M.keybinds.NewCHeaderFile, ":NewCHeaderFile<CR>", { silent = true })
     end
 end
 
@@ -29,27 +25,6 @@ function M.get_project_root()
 	end
 	dir = vim.fn.fnamemodify(dir, ":h")
     end
-end
-
-function M.create_new_header_file()
-    vim.ui.input({ prompt = "Enter header file name: " }, function(header_name)
-	if not header_name then return print("Header file creation canceled.") end
-	local root_dir = M.get_project_root()
-	if not root_dir then return print("Error: Project root not found.") end
-	local guard_macro = header_name:upper():gsub("[^A-Z0-9]", "_") .. "_H"
-	local content = string.format([[
-#ifndef %s
-#define %s
-
-#include <stdio.h>
-
-// Function prototypes
-void example_function();
-
-#endif // %s
-]], guard_macro, guard_macro, guard_macro)
-	utils.write_file(root_dir .. "/include/" .. header_name .. ".h", content)
-    end)
 end
 
 function M.run()

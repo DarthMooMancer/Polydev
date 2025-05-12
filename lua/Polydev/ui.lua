@@ -287,15 +287,25 @@ function M.open_project_manager()
     -- Creates a new file in project
     popup:map("n", "%", function()
 	vim.ui.input({ prompt = "Enter language for new file: " }, function(lang)
-	    if not lang or lang == "" then return print("File creation canceled.") end
-
+	    if not lang or lang == "" then return print("File creation canceled") end
 	    if M.load_language_module(lang) and templates.files[lang] and templates.files[lang].run then
-		vim.ui.input({ prompt = "Enter file name: " }, function(file_name)
-		    if not file_name or file_name == "" then return print("File creation canceled.") end
-		    popup:unmount()
-		    vim.schedule(function()
-			templates.files[lang].run(file_name)
-		    end)
+		popup:unmount()
+		vim.schedule(function()
+		    templates.create_new_file(lang)
+		end)
+	    else
+		print("Error: No File creation method for " .. lang)
+	    end
+	end)
+    end)
+
+    popup:map("n", "x", function()
+	vim.ui.input({ prompt = "Enter language for new auxilary file: "}, function(lang)
+	    if not lang or lang == "" then return print("File create canceled") end
+	    if M.load_language_module(lang) and templates.aux_files[lang] and templates.aux_files[lang].run then
+		popup:unmount()
+		vim.schedule(function()
+		    templates.create_aux_file(lang)
 		end)
 	    else
 		print("Error: No File creation method for " .. lang)
@@ -304,10 +314,10 @@ function M.open_project_manager()
     end)
 
     -- Creates a new project
-    popup:map("n", "d", function() 
+    popup:map("n", "d", function()
 	local opts = {}
 	vim.ui.input({ prompt = "Enter language for project: " }, function(lang)
-	    if not lang or lang == "" then return print("Project creation canceled.") end
+	    if not lang or lang == "" then return print("Project creation canceled") end
 	    opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get(lang), opts or {})
 	    if M.load_language_module(lang) and templates.projects[lang] and templates.projects[lang].run then
 		popup:unmount()
@@ -379,3 +389,4 @@ function M.open_project_manager()
 end
 
 return M
+	
