@@ -12,15 +12,9 @@ function M.is_dir(path)
 end
 
 function M.get_project_root()
-    -- Get absolute path to this Lua file (or any file in your plugin)
-    local plugin_path = debug.getinfo(1, "S").source:sub(2)
-    local plugin_dir = vim.fn.fnamemodify(plugin_path, ":h:h:h")
+    local plugin_dir = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h:h:h")
 
-    -- Build the full path to your script
-    local script_path = plugin_dir .. "/bash_scripts/walkup.sh"
-
-    -- Run the script and get output
-    local dir = vim.fn.system(script_path):gsub("%s+$", "")
+    local dir = vim.fn.system(plugin_dir .. "/bash_scripts/walkup.sh"):gsub("%s+$", "")
     return dir
 end
 
@@ -39,11 +33,8 @@ end
 
 function M.init_git(path, gitignore_lines)
     vim.fn.mkdir(path, "p")
-
-    -- Initialize Git
     vim.fn.system({ "git", "-C", path, "init" })
 
-    -- Write .gitignore if provided
     if gitignore_lines and #gitignore_lines > 0 then
         local gitignore_path = { path, ".gitignore" }
         local contents = table.concat(gitignore_lines, "\n")
@@ -53,10 +44,7 @@ end
 
 function M.open_float_terminal(cmd)
     local presets = require("Polydev.presets")
-    local presets_opts = {}
-
-    if presets.getPresets(M.opts.preset) == nil then return nil end
-    presets_opts = presets.getPresets(M.opts.preset)
+    local presets_opts = presets.getPresets(M.opts.preset)
     local ui = vim.api.nvim_list_uis()[1]
 
     local width = math.max(1, math.floor(ui.width * 0.9) - presets_opts.left_padding - presets_opts.right_padding)

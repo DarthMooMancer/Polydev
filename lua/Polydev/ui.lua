@@ -389,4 +389,3 @@ function M.open_project_manager()
 end
 
 return M
-	

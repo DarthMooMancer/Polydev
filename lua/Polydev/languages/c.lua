@@ -2,7 +2,7 @@ local utils = require("Polydev.utils")
 local M = {}
 
 M.keybinds = {}
-M.opts = nil
+M.opts = {}
 
 function M.setup(opts)
     M.opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get("c"), opts or {})
