@@ -133,7 +133,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 	    local gitignore = { "build/" }
 	    utils.init_git(full_project_root, gitignore)
-	    vim.fn.system(string.format("cd %s/build/ && cmake .. && cmake --build .", full_project_root))
+	    vim.fn.system(string.format("cd %s/build && cmake -S .. -B . && cmake --build . && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && ln -sf build/compile_commands.json compile_commands.json", full_project_root))
 	    vim.cmd("edit " .. full_project_root .. "/src/main.cpp")
 	end
     },
