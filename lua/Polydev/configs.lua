@@ -52,7 +52,7 @@ M.defaults = {
 	build_attributes = "",
     },
     terminal = {
-	preset = "centered",
+	preset = "max",
 	border = true,
 	number = true,
 	relativenumber = true,
