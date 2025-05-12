@@ -12,7 +12,7 @@ end
 function M.run()
     local root = utils.get_project_root()
 
-    local cmd = { "cd " .. root, "build", " && cmake --build ." }
+    local cmd = { "cd " .. root, "build  && cmake --build ." }
     local output = vim.fn.system(table.concat(cmd, "/"))
 
     if not vim.v.shell_error == 0 then
