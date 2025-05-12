@@ -42,6 +42,7 @@ function M.init_git(path, gitignore_lines)
     end
 end
 
+---@param cmd table
 function M.open_float_terminal(cmd)
     local presets = require("Polydev.presets")
     local presets_opts = presets.getPresets(M.opts.preset)
@@ -73,7 +74,7 @@ function M.open_float_terminal(cmd)
 	end
     end
 
-    vim.fn.termopen(cmd)
+    vim.fn.termopen(table.concat(cmd, "/"))
     vim.api.nvim_buf_set_keymap(buf, "n", "<ESC>", "i<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
     return buf, win
 end

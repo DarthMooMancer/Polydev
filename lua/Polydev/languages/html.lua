@@ -1,9 +1,7 @@
 local M = {}
 
-M.opts = {}
-
-function M.setup(opts)
-    M.opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get("html"), opts or {})
+function M.setup(user_opts)
+    local opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get("html"), user_opts or {})
 end
 
 return M
