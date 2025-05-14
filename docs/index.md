@@ -1,5 +1,3 @@
-<h1 align="center">Polydev</h1>
-
 <p align="center"><em>A multi-language project managing plugin for file creation, building, and running code—all within neovim. Whether you're coding in Java, Python, Lua, Rust, or more, Polydev provides seamless integration to boost your productivity inside Neovim.</em></p>
 
 <p align="center">
@@ -14,49 +12,66 @@
   <img src="https://github.com/user-attachments/assets/c8e84056-5080-4ec3-ba15-30be61faaf68" alt="Polydev Preview" width="720"/>
 </p>
 
-## 💡 Why Polydev?
 
-Modern development often involves juggling multiple languages. Setting up similar environments repeatedly or manually running commands wastes time. Polydev solves this by providing:
+## Why Polydev?
 
-- 📦 **Project templates per language**
-- 🎯 **Custom keybindings for common actions**
-- 💻 **Floating terminal support**
-- 🗂 **Easy file creation and directory structure generation**
-- 🔌 **Plugin-first architecture to expand functionality**
+Working across multiple languages often means repetitive setup and constant context switching. Polydev eliminates this friction by offering:
 
-## 🔧 Core Features
-
-- 🌐 **Language Support**: Define custom settings per language including `project_root`, `keybinds`, and `build_attributes`.
-- 🪟 **Floating Terminals**: Run builds and executions in a Neovim floating terminal.
-- 🧱 **Scaffolding**: Automatically create the appropriate directory and file layout for new projects.
-- 🎹 **Keybind Mapping**: Rebind keys to execute project-specific commands like `Run`, or `Test`.
-- 🔌 **Pluggable**: Designed to easily integrate with other tools or extend with your own commands and language presets.
-
-## 👥 Target Audience
-
-Polydev is perfect for:
-
-- 🧑‍💻 Developers building across multiple languages
-- 🔌 Plugin authors and power users of Neovim
-- ⚡ Anyone who wants automated project bootstrapping
-
-## 🎯 Goals
-
-- 📏 **Consistency**: Provide a common interface for all your dev projects.
-- 🧩 **Extensibility**: Let users add their own languages and tools.
-- ✨ **Simplicity**: Reduce boilerplate and context switching.
-
-## 🧪 Example Use Case
-
-Say you're a developer who works with Rust, Lua, and Python. Instead of remembering build commands, directory structures, or manually creating a `main.rs` or `init.lua`, Polydev:
-
-1. 🏗 Sets up your directory based on language conventions.
-2. 📄 Generates boilerplate files.
-3. 🎛 Maps `<leader>pr` to `Run`, `<leader>po` to `Open Polydev Project Manager`, and so on.
-4. 🖥 Opens a floating terminal to show your output.
-
-## 🏷 Versioning
-
-Polydev uses GitHub tags and branches to manage plugin versions. Each version corresponds to a stable release that users can track.
+* Project templates per language
+* Custom keybindings for essential actions
+* Floating terminal integration
+* Automated file and folder generation
+* A plugin-first design for easy extensibility
 
 ---
+
+## Core Features
+
+* **Language Profiles**
+  Define settings per language including `project_root`, keymaps, and build commands.
+
+* **Floating Terminals**
+  Run build, and run commands in a clean, isolated terminal window inside Neovim.
+
+* **Scaffolding**
+  Quickly generate boilerplate and structured directories for new projects.
+
+* **Custom Keybinds**
+  Map actions like `Run`, `PipInstall`, `Open Manager`, `etc` to your preferred keys.
+
+* **Pluggable Design**
+  Easily extend functionality with custom language presets and commands.
+
+---
+
+## Who It's For
+
+Polydev is ideal for:
+
+* Developers who work in multiple languages
+* Neovim plugin authors or power users
+* Anyone who wants a faster, more unified project workflow
+
+---
+
+## Design Goals
+
+* **Consistency**
+  Offer a predictable workflow across languages and tools.
+
+* **Extensibility**
+  Support custom configurations, commands, and language integrations.
+
+* **Simplicity**
+  Reduce boilerplate, context switching, and friction.
+
+---
+
+## Real-World Example
+
+If you switch often between Rust, Lua, and Python:
+
+1. Polydev sets up your project layout automatically.
+2. Creates boilerplate like `main.rs`, `init.lua`, or `main.py`.
+3. Maps commands to keys (e.g. `<leader>pr` to run, `<leader>po` to open the manager).
+4. Opens a floating terminal with build or run output — no extra configuration required.
