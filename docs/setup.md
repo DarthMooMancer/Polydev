@@ -41,7 +41,7 @@ project_root = "~/Projects/Python"
 project_root = "~/Projects/C"
 
 -- C++ --
-project_root = "~/Projects/Cpp"
+project_root = "~/Projects/CPP"
 ```
 
 ## **Keybinds**
