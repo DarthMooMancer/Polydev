@@ -1,13 +1,18 @@
-# 🚀 Welcome to Polydev
+<h1 align="center">Polydev</h1>
 
-Polydev is a highly customizable and extensible Neovim plugin aimed at streamlining project creation and management for multiple programming languages. It’s especially suited for developers who work across different languages and want a consistent workflow for initializing, building, and running projects.
+<p align="center"><em>A multi-language project managing plugin for file creation, building, and running code—all within neovim. Whether you're coding in Java, Python, Lua, Rust, or more, Polydev provides seamless integration to boost your productivity inside Neovim.</em></p>
 
-![720p-Polydev](https://github.com/user-attachments/assets/4d14911b-4b03-4bb1-889e-c61cd2c342a1)
+<p align="center">
+  <img src="https://img.shields.io/badge/Lua-1e90ff?style=for-the-badge&logo=lua&logoColor=white" />
+  <img src="https://img.shields.io/badge/Neovim-0.10%2B-32c48d?style=for-the-badge&logo=neovim&logoColor=white" />
+  <img src="https://img.shields.io/github/stars/DarthMooMancer/Polydev?style=for-the-badge&logo=github" />
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Docs-Available-blue?style=for-the-badge&logo=readthedocs&logoColor=white" />
+</p>
 
-
-## ❓ What is Polydev?
-
-Polydev is designed to be a centralized workspace tool that reduces repetitive tasks involved in setting up development environments. Whether you’re working on a Lua plugin, a Rust CLI tool, or a C++ project, Polydev helps you scaffold project directories, create boilerplate code, and define keybinds to streamline execution — all from within Neovim.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c8e84056-5080-4ec3-ba15-30be61faaf68" alt="Polydev Preview" width="720"/>
+</p>
 
 ## 💡 Why Polydev?
 
