@@ -14,8 +14,6 @@
   <img src="https://github.com/user-attachments/assets/c8e84056-5080-4ec3-ba15-30be61faaf68" alt="Polydev Preview" width="720"/>
 </p>
 
-**Polydev** is a multi-language plugin for Neovim that streamlines project management, file creation, building, and running code—all within your terminal. Whether you're coding in Java, Python, Lua, Rust, or more, Polydev provides seamless integration to boost your productivity inside Neovim.
-
 ## Features
 
 * Create and manage projects directly from Neovim
