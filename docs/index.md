@@ -23,7 +23,6 @@ Working across multiple languages often means repetitive setup and constant cont
 * Automated file and folder generation
 * A plugin-first design for easy extensibility
 
----
 
 ## Core Features
 
@@ -42,7 +41,6 @@ Working across multiple languages often means repetitive setup and constant cont
 * **Pluggable Design**
   Easily extend functionality with custom language presets and commands.
 
----
 
 ## Who It's For
 
@@ -52,7 +50,6 @@ Polydev is ideal for:
 * Neovim plugin authors or power users
 * Anyone who wants a faster, more unified project workflow
 
----
 
 ## Design Goals
 
@@ -65,7 +62,6 @@ Polydev is ideal for:
 * **Simplicity**
   Reduce boilerplate, context switching, and friction.
 
----
 
 ## Real-World Example
 
