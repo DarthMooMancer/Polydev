@@ -7,12 +7,6 @@ local presets = {
 	top_padding = 0,
 	bottom_padding = 0
     },
-    center = {
-	left_padding = 0,
-	right_padding = 100,
-	top_padding = 0,
-	bottom_padding = 0,
-    },
     right = {
 	left_padding = 100,
 	right_padding = 0,
@@ -30,8 +24,6 @@ local presets = {
 function M.getPresets(preset)
     if preset == "max" then
 	return presets.max
-    elseif preset == "center" then
-	return presets.center
     elseif preset == "right" then
 	return presets.right
     elseif preset == "corner" then
