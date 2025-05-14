@@ -4,8 +4,6 @@
 
 ![Polydev Preview](https://github.com/user-attachments/assets/c8e84056-5080-4ec3-ba15-30be61faaf68)
 
----
-
 ## Features
 
 * Create and manage projects directly from Neovim
@@ -18,7 +16,6 @@
 
 > 📚 [View the full documentation](https://darthmoomancer.github.io/Polydev/) for setup, configuration, and usage details.
 
----
 
 ## Supported Languages
 
@@ -33,7 +30,6 @@ Polydev currently supports the following languages:
 
 Additional language support is planned for future releases.
 
----
 
 ## Roadmap
 
@@ -42,7 +38,6 @@ Current focus:
 
 Feature additions will resume after this phase.
 
----
 
 ## Contributing
 
@@ -53,5 +48,3 @@ Contributions are welcome and appreciated.
 
 If you have an idea or use case you'd like to see supported, let’s discuss it.
 Your feedback and contributions are key to making Polydev even better! Thank you for being part of the journey. 🙏
-
----
