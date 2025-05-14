@@ -19,84 +19,109 @@
 ## **Project Root**
 ```lua
 -- Automatically creates a project root if not already made.
--- Stores all projects in this root, not src files and such.
--- For now, the top project root is assumed at ~/Projects until I refactor my code.
+-- Stores all projects in this root
+
+-- Global --
+globals = {
+    project_root = "~/Projects"
+}
 
 -- Lua --
-project_root = "~/Projects/Lua"
+lua = {
+    project_root = "~/{global_root}/Lua"
+}
 
 -- Html --
-project_root = "~/Projects/Html"
+html = {
+    project_root = "~/{global_root}/Html"
+}
 
 -- Rust --
-project_root = "~/Projects/Rust"
+rust = {
+    project_root = "~/{global_root}/Rust"
+}
 
 -- Java --
-project_root = "~/Projects/Java"
+java = {
+    project_root = "~/{global_root}/Java"
+}
 
 -- Python --
-project_root = "~/Projects/Python"
+python = {
+    project_root = "~/{global_root}/Python"
+}
 
 -- C --
-project_root = "~/Projects/C"
+c = {
+    project_root = "~/{global_root}/C"
+}
 
 -- C++ --
-project_root = "~/Projects/CPP"
+cpp = {
+    project_root = "~/{global_root}/CPP"
+}
 ```
 
 ## **Keybinds**
 
 ```lua
 -- globals --
-keybinds = {
-    -- Opens the Project Manager UI
-    ["<leader>po"] = "PolydevManager",
+globals = {
+    keybinds = {
+        ["<leader>po"] = "PolydevManager",
+    }
 }
 
 -- rust --
-keybinds = {
-    ["<leader>pr"] = "RustRun",
+rust = {
+    keybinds = {
+        ["<leader>pr"] = "RustRun",
+    }
 }
 
 -- java --
-keybinds = {
-    ["<leader>pr"] = "JavaRun",
+java = {
+    keybinds = {
+        ["<leader>pr"] = "JavaRun",
+    }
 }
 
 -- python --
-keybinds = {
-    ["<leader>pr"] = "PythonRun",
-    ["<leader>pb"] = "PythonPip",
+python = {
+    keybinds = {
+        ["<leader>pr"] = "PythonRun",
+        ["<leader>pb"] = "PythonPip",
+    }
 }
 
 -- lua --
-keybinds = {
-    ["<leader>pr"] = "LuaRun",
+lua = {
+    keybinds = {
+        ["<leader>pr"] = "LuaRun",
+    }
 }
 
 -- c --
-keybinds = {
-    ["<leader>pr"] = "CRun",
+c = {
+    keybinds = {
+        ["<leader>pr"] = "CRun",
+    }
 }
 
 -- cpp --
-keybinds = {
-    ["<leader>pr"] = "CppRun",
+cpp = {
+    keybinds = {
+        ["<leader>pr"] = "CppRun",
+    }
 }
 
 ```
 
 ## **Terminal Configuration**
 ```lua
+-- In Neovim 0.11+, numbers don't work so they will be reimplemented later
 terminal = {
     preset = "max", -- "max", "center", "right", "corner"
     border = true,
-    number = true,
-    relativenumber = true -- requires number to be true
 }
 ```
-
-## 🚀 Final Thoughts and Customizations
-This guide provided you with the basic configuration steps for setting up Polydev with your preferred package manager and customizing key aspects like project names, keybinds, and terminal settings.
-
-You can further explore other Polydev features and modify the configuration to suit your development workflow with language specific configs.
