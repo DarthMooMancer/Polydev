@@ -1,57 +1,56 @@
-# **Polydev** 🌐
+# Polydev
 
-**Polydev** is a powerful multi-lingual plugin for Neovim that streamlines project management, file creation, building, and running code—all within your favorite terminal editor. Whether you're coding in Java, Python, Lua, Rust, or more, Polydev brings seamless integration and enhanced productivity right to your fingertips.
+**Polydev** is a multi-language plugin for Neovim that streamlines project management, file creation, building, and running code—all within your terminal. Whether you're coding in Java, Python, Lua, Rust, or more, Polydev provides seamless integration to boost your productivity inside Neovim.
 
-![720p-Polydev](https://github.com/user-attachments/assets/c8e84056-5080-4ec3-ba15-30be61faaf68)
-
----
-
-## 🚀 **Quick Features**
-
-Polydev helps you work smarter, not harder. With this plugin, you can:
-
-- 📂 **Create New Projects**: Start fresh with ease.
-- 📝 **Generate New Files**: Add files to your projects with just a few keystrokes.
-- ⚙️ **Build Your Files**: Compile and prepare your projects directly within Neovim.
-- 🎮 **Run Your Code**: Execute your code and see results without leaving your terminal.
-- 🖥️ **Built-in Terminal**: A terminal integrated directly into Neovim for running commands, scripts, or code.
-- 🖥️ **Built-in Project Manager**: A window integrated directly into Neovim for creating projects, files, deleting files, renaming files and more.
-- 🌱 **More to Come**: Ongoing development means new features and improvements are always on the horizon!
-
-**Need more info?** Check out the full [Polydev Documentation](https://darthmoomancer.github.io/Polydev/) for setup instructions, configurations, and usage details.
+![Polydev Preview](https://github.com/user-attachments/assets/c8e84056-5080-4ec3-ba15-30be61faaf68)
 
 ---
 
-## ✅ **Currently Supported (And Working) Languages**
+## Features
 
-Polydev supports a wide range of languages, providing a smooth development experience:
+* Create and manage projects directly from Neovim
+* Generate new files quickly
+* Build your code with customizable build systems
+* Run programs without leaving the editor
+* Integrated terminal for flexible command execution
+* Lightweight, fast project manager UI
+* Minimal configuration with extensibility in mind
 
-- **Java** ☕️
-- **Python** 🐍
-- **C/C++** 💻
-- **Lua** 🐢
-- **Rust** 🦀
-- **HTML** 🌍
-
-And more on the way! Stay tuned for future updates.
-
----
-
-## 🔮 **Planned Features**
-
-I am always working to make Polydev better. Here’s a sneak peek at some exciting plans:
-
-- Nothing. Just refactoring rn
+> 📚 [View the full documentation](https://darthmoomancer.github.io/Polydev/) for setup, configuration, and usage details.
 
 ---
 
-## 🤝 **Questions and Contributing**
+## Supported Languages
 
-Got ideas? 💡 Have a feature you’d love to see or a language you want to see supported? Your contributions are always welcome! Here's how you can get involved:
+Polydev currently supports the following languages:
 
-- 🔧 **Contribute**: Open a Pull Request (PR) or create an issue with your suggestions or bug reports.
-- 💬 **Ask Questions**: If you're stuck or have questions, drop them in the issues or discussions section, and I'll get back to you as soon as I can.
+* Java
+* Python
+* C / C++
+* Lua
+* Rust
+* HTML
 
+Additional language support is planned for future releases.
+
+---
+
+## Roadmap
+
+Current focus:
+-- **Refactoring and internal cleanup.**
+Feature additions will resume after this phase.
+
+---
+
+## Contributing
+
+Contributions are welcome and appreciated.
+
+* Open an issue for bug reports, questions, or feature requests.
+* Submit a pull request if you'd like to contribute directly.
+
+If you have an idea or use case you'd like to see supported, let’s discuss it.
 Your feedback and contributions are key to making Polydev even better! Thank you for being part of the journey. 🙏
 
 ---
