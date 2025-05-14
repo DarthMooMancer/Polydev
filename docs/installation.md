@@ -4,9 +4,7 @@ Polydev can be installed using any plugin manager of your choice — or even man
 
 > ⚠️ **Disclaimer**: The `opts` and configuration values shown below are simply examples. You can customize them based on your preferences or even omit them entirely if not needed.
 
-> **Note: Requires Neovim v0.10 or higher**
-
-> **Recommended**: Neovim v0.11 or higher for proper support
+> **Requires: Requires Neovim v0.10 or higher**
 
 ---
 
@@ -19,7 +17,7 @@ return {
         "MunifTanjim/nui.nvim",
         "nvim-lua/plenary.nvim"
     },
-    opts = {}, -- Setup is later on for configs
+    opts = {}, -- Setup is later on
 }
 ```
 
