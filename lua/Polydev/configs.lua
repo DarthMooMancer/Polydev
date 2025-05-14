@@ -2,58 +2,64 @@ local M = {}
 
 M.defaults = {
     globals = {
+	project_root = "~/Projects",
 	keybinds = {
 	    ["<leader>po"] = "PolydevManager",
 	}
     },
-    html = {
-	project_root = "~/Projects/Html",
-    },
-    rust = {
-	project_root = "~/Projects/Rust",
-	keybinds = {
-	    ["<leader>pr"] = "RustRun",
-	},
-    },
-    java = {
-	project_root = "~/Projects/Java",
-	keybinds = {
-	    ["<leader>pr"] = "JavaRun",
-	},
-    },
-    python = {
-	project_root = "~/Projects/Python",
-	keybinds = {
-	    ["<leader>pr"] = "PythonRun",
-	    ["<leader>pb"] = "PythonPip",
-	},
-    },
-    lua = {
-	project_root = "~/Projects/Lua",
-	keybinds = {
-	    ["<leader>pr"] = "LuaRun",
-	},
-    },
-    c = {
-	project_root = "~/Projects/C",
-	keybinds = {
-	    ["<leader>pr"] = "CRun",
-	},
-	build_attributes = "",
-    },
-    cpp = {
-	project_root = "~/Projects/Cpp",
-	keybinds = {
-	    ["<leader>pr"] = "CppRun",
-	},
-	build_attributes = "",
-    },
     terminal = {
 	preset = "max",
 	border = true,
-	number = true,
-	relativenumber = true,
     }
+}
+
+M.defaults.rust = {
+    project_root = M.defaults.globals.project_root .. "/Rust",
+    keybinds = {
+	["<leader>pr"] = "RustRun",
+    },
+}
+
+M.defaults.java = {
+    project_root = M.defaults.globals.project_root .. "/Java",
+    keybinds = {
+	["<leader>pr"] = "JavaRun",
+    },
+}
+
+M.defaults.python = {
+    project_root = M.defaults.globals.project_root .. "/Python",
+    keybinds = {
+	["<leader>pr"] = "PythonRun",
+	["<leader>pb"] = "PythonPip",
+    },
+}
+
+M.defaults.lua = {
+    project_root = M.defaults.globals.project_root .. "/Lua",
+    keybinds = {
+	["<leader>pr"] = "LuaRun",
+    },
+}
+
+M.defaults.c = {
+    project_root = M.defaults.globals.project_root .. "/C",
+    keybinds = {
+	["<leader>pr"] = "CRun",
+    },
+    build_attributes = "",
+}
+
+M.defaults.cpp = {
+    project_root = M.defaults.globals.project_root .. "/CPP",
+    keybinds = {
+	["<leader>pr"] = "CppRun",
+    },
+    build_attributes = "",
+}
+
+M.defaults.html = {
+    project_root = M.defaults.globals.project_root .. "/Html",
 }
 
 M.user_config = {}

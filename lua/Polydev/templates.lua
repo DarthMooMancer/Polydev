@@ -2,7 +2,35 @@ local utils = require("Polydev.utils")
 
 local M = {}
 
+local function aux_file(guard, file_type, file_name)
+    if not file_name then return print("Header file creation canceled") end
+    local guard_macro = file_name:upper():gsub("[^A-Z0-9]", "_") .. guard
+    local content = string.format([[
+#ifndef %s
+#define %s
+
+// Add code here
+
+#endif
+]], guard_macro, guard_macro)
+    utils.write_file({ utils.get_project_root(), "include", file_name .. file_type }, content)
+end
+
 M.projects = {
+    lua = {
+	run = function(project_name, project_root)
+	    local full_project_root = vim.fn.expand(project_root) .. "/" .. project_name
+	    vim.fn.mkdir(full_project_root .. "/lua/" .. project_name, "p")
+	    utils.write_file({ full_project_root, "lua", project_name, "init.lua" }, [[
+local M = {}
+
+return M
+]])
+	    local gitignore = { "" }
+	    utils.init_git(full_project_root, gitignore)
+	    vim.cmd("edit " .. full_project_root .. "/lua/" .. project_name .. "/init.lua")
+	end
+    },
     java = {
 	run = function(project_name, project_root)
 	    local full_project_root = vim.fn.expand(project_root) .. "/" .. project_name
@@ -56,20 +84,6 @@ setup(
 	    vim.fn.setenv("VIRTUAL_ENV", venv_path)
 	    vim.fn.setenv("PATH", venv_path .. "/bin:" .. vim.fn.getenv("PATH"))
 	    print("Virtual environment activated for " .. project_name)
-	end
-    },
-    lua = {
-	run = function(project_name, project_root)
-	    local full_project_root = vim.fn.expand(project_root) .. "/" .. project_name
-	    vim.fn.mkdir(full_project_root .. "/lua/" .. project_name, "p")
-	    utils.write_file({ full_project_root, "lua", project_name, "init.lua" }, [[
-local M = {}
-
-return M
-]])
-	    local gitignore = { "" }
-	    utils.init_git(full_project_root, gitignore)
-	    vim.cmd("edit " .. full_project_root .. "/lua/" .. project_name .. "/init.lua")
 	end
     },
     c = {
@@ -147,6 +161,9 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
     html = {
 	run = function(project_name, project_root)
 	    local full_project_root = vim.fn.expand(project_root) .. "/" .. project_name
+	    if vim.fn.isdirectory(full_project_root) == 0 then
+		vim.fn.mkdir(full_project_root, "p")  -- Create directory with parent directories
+	    end
 	    local main_html_content = [[
 <!DOCTYPE html>
 <html>
@@ -167,10 +184,14 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 }
 
 M.files = {
+    lua = {
+	run = function (file_name)
+	    utils.write_file({ utils.get_project_root(), "lua", utils.get_project_name(), file_name .. ".lua"}, "")
+	end
+    },
     java = {
 	run = function (file_name)
-	    local root_dir = utils.get_project_root()
-	    utils.write_file({ root_dir, "src", file_name .. ".java" }, string.format([[
+	    utils.write_file({ utils.get_project_root(), "src", file_name .. ".java" }, string.format([[
 public class %s {
     // New File
 }
@@ -179,33 +200,23 @@ public class %s {
     },
     python = {
 	run = function (file_name)
-	    local root_dir = utils.get_project_root()
-	    utils.write_file({ root_dir, "include", file_name .. ".py" }, "")
-	end
-    },
-    lua = {
-	run = function (file_name)
-	    local root = utils.get_project_root()
-	    utils.write_file({ root, "lua", utils.get_project_name(), file_name .. ".lua"}, "")
+	    utils.write_file({ utils.get_project_root(), "include", file_name .. ".py" }, "")
 	end
     },
     c = {
 	run = function (file_name)
-	    local root_dir = utils.get_project_root()
-	    utils.write_file({ root_dir, "src", file_name .. ".c" }, "")
+	    utils.write_file({ utils.get_project_root(), "src", file_name .. ".c" }, "")
 	end
 
     },
     cpp = {
 	run = function (file_name)
-	    local root_dir = utils.get_project_root()
-	    utils.write_file({ root_dir, "src", file_name .. ".cpp" }, "")
+	    utils.write_file({ utils.get_project_root(), "src", file_name .. ".cpp" }, "")
 	end
     },
     rust = {
 	run = function (file_name)
-	    local root_dir = utils.get_project_root()
-	    utils.write_file({ root_dir, "src", file_name .. ".rs" }, "")
+	    utils.write_file({ utils.get_project_root(), "src", file_name .. ".rs" }, "")
 	end
     },
     html = {
@@ -229,57 +240,16 @@ public class %s {
 }
 
 M.aux_files = {
-    c = {
-	run = function (file_name)
-	    if not file_name then return print("Header file creation canceled") end
-	    local guard_macro = file_name:upper():gsub("[^A-Z0-9]", "_") .. "_H"
-	    local content = string.format([[
-#ifndef %s
-#define %s
-
-// Add code here
-
-#endif
-]], guard_macro, guard_macro)
-	    utils.write_file({ utils.get_project_root(), "include", file_name .. ".h" }, content)
+    run = function (lang, file_name)
+	if lang == "c" then
+	    aux_file("_H", ".h", file_name)
+	    print("Successful creation of " .. file_name .. ".h")
 	end
-    },
-    cpp = {
-	run = function(file_name)
-	    if not file_name then return print("Header file creation canceled") end
-	    local guard_macro = file_name:upper():gsub("[^A-Z0-9]", "_") .. "_HPP"
-	    local content = string.format([[
-#ifndef %s
-#define %s
-
-// Add code here
-
-#endif
-]], guard_macro, guard_macro)
-	    utils.write_file({ utils.get_project_root(), "include", file_name .. ".hpp" }, content)
+    	if lang == "cpp" then
+	    aux_file("_HPP", ".hpp", file_name)
+	    print("Successful creation of " .. file_name .. ".hpp")
 	end
-    }
+    end
 }
-
-function M.create_project(lang, project_root)
-    vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
-	if not project_name or project_name == "" then return print("Project creation canceled") end
-	M.projects[lang].run(project_name, project_root)
-    end)
-end
-
-function M.create_new_file(lang)
-    vim.ui.input({ prompt = "Enter file name: " }, function(file_name)
-	if not file_name or file_name == "" then return print("File creation canceled") end
-	M.files[lang].run(file_name)
-    end)
-end
-
-function M.create_aux_file(lang)
-    vim.ui.input({ promt = "Enter file name: "}, function(file_name)
-	if not file_name or file_name == "" then return print("File creation canceled") end
-	M.aux_files[lang].run(file_name)
-    end)
-end
 
 return M

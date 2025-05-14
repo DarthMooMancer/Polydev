@@ -62,7 +62,7 @@ function M.load_language_module(lang, opts)
     return true
 end
 
-function M.manager()
+function M.manager(project_root)
     local templates = require("Polydev.templates")
     local Popup = require("nui.popup")
     local Layout = require("nui.layout")
@@ -118,16 +118,16 @@ function M.manager()
 	position = "50%",
 	size = { width = "70%", height = "70%" },
     },
-    Layout.Box({
-	Layout.Box(search, { size = "10%" }),
 	Layout.Box({
+	    Layout.Box(search, { size = "10%" }),
 	    Layout.Box({
-		Layout.Box(popup, { size = "55%" }),
-		Layout.Box(keybinds, {size = "45%" }),
-	    }, { dir = "col", size = "50%" }),
-	    Layout.Box(preview, { size = "50%" }),
-	}, { dir = "row", size = "90%" }),
-    }, { dir = "col" })
+		Layout.Box({
+		    Layout.Box(popup, { size = "55%" }),
+		    Layout.Box(keybinds, {size = "45%" }),
+		}, { dir = "col", size = "50%" }),
+		Layout.Box(preview, { size = "50%" }),
+	    }, { dir = "row", size = "90%" }),
+	}, { dir = "col" })
     )
     layout:mount()
 
@@ -181,7 +181,7 @@ function M.manager()
 
     local function refresh()
 	entries = get_entries(cwd)
-	local root = vim.fn.expand("~/Projects")
+	local root = vim.fn.expand(project_root)
 
 	-- If we're not in the Projects folder, redirect to Projects
 	if not cwd:find(root, 1, true) then
@@ -275,7 +275,7 @@ function M.manager()
     popup:map("n", "D", function()
 	local entry = get_selected_entry()
 	if not entry.is_up then
-	    vim.ui.input({ prompt = "(y/N) Defaults to N: " .. entry.name }, function(input)
+	    vim.ui.input({ prompt = "Deletion of " .. entry.name .. ": (y/N) Defaults to N: " }, function(input)
 		if input == "y" or input == "Y" then
 		    vim.fn.delete(entry.full_path, "rf")
 		    refresh()
@@ -292,7 +292,10 @@ function M.manager()
 	    if M.load_language_module(lang) and templates.files[lang] and templates.files[lang].run then
 		popup:unmount()
 		vim.schedule(function()
-		    templates.create_new_file(lang)
+		    vim.ui.input({ prompt = "Enter file name: " }, function(file_name)
+			if not file_name or file_name == "" then return print("File creation canceled") end
+			templates.files[lang].run(file_name)
+		    end)
 		end)
 	    else
 		print("Error: No File creation method for " .. lang)
@@ -303,10 +306,13 @@ function M.manager()
     popup:map("n", "x", function()
 	vim.ui.input({ prompt = "Enter language for new auxilary file: "}, function(lang)
 	    if not lang or lang == "" then return print("File create canceled") end
-	    if M.load_language_module(lang) and templates.aux_files[lang] and templates.aux_files[lang].run then
+	    if M.load_language_module(lang) and templates.aux_files.run then
 		popup:unmount()
 		vim.schedule(function()
-		    templates.create_aux_file(lang)
+		    vim.ui.input({ prompt = "Enter file name: "}, function(file_name)
+			if not file_name or file_name == "" then return print("File creation canceled") end
+			templates.aux_files.run(lang, file_name)
+		    end)
 		end)
 	    else
 		print("Error: No File creation method for " .. lang)
@@ -323,7 +329,10 @@ function M.manager()
 	    if M.load_language_module(lang) and templates.projects[lang] and templates.projects[lang].run then
 		popup:unmount()
 		vim.schedule(function()
-		    templates.create_project(lang, opts.project_root)
+		    vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
+			if not project_name or project_name == "" then return print("Project creation canceled") end
+			templates.projects[lang].run(project_name, opts.project_root)
+		    end)
 		end)
 	    else
 		print("Error: No project creation method for " .. lang)

@@ -9,12 +9,11 @@ function M.setup(opts)
 	config.user_config[lang] = vim.tbl_deep_extend("force", config.defaults[lang] or {}, user_opts)
     end
 
-    vim.api.nvim_create_user_command("PolydevOpen", ui.manager, {})
+    vim.api.nvim_create_user_command("PolydevOpen", function() ui.manager(config.get("globals").project_root) end, {})
 
-    local keys = vim.tbl_deep_extend("force", {}, config.get("globals").keybinds, opts or {})
+    local keys = vim.tbl_deep_extend("force", {}, config.get("globals").keybinds, opts.keybinds or {})
     for key, _ in pairs(keys) do
-	vim.keymap.set("n", key, ":PolydevOpen<CR>", { silent = true })
-	break
+	vim.keymap.set("n", key, ":PolydevOpen<CR>")
     end
 
     vim.api.nvim_create_autocmd("FileType", {

@@ -43,9 +43,9 @@ function M.init_git(path, gitignore_lines)
     vim.fn.system({ "git", "-C", path, "init" })
 
     if gitignore_lines and #gitignore_lines > 0 then
-        local gitignore_path = { path, ".gitignore" }
-        local contents = table.concat(gitignore_lines, "\n")
-        M.write_file(gitignore_path, contents)
+	local gitignore_path = { path, ".gitignore" }
+	local contents = table.concat(gitignore_lines, "\n")
+	M.write_file(gitignore_path, contents)
     end
 end
 
@@ -74,12 +74,6 @@ function M.terminal(cmd)
     vim.api.nvim_set_option_value("winhighlight", "Normal:Pmenu,FloatBorder:Pmenu", { win = win })
     vim.api.nvim_set_option_value("cursorline", true, { win = win })
     vim.api.nvim_set_option_value("scrolloff", 5, { win = win })
-    if(M.opts.number) then
-	vim.api.nvim_set_option_value("number", true, { win = win })
-	if(M.opts.relativenumber) then
-	    vim.api.nvim_set_option_value("relativenumber", true, { win = win })
-	end
-    end
 
     vim.fn.termopen(table.concat(cmd, "/"))
     vim.api.nvim_buf_set_keymap(buf, "n", "<ESC>", "i<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
