@@ -13,7 +13,7 @@
 </p>
 
 
-## Why Polydev?
+## **Why Polydev**?
 
 Working across multiple languages often means repetitive setup and constant context switching. Polydev eliminates this friction by offering:
 
@@ -24,7 +24,7 @@ Working across multiple languages often means repetitive setup and constant cont
 * A plugin-first design for easy extensibility
 
 
-## Core Features
+## **Core Features**
 
 * **Language Profiles**
   Define settings per language including `project_root`, keymaps, and build commands.
@@ -42,16 +42,14 @@ Working across multiple languages often means repetitive setup and constant cont
   Easily extend functionality with custom language presets and commands.
 
 
-## Who It's For
-
-Polydev is ideal for:
+## **Who It's For**
 
 * Developers who work in multiple languages
 * Neovim plugin authors or power users
 * Anyone who wants a faster, more unified project workflow
 
 
-## Design Goals
+## **Design Goals**
 
 * **Consistency**
   Offer a predictable workflow across languages and tools.
@@ -63,7 +61,7 @@ Polydev is ideal for:
   Reduce boilerplate, context switching, and friction.
 
 
-## Real-World Example
+## **Real-World Example**
 
 If you switch often between Rust, Lua, and Python:
 
