@@ -38,7 +38,8 @@ Additional language support is planned for future releases.
 ## Roadmap
 
 Current focus:
--- **Refactoring and internal cleanup.**
+* **Refactoring and internal cleanup.**
+
 Feature additions will resume after this phase.
 
 ---
