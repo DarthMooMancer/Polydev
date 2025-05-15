@@ -10,6 +10,7 @@ function M.setup(opts)
     end
 
     vim.api.nvim_create_user_command("PolydevOpen", function() ui.manager(config.get("globals").project_root) end, {})
+    -- require("Polydev.styles").setup_highlights()
 
     local keys = vim.tbl_deep_extend("force", {}, config.get("globals").keybinds, opts.keybinds or {})
     for key, _ in pairs(keys) do

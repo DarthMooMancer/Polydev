@@ -2,7 +2,7 @@ local utils = require("Polydev.utils")
 
 local M = {}
 
-local function aux_file(guard, file_type, file_name)
+local function extras(guard, file_type, file_name)
     if not file_name then return print("Header file creation canceled") end
     local guard_macro = file_name:upper():gsub("[^A-Z0-9]", "_") .. guard
     local content = string.format([[
@@ -239,14 +239,14 @@ public class %s {
     }
 }
 
-M.aux_files = {
+M.extras = {
     run = function (lang, file_name)
 	if lang == "c" then
-	    aux_file("_H", ".h", file_name)
+	    extras("_H", ".h", file_name)
 	    print("Successful creation of " .. file_name .. ".h")
 	end
     	if lang == "cpp" then
-	    aux_file("_HPP", ".hpp", file_name)
+	    extras("_HPP", ".hpp", file_name)
 	    print("Successful creation of " .. file_name .. ".hpp")
 	end
     end

@@ -29,14 +29,7 @@ local presets = {
 ---@param preset string
 ---@return table|nil
 function M.getPresets(preset)
-    if presets[preset] ~= nil then
-	return presets[preset]
-    elseif presets[preset] == nil then
-	return nil
-    else
-	print("Preset option: " .. preset .. " does not exist")
-    end
-    return {}
+    return presets[preset]
 end
 
 return M

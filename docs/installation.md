@@ -12,8 +12,7 @@ Polydev can be installed using any plugin manager of your choice — or even man
 return {
     "DarthMooMancer/Polydev",
     dependencies = {
-        "MunifTanjim/nui.nvim",
-        "nvim-lua/plenary.nvim"
+        "MunifTanjim/nui.nvim"
     },
     opts = {}, -- Setup is later on
 }
@@ -27,8 +26,7 @@ return {
 MiniDeps.add({
     source = "DarthMooMancer/Polydev"
     depends = {
-        "MunifTanjim/nui.nvim",
-        "nvim-lua/plenary.nvim"
+        "MunifTanjim/nui.nvim"
     }
 })
 
@@ -43,8 +41,7 @@ require("Polydev").setup({})
 use({
     "DarthMooMancer/Polydev",
     requires = {
-        "MunifTanjim/nui.nvim",
-        "nvim-lua/plenary.nvim"
+        "MunifTanjim/nui.nvim"
     },
 })
 

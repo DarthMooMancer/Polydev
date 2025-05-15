@@ -39,6 +39,9 @@ local function get_entries(path)
     return result
 end
 
+---@param list table
+---@param query string
+---@return table
 local function fuzzy_filter(list, query)
     local result = {}
     query = query:lower()
@@ -51,6 +54,10 @@ local function fuzzy_filter(list, query)
 end
 
 local loaded_languages = {}
+
+---@param lang string
+---@param opts? table
+---@return boolean
 function M.load_language_module(lang, opts)
     if loaded_languages[lang] then return true end
 
@@ -67,53 +74,64 @@ function M.manager(project_root)
     local Popup = require("nui.popup")
     local Layout = require("nui.layout")
     local event = require("nui.utils.autocmd").event
-    local Path = require("plenary.path")
     local display_dir = vim.fn.expand(vim.fn.getcwd())
     local cwd = display_dir
     local entries = get_entries(cwd)
     local current_view = vim.deepcopy(entries)
+
+    -- Create a new custom highlight group with Normal background and NormalFloat foreground
+    vim.api.nvim_set_hl(0, "CustomFloatText", {
+	fg = vim.api.nvim_get_hl_by_name("NormalFloat", true).foreground,
+	bg = vim.api.nvim_get_hl_by_name("Normal", true).background,
+    })
 
     local popup, search, preview = Popup({
 	enter = true,
 	focusable = true,
 	border = {
 	    style = "rounded", -- "double", "none", "rounded", "shadow", "single" or "solid".
-	    text = { top = " Project Manager ", top_align = "center" },
-	    highlight = "Normal",
+	    text = { top = " Results ", top_align = "center" },
 	},
 	position = "50%",
 	buf_options = { modifiable = true, readonly = false },
+	win_options = {
+	    winhighlight = "Normal:CustomFloatText,FloatBorder:Function",
+	}
     }), Popup({
 	enter = false,
 	focusable = true,
 	border = {
-	    style = "rounded", -- "double", "none", "rounded", "shadow", "single" or "solid".
-	    text = { top = " Search ", top_align = "center" },
-	    highlight = "Normal",
+	    style = "rounded", -- "rounded", "single" or "solid".
+	    text = { top = " Find Files ", top_align = "center" },
 	},
 	buf_options = { modifiable = true, readonly = false },
+	win_options = {
+	    winhighlight = "Normal:CustomFloatText,FloatBorder:Function",
+	}
     }), Popup({
 	enter = false,
 	focusable = false,
 	border = {
 	    style = "rounded",
-	    text = { top = " Preview ", top_align = "center" },
-	    highlight = "Normal",
+	    text = { top = " Grep Preview ", top_align = "center" },
 	},
 	position = "50%",
 	buf_options = { modifiable = true, readonly = false },
+	win_options = {
+	    winhighlight = "Normal:CustomFloatText,FloatBorder:Function",
+	}
     })
     local layout = Layout({
-	position = "50%",
-	size = { width = "70%", height = "70%" },
+	position = "55%",
+	size = { width = "81%", height = "90%" },
     },
 	Layout.Box({
-	    Layout.Box(search, { size = "10%" }),
 	    Layout.Box({
-		Layout.Box(popup, { size = "50%" }),
-		Layout.Box(preview, { size = "50%" }),
-	    }, { dir = "row", size = "90%" }),
-	}, { dir = "col" })
+		Layout.Box(search, { size = "10%" }),
+		Layout.Box(popup, { size = "93%" }),
+	    }, { dir = "col", size = "48%" }),
+	    Layout.Box(preview, { size = "51.5%" }),
+	}, { dir = "row" })
     )
     layout:mount()
 
@@ -180,7 +198,7 @@ function M.manager(project_root)
 	    table.insert(entries, 1, {
 		name = "../",
 		type = "directory",
-		full_path = Path:new(cwd):parent():absolute(),
+		full_path = vim.fn.fnamemodify(cwd, ":h"),
 		is_up = true
 	    })
 	end
@@ -234,32 +252,7 @@ function M.manager(project_root)
     -- Mappings
     popup:map("n", "q", function() popup:unmount() end)
 
-    -- Creates a new folder
-    popup:map("n", "a", function()
-	vim.ui.input({ prompt = "New folder name:" }, function(input)
-	    if input then
-		vim.fn.mkdir(cwd .. "/" .. input, "p")
-		refresh()
-		render()
-	    end
-	end)
-    end)
-
-    -- Deletes Folder and confirms deletion
-    popup:map("n", "D", function()
-	local entry = get_selected_entry()
-	if not entry.is_up then
-	    vim.ui.input({ prompt = "Deletion of " .. entry.name .. ": (y/N) Defaults to N: " }, function(input)
-		if input == "y" or input == "Y" then
-		    vim.fn.delete(entry.full_path, "rf")
-		    refresh()
-		    render()
-		end
-	    end)
-	end
-    end)
-
-    -- Creates a new file in project
+    -- Creates new file
     popup:map("n", "%", function()
 	vim.ui.input({ prompt = "Enter language for new file: " }, function(lang)
 	    if not lang or lang == "" then return print("File creation canceled") end
@@ -277,15 +270,16 @@ function M.manager(project_root)
 	end)
     end)
 
+    -- Creates extra file
     popup:map("n", "x", function()
 	vim.ui.input({ prompt = "Enter language for new auxilary file: "}, function(lang)
 	    if not lang or lang == "" then return print("File create canceled") end
-	    if M.load_language_module(lang) and templates.aux_files.run then
+	    if M.load_language_module(lang) and templates.extras.run then
 		popup:unmount()
 		vim.schedule(function()
 		    vim.ui.input({ prompt = "Enter file name: "}, function(file_name)
 			if not file_name or file_name == "" then return print("File creation canceled") end
-			templates.aux_files.run(lang, file_name)
+			templates.extras.run(lang, file_name)
 		    end)
 		end)
 	    else
@@ -294,7 +288,18 @@ function M.manager(project_root)
 	end)
     end)
 
-    -- Creates a new project
+    -- Creates a new folder
+    popup:map("n", "a", function()
+	vim.ui.input({ prompt = "New folder name:" }, function(input)
+	    if input then
+		vim.fn.mkdir(cwd .. "/" .. input, "p")
+		refresh()
+		render()
+	    end
+	end)
+    end)
+
+    -- Creates new project
     popup:map("n", "d", function()
 	local opts = {}
 	vim.ui.input({ prompt = "Enter language for project: " }, function(lang)
@@ -312,6 +317,20 @@ function M.manager(project_root)
 		print("Error: No project creation method for " .. lang)
 	    end
 	end)
+    end)
+
+    -- Deletes Folder and confirms deletion
+    popup:map("n", "D", function()
+	local entry = get_selected_entry()
+	if not entry.is_up then
+	    vim.ui.input({ prompt = "Deletion of " .. entry.name .. ": (y/N) Defaults to N: " }, function(input)
+		if input == "y" or input == "Y" then
+		    vim.fn.delete(entry.full_path, "rf")
+		    refresh()
+		    render()
+		end
+	    end)
+	end
     end)
 
     -- Renames Files and Folders
@@ -347,7 +366,7 @@ function M.manager(project_root)
     end)
 
     popup:map("n", "<BS>", function()
-	local parent = Path:new(cwd):parent():absolute()
+	local parent = vim.fn.fnamemodify(cwd, ":h")
 	if parent ~= cwd then
 	    cwd = parent
 	    refresh()
