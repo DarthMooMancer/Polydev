@@ -73,7 +73,7 @@ function M.manager(project_root)
     local entries = get_entries(cwd)
     local current_view = vim.deepcopy(entries)
 
-    local popup, search, preview, keybinds = Popup({
+    local popup, search, preview = Popup({
 	enter = true,
 	focusable = true,
 	border = {
@@ -102,18 +102,7 @@ function M.manager(project_root)
 	},
 	position = "50%",
 	buf_options = { modifiable = true, readonly = false },
-    }), Popup({
-	enter = false,
-	focusable = false,
-	border = {
-	    style = "rounded",
-	    text = { top = " Keybinds ", top_align = "center" },
-	    highlight = "Normal",
-	},
-	position = "50%",
-	buf_options = { modifiable = true, readonly = false },
     })
-
     local layout = Layout({
 	position = "50%",
 	size = { width = "70%", height = "70%" },
@@ -121,10 +110,7 @@ function M.manager(project_root)
 	Layout.Box({
 	    Layout.Box(search, { size = "10%" }),
 	    Layout.Box({
-		Layout.Box({
-		    Layout.Box(popup, { size = "55%" }),
-		    Layout.Box(keybinds, {size = "45%" }),
-		}, { dir = "col", size = "50%" }),
+		Layout.Box(popup, { size = "50%" }),
 		Layout.Box(preview, { size = "50%" }),
 	    }, { dir = "row", size = "90%" }),
 	}, { dir = "col" })
@@ -202,31 +188,19 @@ function M.manager(project_root)
     end
 
     local function render()
+	local hints = {
+	    "",
+	    "/ → Find   a → New Directory   % → New File   R → Rename",
+	    "x → New Helper File   d → New Project   D → Delete   q → Quit",
+	}
 	if not popup.bufnr then return end
 	vim.api.nvim_buf_set_lines(popup.bufnr, 0, -1, false, {})
 	for i, item in ipairs(current_view) do
 	    local line = string.format("%-2d | %-27s | %-6s", i, item.name, item.type)
 	    vim.api.nvim_buf_set_lines(popup.bufnr, -1, -1, false, { line })
 	end
+	vim.api.nvim_buf_set_lines(popup.bufnr, -1, -1, false, hints)
 
-	-- Add key mappings legend
-	local hints = {
-	    "  <CR>     : Open/Enter",
-	    "  <BS>     : Return",
-	    "  /        : Search",
-	    "  a        : New folder",
-	    "  %        : New file",
-	    "  x        : New auxilary file",
-	    "  d        : New project",
-	    "  R        : Rename",
-	    "  D        : Delete",
-	    "  q        : Quit",
-	}
-
-	if not keybinds.bufnr then return end
-	vim.api.nvim_buf_set_lines(keybinds.bufnr, 0, -1, false, {})
-
-	vim.api.nvim_buf_set_lines(keybinds.bufnr, -1, -1, false, hints)
 	update_preview()
     end
 
