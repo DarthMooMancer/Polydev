@@ -80,7 +80,7 @@ function M.terminal(cmd)
 	row = row,
 	col = col,
 	style = "minimal",
-	border = M.opts.border and "rounded" or "none",
+	border = M.opts.border.enabled and M.opts.border.type,
     })
     vim.api.nvim_set_option_value("winblend", vim.o.pumblend, { win = win })
     vim.api.nvim_set_option_value("winhighlight", "Normal:Pmenu,FloatBorder:Pmenu", { win = win })

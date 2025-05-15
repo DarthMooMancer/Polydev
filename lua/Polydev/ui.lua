@@ -1,5 +1,7 @@
 local M = {}
 
+---@param path string
+---@return table
 local function get_entries(path)
     local result = {}
     local handle = vim.loop.fs_scandir(path)
@@ -69,13 +71,13 @@ function M.load_language_module(lang, opts)
     return true
 end
 
+---@param project_root string
 function M.manager(project_root)
     local templates = require("Polydev.templates")
     local Popup = require("nui.popup")
     local Layout = require("nui.layout")
     local event = require("nui.utils.autocmd").event
-    local display_dir = vim.fn.expand(vim.fn.getcwd())
-    local cwd = display_dir
+    local cwd = vim.fn.expand(vim.fn.getcwd())
     local entries = get_entries(cwd)
     local current_view = vim.deepcopy(entries)
 
@@ -209,7 +211,7 @@ function M.manager(project_root)
 	local hints = {
 	    "",
 	    "/ → Find   a → New Directory   % → New File   R → Rename",
-	    "x → New Helper File   d → New Project   D → Delete   q → Quit",
+	    "x → New Helper File   d → New Project   D → Delete",
 	}
 	if not popup.bufnr then return end
 	vim.api.nvim_buf_set_lines(popup.bufnr, 0, -1, false, {})
@@ -250,7 +252,7 @@ function M.manager(project_root)
     popup:map("n", "/", function() vim.schedule(prompt_filter) end)
 
     -- Mappings
-    popup:map("n", "q", function() popup:unmount() end)
+    popup:map("n", "<ESC>", function() popup:unmount() end)
 
     -- Creates new file
     popup:map("n", "%", function()

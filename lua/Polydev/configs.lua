@@ -2,72 +2,79 @@ local M = {}
 
 M.defaults = {
     globals = {
-	project_root = "~/Projects",
-	keybinds = {
-	    ["<leader>po"] = "PolydevManager",
-	}
+        project_root = "~/Projects",
+        keybinds = {
+            ["<leader>po"] = "PolydevManager",
+        },
     },
     terminal = {
-	preset = nil,
-	border = true,
+        preset = nil,
+        border = {
+            enabled = true,
+            type = "rounded",
+        },
+    },
+}
+
+local function default_languages(project_root)
+    return {
+        rust = {
+            project_root = project_root .. "/Rust",
+            keybinds = {
+                ["<leader>pr"] = "RustRun",
+            },
+        },
+        java = {
+            project_root = project_root .. "/Java",
+            keybinds = {
+                ["<leader>pr"] = "JavaRun",
+            },
+        },
+        lua = {
+            project_root = project_root .. "/Lua",
+            keybinds = {
+                ["<leader>pr"] = "LuaRun",
+            },
+        },
+        c = {
+            project_root = project_root .. "/C",
+            keybinds = {
+                ["<leader>pr"] = "CRun",
+            },
+            build_attributes = "",
+        },
+        cpp = {
+            project_root = project_root .. "/CPP",
+            keybinds = {
+                ["<leader>pr"] = "CppRun",
+            },
+            build_attributes = "",
+        },
+        html = {
+            project_root = project_root .. "/Html",
+        },
     }
-}
-
-M.defaults.rust = {
-    project_root = M.defaults.globals.project_root .. "/Rust",
-    keybinds = {
-	["<leader>pr"] = "RustRun",
-    },
-}
-
-M.defaults.java = {
-    project_root = M.defaults.globals.project_root .. "/Java",
-    keybinds = {
-	["<leader>pr"] = "JavaRun",
-    },
-}
-
-M.defaults.python = {
-    project_root = M.defaults.globals.project_root .. "/Python",
-    keybinds = {
-	["<leader>pr"] = "PythonRun",
-	["<leader>pb"] = "PythonPip",
-    },
-}
-
-M.defaults.lua = {
-    project_root = M.defaults.globals.project_root .. "/Lua",
-    keybinds = {
-	["<leader>pr"] = "LuaRun",
-    },
-}
-
-M.defaults.c = {
-    project_root = M.defaults.globals.project_root .. "/C",
-    keybinds = {
-	["<leader>pr"] = "CRun",
-    },
-    build_attributes = "",
-}
-
-M.defaults.cpp = {
-    project_root = M.defaults.globals.project_root .. "/CPP",
-    keybinds = {
-	["<leader>pr"] = "CppRun",
-    },
-    build_attributes = "",
-}
-
-M.defaults.html = {
-    project_root = M.defaults.globals.project_root .. "/Html",
-}
+end
 
 M.user_config = {}
 
+---@param user_opts table
 function M.setup(user_opts)
+    -- First merge global and terminal
     M.user_config = vim.tbl_deep_extend("force", {}, M.defaults, user_opts or {})
+
+    -- Now use the final resolved project_root from user_config
+    local root = M.user_config.globals.project_root
+    local langs = default_languages(root)
+
+    -- Inject languages into the config, respecting user overrides
+    for lang, conf in pairs(langs) do
+        M.user_config[lang] = vim.tbl_deep_extend("force", conf, M.user_config[lang] or {})
+    end
 end
 
+---@param lang string
+---@return table
 function M.get(lang)
     return M.user_config[lang] or {}
 end
