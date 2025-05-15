@@ -1,12 +1,17 @@
 local M = {}
 
+---@class padding
+---@field left_padding integer
+---@field right_padding integer
+---@field top_padding integer
+---@field bottom_padding integer
+
+---@class preset_list
+---@field right padding
+---@field corner padding
+
+---@type preset_list
 local presets = {
-    max = {
-	left_padding = 0,
-	right_padding = 0,
-	top_padding = 0,
-	bottom_padding = 0
-    },
     right = {
 	left_padding = 100,
 	right_padding = 0,
@@ -21,16 +26,17 @@ local presets = {
     }
 }
 
+---@param preset string
+---@return table|nil
 function M.getPresets(preset)
-    if preset == "max" then
-	return presets.max
-    elseif preset == "right" then
-	return presets.right
-    elseif preset == "corner" then
-	return presets.corner
+    if presets[preset] ~= nil then
+	return presets[preset]
+    elseif presets[preset] == nil then
+	return nil
     else
 	print("Preset option: " .. preset .. " does not exist")
     end
+    return {}
 end
 
 return M

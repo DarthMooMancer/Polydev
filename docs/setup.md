@@ -121,7 +121,7 @@ cpp = {
 ```lua
 -- In Neovim 0.11+, numbers don't work so they will be reimplemented later
 terminal = {
-    preset = "max", -- "max", "right", "corner"
-    border = true,
+    preset = nil, -- also try : ("right", "corner")
+    border = true
 }
 ```

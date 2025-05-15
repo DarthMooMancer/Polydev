@@ -8,7 +8,7 @@ M.defaults = {
 	}
     },
     terminal = {
-	preset = "max",
+	preset = nil,
 	border = true,
     }
 }

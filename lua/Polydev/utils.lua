@@ -54,11 +54,23 @@ end
 function M.terminal(cmd)
     local opts = require("Polydev.presets").getPresets(M.opts.preset)
     local ui = vim.api.nvim_list_uis()[1]
+    local width
+    local height
+    local row
+    local col
 
-    local width = math.max(1, math.floor(ui.width * 0.9) - opts.left_padding - opts.right_padding)
-    local height = math.max(1, math.floor(ui.height * 0.9) - opts.top_padding - opts.bottom_padding)
-    local row = math.floor((ui.height - height) / 2) + opts.top_padding
-    local col = math.floor((ui.width - width) / 2) + opts.left_padding
+    if opts ~= nil then
+	width = math.max(1, math.floor(ui.width * 0.9) - opts.left_padding - opts.right_padding)
+	height = math.max(1, math.floor(ui.height * 0.9) - opts.top_padding - opts.bottom_padding)
+	row = math.floor((ui.height - height) / 2) + opts.top_padding
+	col = math.floor((ui.width - width) / 2) + opts.left_padding
+    end
+    if opts == nil then
+	width = math.max(1, math.floor(ui.width * 0.9))
+	height = math.max(1, math.floor(ui.height * 0.9))
+	row = math.floor((ui.height - height) / 2)
+	col = math.floor((ui.width - width) / 2)
+    end
 
     local buf = vim.api.nvim_create_buf(false, true)
     local win = vim.api.nvim_open_win(buf, true, {
