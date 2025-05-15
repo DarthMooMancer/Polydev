@@ -63,11 +63,18 @@ local loaded_languages = {}
 function M.load_language_module(lang, opts)
     if loaded_languages[lang] then return true end
 
-    local ok, mod = pcall(require, "Polydev.languages." .. lang)
-    if not ok or type(mod.setup) ~= "function" then return false end
+    local ok, mod = pcall(require, "Polydev.languages")
+    if not ok or type(mod.languages) ~= "table" then
+        return false
+    end
 
-    mod.setup(opts and opts[lang] or {})
-    loaded_languages[lang] = mod
+    local lang_mod = mod.languages[lang]
+    if type(lang_mod) ~= "table" or type(lang_mod.setup) ~= "function" then
+        return false
+    end
+
+    lang_mod:setup(opts and opts[lang] or {})
+    loaded_languages[lang] = lang_mod
     return true
 end
 
@@ -308,6 +315,7 @@ function M.manager(project_root)
 	    if not lang or lang == "" then return print("Project creation canceled") end
 	    opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get(lang), opts or {})
 	    if M.load_language_module(lang) and templates.projects[lang] and templates.projects[lang].run then
+	    -- if templates.projects[lang] and templates.projects[lang].run then
 		popup:unmount()
 		vim.schedule(function()
 		    vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
