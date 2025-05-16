@@ -67,10 +67,10 @@ function M.manager(project_root)
     local current_view = vim.deepcopy(entries)
 
     -- Create a new custom highlight group with Normal background and NormalFloat foreground
-    vim.api.nvim_set_hl(0, "PolydevNormal", {
-	fg = vim.api.nvim_get_hl(0, { name = "NormalFloat", link = true }).fg,
-	bg = vim.api.nvim_get_hl(0, { name = "Normal", link = true }).bg,
-    })
+	--    vim.api.nvim_set_hl(0, "PolydevNormal", {
+	-- fg = vim.api.nvim_get_hl(0, { name = "NormalFloat", link = true }).fg,
+	-- bg = vim.api.nvim_get_hl(0, { name = "Normal", link = true }).bg,
+	--    })
 
     local popup, search, preview = Popup({
 	enter = true,
@@ -82,7 +82,7 @@ function M.manager(project_root)
 	position = "50%",
 	buf_options = { modifiable = true, readonly = false },
 	win_options = {
-	    winhighlight = "Normal:PolydevNormal,FloatBorder:Function",
+	    winhighlight = "Normal:PolydevNormal,FloatBorder:PolydevBorder,FloatTitle:PolydevTitle",
 	}
     }), Popup({
 	enter = false,
@@ -93,7 +93,7 @@ function M.manager(project_root)
 	},
 	buf_options = { modifiable = true, readonly = false },
 	win_options = {
-	    winhighlight = "Normal:PolydevNormal,FloatBorder:Function",
+	    winhighlight = "Normal:PolydevNormal,FloatBorder:PolydevBorder,FloatTitle:PolydevTitle",
 	}
     }), Popup({
 	enter = false,
@@ -105,7 +105,7 @@ function M.manager(project_root)
 	position = "50%",
 	buf_options = { modifiable = true, readonly = false },
 	win_options = {
-	    winhighlight = "Normal:PolydevNormal,FloatBorder:Function",
+	    winhighlight = "Normal:PolydevNormal,FloatBorder:PolydevBorder,FloatTitle:PolydevTitle",
 	}
     })
     local layout = Layout({

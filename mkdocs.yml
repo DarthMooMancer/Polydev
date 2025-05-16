@@ -4,6 +4,7 @@ nav:
   - Installation: installation.md
   - Setup: setup.md
   - Language Reference: languages.md
+  - Appearance: appearance.md
 
 theme:
   name: material

@@ -9,15 +9,19 @@ function M.setup_highlights()
     end
 
     define("PolydevNormal", {
-	fg = vim.api.nvim_get_hl_by_name("NormalFloat", true).foreground,
-	bg = vim.api.nvim_get_hl_by_name("Normal", true).background
+	fg = vim.api.nvim_get_hl(0, { name = "NormalFloat", link = true }).fg,
+	bg = vim.api.nvim_get_hl(0, { name = "Normal", link = true }).bg,
     })
 
     define("PolydevBorder", {
-	fg = vim.api.nvim_get_hl_by_name("Function", true).foreground,
-	bg = vim.api.nvim_get_hl_by_name("Normal", true).background
+	fg = vim.api.nvim_get_hl(0, { name = "Function", link = true }).fg,
+	bg = vim.api.nvim_get_hl(0, { name = "Normal", link = true }).bg,
     })
-    define("PolydevTitle",  { fg = "#89dceb", bold = true })
+
+    define("PolydevTitle",  {
+	fg = vim.api.nvim_get_hl(0, { name = "FloatTitle", link = true }).fg, bold = true,
+	bg = vim.api.nvim_get_hl(0, { name = "Normal", link = true }).bg,
+    })
 end
 
 return M
