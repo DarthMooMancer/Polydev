@@ -1,5 +1,5 @@
-| Name | Group |
-|------|-------|
-| `PolydevNormal` | foreground: `NormalFloat`, background: `Normal`
-| `PolydevBorder` | foreground: `Function`, background: `Normal`
-| `PolydevTitle` | foreground: `FloatTitle`, background: `Normal`
+| Group | Default | Description |
+|------|-------|--------|
+| `PolydevNormal` | `NormalFloat` | Base background of window |
+| `PolydevBorder` | `Function` | Border of window |
+| `PolydevTitle` | `FloatTitle` | Title of each popup |
