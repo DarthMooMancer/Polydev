@@ -1,11 +1,3 @@
-# **Installation**
-
-Polydev can be installed using any plugin manager of your choice — or even manually. Below are some examples for popular managers to get you started.
-
-> **Requirement**: Neovim v0.10+
-
----
-
 ## **Lazy.nvim**
 
 ```lua

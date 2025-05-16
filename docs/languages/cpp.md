@@ -1,10 +1,3 @@
-### Build
-```lua
--- Adds build attributes when compiling if you need extra arguments
-build_attributes = ""
-```
----
-
 #### File Structure 📂
 This is the recommended file structure for your C projects using Polydev:
 
@@ -29,6 +22,7 @@ Projects/
         │   ├── main.cpp
         │   └── *.cpp
         ├── build/
+        │   └── <CMAKE_FILES>
         │   └── <main-executable>
         └── include/
             └── *.hpp

@@ -3,8 +3,8 @@
 
 | Binding          | Description   |
 |------------------|-----------------|
-| **Enter** | `Open file / Enter directory` |
-| **Delete** | `Go to parent directory` |
+| **ENTER** | `Open file / Enter directory` |
+| **DELETE** | `Go to parent directory` |
 | **/**    | `Filter (fuzzy search)` |
 | **a**    | `Create new folder` |
 | **%**    | `Create new file` |
@@ -12,7 +12,7 @@
 | **d**    | `Create new project` |
 | **R**    | `Rename file/folder` |
 | **D**    | `Delete file/folder` |
-| **q**    | `Quit popup` |
+| **ESC**    | `Quit popup` |
 
 > **WARNING**: Do not copy the defaults. Only change what you need for your workflow!
 

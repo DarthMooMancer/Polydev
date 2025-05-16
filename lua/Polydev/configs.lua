@@ -41,14 +41,12 @@ local function default_languages(project_root)
             keybinds = {
                 ["<leader>pr"] = "CRun",
             },
-            build_attributes = "",
         },
         cpp = {
             project_root = project_root .. "/CPP",
             keybinds = {
                 ["<leader>pr"] = "CppRun",
             },
-            build_attributes = "",
         },
         html = {
             project_root = project_root .. "/Html",
