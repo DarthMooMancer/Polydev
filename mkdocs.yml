@@ -3,14 +3,15 @@ nav:
   - Home: index.md
   - Installation: installation.md
   - Setup: setup.md
-  - Language Specific Docs:
-    - Java: languages/java.md
-    - C: languages/c.md
-    - Cpp: languages/cpp.md
-    - Lua: languages/lua.md
-    - Python: languages/python.md
-    - Rust: languages/rust.md
-    - Html: languages/html.md
+  - Language Reference: languages.md
+  # - Language Specific Docs:
+  #   - Java: languages/java.md
+  #   - C: languages/c.md
+  #   - Cpp: languages/cpp.md
+  #   - Lua: languages/lua.md
+  #   - Python: languages/python.md
+  #   - Rust: languages/rust.md
+  #   - Html: languages/html.md
 theme:
   name: material
   features:
