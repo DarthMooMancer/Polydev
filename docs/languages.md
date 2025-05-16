@@ -7,6 +7,7 @@
 | `src/`                     | Contains the source code files, including `Main.java` |
 | `build/`                   | Contains compiled `.class` files                     |
 | `Main.java`                | The main entry point of your Java project             |
+| `.gitingore`               | Ignores files for things like Telescope and pushing to github |
 
 #### Project Layout
 
@@ -16,8 +17,9 @@ Projects/
     └── Project_Name/
         ├── src/
         │   └── Main.java
-        └── build/
-            └── *.class
+        ├── build/
+        │   └── *.class
+        └── .gitingore
 ```
 
 ---
@@ -35,6 +37,7 @@ Projects/
 | `build/`                    | Folder where the build artifacts will be generated |
 | `include/`                  | Folder for header files                             |
 | `*.h`                       | C header files                                       |
+| `.gitingore`               | Ignores files for things like Telescope and pushing to github |
 
 #### Project Layout
 
@@ -46,6 +49,7 @@ Projects/
         ├── src/
         │   ├── main.c
         │   └── *.c
+        ├── .gitingore
         ├── build/
         │   └── <CMAKE_FILES>
         │   └── <main-executable>
@@ -68,6 +72,7 @@ Projects/
 | `build/`                    | Folder where the build artifacts will be generated |
 | `include/`                  | Folder for header files                             |
 | `*.hpp`                     | Cpp header files                                       |
+| `.gitingore`               | Ignores files for things like Telescope and pushing to github |
 
 #### Project Layout
 
@@ -76,6 +81,7 @@ Projects/
 └── Cpp/
     └── Project_Name/
         ├── CMakeLists.txt
+        ├── .gitingore
         ├── src/
         │   ├── main.cpp
         │   └── *.cpp
@@ -96,6 +102,7 @@ Projects/
 |----------------------------|-----------------------------------------------------|
 | `lua/<Project_name>`                      | Directory containing the main Lua project files     |
 | `lua/<Project_name>/init.lua` | The main entry point for your Lua project          |
+| `.gitingore`               | Ignores files for things like Telescope and pushing to github |
 
 #### Project Layout
 
@@ -103,6 +110,7 @@ Projects/
 Projects/
 └── Lua/
     └── Project_Name/
+        ├── .gitingore
         └── lua/
             └── Project_name/
                 └── init.lua         -- Main Lua file
@@ -125,6 +133,7 @@ Projects/
 | `tests/`                    | Folder containing test files                         |
 | `venv/`                     | Virtual environment folder                           |
 | `main.py`                   | Main Python file for your project                    |
+| `.gitingore`               | Ignores files for things like Telescope and pushing to github |
 
 #### Project Layout
 
@@ -132,6 +141,7 @@ Projects/
 Projects/
 └── Python/
     └── Project_Name/
+        ├── .gitingore
         ├── main.py
         ├── requirements.txt
         ├── setup.py
