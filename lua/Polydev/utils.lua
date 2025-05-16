@@ -87,7 +87,7 @@ function M.terminal(cmd)
     vim.api.nvim_set_option_value("cursorline", true, { win = win })
     vim.api.nvim_set_option_value("scrolloff", 5, { win = win })
 
-    vim.fn.termopen(table.concat(cmd, "/"))
+    vim.fn.jobstart(table.concat(cmd, "/"), { term = true })
     vim.api.nvim_buf_set_keymap(buf, "n", "<ESC>", "i<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
     return buf, win
 end

@@ -2,14 +2,10 @@ local M = {}
 
 function M.setup(opts)
     local config = require("Polydev.configs")
-    local ui = require("Polydev.ui")
     config.setup(opts)
     require("Polydev.utils").setup(opts)
-    for lang, user_opts in pairs(opts) do
-	config.user_config[lang] = vim.tbl_deep_extend("force", config.defaults[lang] or {}, user_opts)
-    end
 
-    vim.api.nvim_create_user_command("PolydevOpen", function() ui.manager(config.get("globals").project_root) end, {})
+    vim.api.nvim_create_user_command("PolydevOpen", function() require("Polydev.ui").manager(config.get("globals").project_root) end, {})
     -- require("Polydev.styles").setup_highlights()
 
     local keys = vim.tbl_deep_extend("force", {}, config.get("globals").keybinds, opts.keybinds or {})
@@ -21,7 +17,7 @@ function M.setup(opts)
 	pattern = "*",
 	callback = function()
 	    local filetype = vim.bo.filetype
-	    ui.load_language_module(filetype, opts)
+	    require("Polydev.languages").load_language_module(filetype, opts)
 	end,
     })
 end

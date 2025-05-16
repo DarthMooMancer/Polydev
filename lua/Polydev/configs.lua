@@ -1,21 +1,8 @@
 local M = {}
 
-M.defaults = {
-    globals = {
-        project_root = "~/Projects",
-        keybinds = {
-            ["<leader>po"] = "PolydevManager",
-        },
-    },
-    terminal = {
-        preset = nil,
-        border = {
-            enabled = true,
-            type = "rounded",
-        },
-    },
-}
 
+---@param project_root string
+---@return table
 local function default_languages(project_root)
     return {
         rust = {
@@ -58,8 +45,24 @@ M.user_config = {}
 
 ---@param user_opts table
 function M.setup(user_opts)
+    local defaults = {
+	globals = {
+	    project_root = "~/Projects",
+	    keybinds = {
+		["<leader>po"] = "PolydevManager",
+	    },
+	},
+	terminal = {
+	    preset = nil,
+	    border = {
+		enabled = true,
+		type = "rounded",
+	    },
+	},
+    }
+
     -- First merge global and terminal
-    M.user_config = vim.tbl_deep_extend("force", {}, M.defaults, user_opts or {})
+    M.user_config = vim.tbl_deep_extend("force", {}, defaults, user_opts or {})
 
     -- Now use the final resolved project_root from user_config
     local root = M.user_config.globals.project_root

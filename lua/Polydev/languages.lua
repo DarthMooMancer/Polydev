@@ -2,6 +2,25 @@ local utils = require("Polydev.utils")
 local configs = require("Polydev.configs")
 local M = {}
 
+local loaded_languages = {}
+
+---@param lang string
+---@param opts? table
+---@return boolean
+function M.load_language_module(lang, opts)
+    if loaded_languages[lang] then return true end
+
+    local ok, mod = pcall(require, "Polydev.languages")
+    if not ok or type(mod.languages) ~= "table" then return false end
+
+    local lang_mod = mod.languages[lang]
+    if type(lang_mod) ~= "table" or type(lang_mod.setup) ~= "function" then return false end
+
+    lang_mod:setup(opts and opts[lang] or {})
+    loaded_languages[lang] = lang_mod
+    return true
+end
+
 M.languages = {
     java = {
 	setup = function (self, user_opts)
@@ -19,11 +38,11 @@ M.languages = {
 
 	    if not vim.v.shell_error == 0 then
 		local term_buf = utils.terminal({ cmd })
-		vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
+		vim.api.nvim_set_option_value("modifiable", true, { win = term_buf })
 		vim.api.nvim_buf_set_lines(term_buf, 0, -1, false,
 		    vim.list_extend({ "Error during compilation:" }, vim.split(output, "\n", { trimempty = true }))
 		)
-		vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
+		vim.api.nvim_set_option_value("modifiable", false, { win = term_buf })
 	    else
 		utils.terminal({ "java -cp " .. root, "build" .. " Main" })
 	    end
@@ -47,11 +66,11 @@ M.languages = {
 
 	    if not success then
 		local term_buf = utils.terminal({ cmd })
-		vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
+		vim.api.nvim_set_option_value("modifiable", true, { win = term_buf })
 		vim.api.nvim_buf_set_lines(term_buf, 0, -1, false,
 		    vim.list_extend({ "Error during compilation:" }, vim.split(output, "\n", { trimempty = true }))
 		)
-		vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
+		vim.api.nvim_set_option_value("modifiable", false, { win = term_buf })
 	    end
 	    if success then
 		local run_cmd = "cd '" .. build_dir .. "' && ./" .. utils.get_project_name()
@@ -77,11 +96,11 @@ M.languages = {
 
 	    if not success then
 		local term_buf = utils.terminal({ cmd })
-		vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
+		vim.api.nvim_set_option_value("modifiable", true, { win = term_buf })
 		vim.api.nvim_buf_set_lines(term_buf, 0, -1, false,
 		    vim.list_extend({ "Error during compilation:" }, vim.split(output, "\n", { trimempty = true }))
 		)
-		vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
+		vim.api.nvim_set_option_value("modifiable", false, { win = term_buf })
 	    end
 	    if success then
 		local run_cmd = "cd '" .. build_dir .. "' && ./" .. utils.get_project_name()
@@ -111,11 +130,11 @@ M.languages = {
 
 	    if not vim.v.shell_error == 0 then
 		local term_buf = utils.terminal(cmd)
-		vim.api.nvim_buf_set_option(term_buf, "modifiable", true)
+		vim.api.nvim_set_option_value("modifiable", true, { win = term_buf })
 		vim.api.nvim_buf_set_lines(term_buf, 0, -1, false,
 		    vim.list_extend({ "Error during compilation:" }, vim.split(output, "\n", { trimempty = true }))
 		)
-		vim.api.nvim_buf_set_option(term_buf, "modifiable", false)
+		vim.api.nvim_set_option_value("modifiable", false, { win = term_buf })
 	    else
 		utils.terminal({ "cargo run" })
 	    end

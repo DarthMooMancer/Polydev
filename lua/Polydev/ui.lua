@@ -55,32 +55,10 @@ local function fuzzy_filter(list, query)
     return result
 end
 
-local loaded_languages = {}
-
----@param lang string
----@param opts? table
----@return boolean
-function M.load_language_module(lang, opts)
-    if loaded_languages[lang] then return true end
-
-    local ok, mod = pcall(require, "Polydev.languages")
-    if not ok or type(mod.languages) ~= "table" then
-        return false
-    end
-
-    local lang_mod = mod.languages[lang]
-    if type(lang_mod) ~= "table" or type(lang_mod.setup) ~= "function" then
-        return false
-    end
-
-    lang_mod:setup(opts and opts[lang] or {})
-    loaded_languages[lang] = lang_mod
-    return true
-end
-
 ---@param project_root string
 function M.manager(project_root)
     local templates = require("Polydev.templates")
+    local languages = require("Polydev.languages")
     local Popup = require("nui.popup")
     local Layout = require("nui.layout")
     local event = require("nui.utils.autocmd").event
@@ -89,9 +67,9 @@ function M.manager(project_root)
     local current_view = vim.deepcopy(entries)
 
     -- Create a new custom highlight group with Normal background and NormalFloat foreground
-    vim.api.nvim_set_hl(0, "CustomFloatText", {
-	fg = vim.api.nvim_get_hl_by_name("NormalFloat", true).foreground,
-	bg = vim.api.nvim_get_hl_by_name("Normal", true).background,
+    vim.api.nvim_set_hl(0, "PolydevNormal", {
+	fg = vim.api.nvim_get_hl(0, { name = "NormalFloat", link = true }).fg,
+	bg = vim.api.nvim_get_hl(0, { name = "Normal", link = true }).bg,
     })
 
     local popup, search, preview = Popup({
@@ -104,7 +82,7 @@ function M.manager(project_root)
 	position = "50%",
 	buf_options = { modifiable = true, readonly = false },
 	win_options = {
-	    winhighlight = "Normal:CustomFloatText,FloatBorder:Function",
+	    winhighlight = "Normal:PolydevNormal,FloatBorder:Function",
 	}
     }), Popup({
 	enter = false,
@@ -115,7 +93,7 @@ function M.manager(project_root)
 	},
 	buf_options = { modifiable = true, readonly = false },
 	win_options = {
-	    winhighlight = "Normal:CustomFloatText,FloatBorder:Function",
+	    winhighlight = "Normal:PolydevNormal,FloatBorder:Function",
 	}
     }), Popup({
 	enter = false,
@@ -127,7 +105,7 @@ function M.manager(project_root)
 	position = "50%",
 	buf_options = { modifiable = true, readonly = false },
 	win_options = {
-	    winhighlight = "Normal:CustomFloatText,FloatBorder:Function",
+	    winhighlight = "Normal:PolydevNormal,FloatBorder:Function",
 	}
     })
     local layout = Layout({
@@ -233,7 +211,7 @@ function M.manager(project_root)
 
     local function prompt_filter()
 	vim.api.nvim_buf_set_lines(search.bufnr, 0, -1, false, { "" })
-	vim.api.nvim_buf_set_option(search.bufnr, "modifiable", true)
+	vim.api.nvim_set_option_value("modifiable", true, { win = search.bufnr })
 	if vim.api.nvim_win_is_valid(search.winid) then
 	    vim.api.nvim_set_current_win(search.winid)
 	end
@@ -265,7 +243,7 @@ function M.manager(project_root)
     popup:map("n", "%", function()
 	vim.ui.input({ prompt = "Enter language for new file: " }, function(lang)
 	    if not lang or lang == "" then return print("File creation canceled") end
-	    if M.load_language_module(lang) and templates.files[lang] and templates.files[lang].run then
+	    if languages.load_language_module(lang) and templates.files[lang] and templates.files[lang].run then
 		popup:unmount()
 		vim.schedule(function()
 		    vim.ui.input({ prompt = "Enter file name: " }, function(file_name)
@@ -283,7 +261,7 @@ function M.manager(project_root)
     popup:map("n", "x", function()
 	vim.ui.input({ prompt = "Enter language for new auxilary file: "}, function(lang)
 	    if not lang or lang == "" then return print("File create canceled") end
-	    if M.load_language_module(lang) and templates.extras.run then
+	    if languages.load_language_module(lang) and templates.extras.run then
 		popup:unmount()
 		vim.schedule(function()
 		    vim.ui.input({ prompt = "Enter file name: "}, function(file_name)
@@ -314,7 +292,7 @@ function M.manager(project_root)
 	vim.ui.input({ prompt = "Enter language for project: " }, function(lang)
 	    if not lang or lang == "" then return print("Project creation canceled") end
 	    opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get(lang), opts or {})
-	    if M.load_language_module(lang) and templates.projects[lang] and templates.projects[lang].run then
+	    if languages.load_language_module(lang) and templates.projects[lang] and templates.projects[lang].run then
 	    -- if templates.projects[lang] and templates.projects[lang].run then
 		popup:unmount()
 		vim.schedule(function()
