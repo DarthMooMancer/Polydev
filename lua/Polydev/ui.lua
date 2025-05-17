@@ -4,10 +4,10 @@ local M = {}
 ---@return table
 local function get_entries(path)
     local result = {}
-    local handle = vim.loop.fs_scandir(path)
+    local handle = vim.uv.fs_scandir(path)
     if not handle then return result end
     while true do
-	local name, type = vim.loop.fs_scandir_next(handle)
+	local name, type = vim.uv.fs_scandir_next(handle)
 	if not name then break end
 	-- Check if this is a project file
 	local is_project = false

@@ -29,7 +29,9 @@ local presets = {
 ---@param preset string
 ---@return table|nil
 function M.getPresets(preset)
-    return presets[preset]
+    if presets[preset] then
+	return presets[preset]
+    end
 end
 
 return M

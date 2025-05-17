@@ -114,14 +114,31 @@ cpp = {
         ["<leader>pr"] = "CppRun",
     }
 }
-
 ```
 
 ## **Terminal Configuration**
 ```lua
--- In Neovim 0.11+, numbers don't work so they will be reimplemented later
 terminal = {
-    preset = nil, -- also try : ("right", "corner")
-    border = true
+    -- floating or split
+    mode = "split",
+    win = {
+        -- type: "vertical" or "horizonal" -- Only for split windows
+        -- anchor: "bottom" or "right" or "center" or "corner"
+            -- "bottom" and "right" are only split anchors
+            -- "center" and "corner" are only floating anchors
+        type = "vertical", anchor = "right"
+    },
+    border = {
+        enabled = true,
+        -- type: border decoration, follows `winborder`
+            -- "bold": Bold line box.
+            -- "double": Double-line box.
+            -- "none": No border.
+            -- "rounded": Like "single", but with rounded corners ("╭" etc.).
+            -- "shadow": Drop shadow effect, by blending with the background.
+            -- "single": Single-line box.
+            -- "solid": Adds padding by a single whitespace cell.
+        type = "rounded"
+    }
 }
 ```

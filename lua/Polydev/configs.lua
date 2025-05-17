@@ -53,7 +53,10 @@ function M.setup(user_opts)
 	    },
 	},
 	terminal = {
-	    preset = nil,
+	    mode = "split", -- floating or split
+	    win = {
+		type = "vertical", anchor = "right" -- type: "vertical" or "horizonal" -- anchor: "below" or "right" or "center" or "corner"
+	    },
 	    border = {
 		enabled = true,
 		type = "rounded",
