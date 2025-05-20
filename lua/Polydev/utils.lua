@@ -91,16 +91,16 @@ function M.terminal(cmd)
 	    end
 	end
 	if M.opts.win.type == "horizontal" then
-	    if M.opts.anchor == "bottom" then
+	    if M.opts.win.anchor == "bottom" then
 		vim.cmd("set splitbelow")
 	    end
 	end
 
 	if M.opts.win.type == "vertical" then
-	    vim.cmd("vsplit")
+	    vim.cmd(M.opts.win.size .. " vsplit")
 	end
 	if M.opts.win.type == "horizontal" then
-	    vim.cmd("split")
+	    vim.cmd(M.opts.win.size .. " split")
 	end
 	local buf = vim.api.nvim_create_buf(false, true)
 	vim.api.nvim_win_set_buf(0, buf)

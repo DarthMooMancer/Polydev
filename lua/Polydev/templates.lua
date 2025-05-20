@@ -245,7 +245,7 @@ M.extras = {
 	    extras("_H", ".h", file_name)
 	    print("Successful creation of " .. file_name .. ".h")
 	end
-    	if lang == "cpp" then
+	if lang == "cpp" then
 	    extras("_HPP", ".hpp", file_name)
 	    print("Successful creation of " .. file_name .. ".hpp")
 	end

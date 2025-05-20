@@ -67,10 +67,10 @@ function M.manager(project_root)
     local current_view = vim.deepcopy(entries)
 
     -- Create a new custom highlight group with Normal background and NormalFloat foreground
-	--    vim.api.nvim_set_hl(0, "PolydevNormal", {
-	-- fg = vim.api.nvim_get_hl(0, { name = "NormalFloat", link = true }).fg,
-	-- bg = vim.api.nvim_get_hl(0, { name = "Normal", link = true }).bg,
-	--    })
+    --    vim.api.nvim_set_hl(0, "PolydevNormal", {
+    -- fg = vim.api.nvim_get_hl(0, { name = "NormalFloat", link = true }).fg,
+    -- bg = vim.api.nvim_get_hl(0, { name = "Normal", link = true }).bg,
+    --    })
 
     local popup, search, preview = Popup({
 	enter = true,
@@ -139,7 +139,7 @@ function M.manager(project_root)
 	    local lines = {}
 	    local fd = io.open(entry.full_path, "r")
 	    if fd then
-		for i = 1, 100 do
+		for _ = 1, 100 do
 		    local line = fd:read("*line")
 		    if not line then break end
 		    table.insert(lines, line)
@@ -293,7 +293,7 @@ function M.manager(project_root)
 	    if not lang or lang == "" then return print("Project creation canceled") end
 	    opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get(lang), opts or {})
 	    if languages.load_language_module(lang) and templates.projects[lang] and templates.projects[lang].run then
-	    -- if templates.projects[lang] and templates.projects[lang].run then
+		-- if templates.projects[lang] and templates.projects[lang].run then
 		popup:unmount()
 		vim.schedule(function()
 		    vim.ui.input({ prompt = "Enter project name: " }, function(project_name)
