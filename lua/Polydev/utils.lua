@@ -76,10 +76,7 @@ function M.terminal(cmd)
 	    style = "minimal",
 	    border = M.opts.border.enabled and M.opts.border.type,
 	})
-	vim.api.nvim_set_option_value("winblend", vim.o.pumblend, { win = win })
 	vim.api.nvim_set_option_value("winhighlight", "Normal:PolydevNormal,FloatBorder:PolydevBorder", { win = win })
-	vim.api.nvim_set_option_value("cursorline", true, { win = win })
-	vim.api.nvim_set_option_value("scrolloff", 5, { win = win })
 	vim.fn.jobstart(table.concat(cmd, "/"), { term = true })
 	vim.api.nvim_buf_set_keymap(buf, "n", "<ESC>", "i<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
 	return buf, win
@@ -103,11 +100,13 @@ function M.terminal(cmd)
 	    vim.cmd(M.opts.win.size .. " split")
 	end
 	local buf = vim.api.nvim_create_buf(false, true)
+	local win = vim.api.nvim_get_current_win()
+
 	vim.api.nvim_win_set_buf(0, buf)
 
 	vim.fn.jobstart(table.concat(cmd, "/"), { term = true })
 	vim.api.nvim_buf_set_keymap(buf, "n", "<ESC>", "i<C-\\><C-n>:q<CR>", { noremap = true, silent = true })
-	return buf
+	return buf, win
     end
     return 0
 end

@@ -95,12 +95,14 @@ M.languages = {
 	    local success = vim.v.shell_error == 0
 
 	    if not success then
-		local term_buf = utils.terminal({ cmd })
-		vim.api.nvim_set_option_value("modifiable", true, { win = term_buf })
+		local term_buf, term_win = utils.terminal({ cmd })
+
+		vim.api.nvim_set_option_value("modifiable", true, { buf = term_buf })
 		vim.api.nvim_buf_set_lines(term_buf, 0, -1, false,
 		    vim.list_extend({ "Error during compilation:" }, vim.split(output, "\n", { trimempty = true }))
 		)
-		vim.api.nvim_set_option_value("modifiable", false, { win = term_buf })
+		vim.api.nvim_set_option_value("modifiable", false, { buf = term_buf })
+
 	    end
 	    if success then
 		local run_cmd = "cd '" .. build_dir .. "' && ./" .. utils.get_project_name()
