@@ -45,8 +45,7 @@ Additional language support is planned for future releases.
 
 Current focus:
 * **Refactoring and internal cleanup.**
-
-Feature additions will resume after this phase.
+* **Remaking it not in nui to make tabs, mainly for recent projects as the main page**
 
 
 ## Contributing
