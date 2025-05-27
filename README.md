@@ -14,6 +14,8 @@
   <img src="https://github.com/user-attachments/assets/c8e84056-5080-4ec3-ba15-30be61faaf68" alt="Polydev Preview" width="720"/>
 </p>
 
+> **Warning**: Please use 23bc6c2bfc6b4843d1f7ef8efe4cbf6d805893c9 as the last stable release. For the time being, I am working on a new layout and functionality that will be broken in newer versions. Pushed versions will work but not as full.
+
 ## Features
 
 * Create and manage projects directly from Neovim
