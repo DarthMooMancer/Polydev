@@ -1,6 +1,5 @@
 local M = {}
 
-
 ---@param project_root string
 ---@return table
 local function default_languages(project_root)
@@ -54,7 +53,7 @@ M.user_config = {}
 function M.setup(user_opts)
     local defaults = {
 	globals = {
-	    project_root = "~/Projects",
+	    project_root = "~/personal/Projects",
 	    keybinds = {
 		["<leader>po"] = "PolydevManager",
 	    },

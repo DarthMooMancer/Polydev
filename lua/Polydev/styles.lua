@@ -1,7 +1,6 @@
 local M = {}
 
 function M.setup_highlights()
-    -- Only set if not already defined by colorscheme
     local function define(name, opts)
 	if vim.fn.hlexists(name) == 0 then
 	    vim.api.nvim_set_hl(0, name, opts)
