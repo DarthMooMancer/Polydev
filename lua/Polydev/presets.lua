@@ -1,28 +1,17 @@
 local M = {}
 
----@class padding
----@field left_padding integer
----@field right_padding integer
----@field top_padding integer
----@field bottom_padding integer
-
----@class preset_list
----@field right padding
----@field corner padding
-
----@type preset_list
 local presets = {
     right = {
-	left_padding = 100,
-	right_padding = 0,
-	top_padding = 0,
-	bottom_padding = 0,
+	left = 100,
+	right = 0,
+	top = 0,
+	bottom = 0,
     },
     corner = {
-	left_padding = 100,
-	right_padding = 0,
-	top_padding = 25,
-	bottom_padding = 0,
+	left = 100,
+	right = 0,
+	top = 25,
+	bottom = 0,
     }
 }
 

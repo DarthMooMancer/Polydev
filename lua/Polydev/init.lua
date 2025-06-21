@@ -21,7 +21,26 @@ function M.setup(opts)
     })
     vim.api.nvim_create_autocmd("ColorScheme", {
 	callback = function()
-	    require("Polydev.styles").setup_highlights()
+	    local function define(name, o)
+		if vim.fn.hlexists(name) == 0 then
+		    vim.api.nvim_set_hl(0, name, o)
+		end
+	    end
+
+	    define("PolydevNormal", {
+		fg = vim.api.nvim_get_hl(0, { name = "NormalFloat", link = true }).fg,
+		bg = vim.api.nvim_get_hl(0, { name = "Normal", link = true }).bg,
+	    })
+
+	    define("PolydevBorder", {
+		fg = vim.api.nvim_get_hl(0, { name = "FloatBorder", link = true }).fg,
+		bg = vim.api.nvim_get_hl(0, { name = "Normal", link = true }).bg,
+	    })
+
+	    define("PolydevTitle",  {
+		fg = vim.api.nvim_get_hl(0, { name = "FloatTitle", link = true }).fg, bold = true,
+		bg = vim.api.nvim_get_hl(0, { name = "Normal", link = true }).bg,
+	    })
 	end,
     })
 end

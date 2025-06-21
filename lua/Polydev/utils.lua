@@ -15,8 +15,7 @@ end
 
 ---@return string
 function M.get_project_name()
-    local root = M.get_project_root()
-    return vim.fn.fnamemodify(root, ":t")
+    return vim.fn.fnamemodify(M.get_project_root(), ":t")
 end
 
 ---@param path_segments table
@@ -36,9 +35,8 @@ function M.init_git(path, gitignore_lines)
     vim.fn.system({ "git", "-C", path, "init" })
 
     if gitignore_lines and #gitignore_lines > 0 then
-	local gitignore_path = { path, ".gitignore" }
 	local contents = table.concat(gitignore_lines, "\n")
-	M.write_file(gitignore_path, contents)
+	M.write_file({ path, ".gitignore" }, contents)
     end
 end
 
@@ -55,10 +53,10 @@ function M.terminal(cmd)
 	local col
 
 	if opts ~= nil then
-	    width = math.max(1, math.floor(ui.width * 0.9) - opts.left_padding - opts.right_padding)
-	    height = math.max(1, math.floor(ui.height * 0.9) - opts.top_padding - opts.bottom_padding)
-	    row = math.floor((ui.height - height) / 2) + opts.top_padding
-	    col = math.floor((ui.width - width) / 2) + opts.left_padding
+	    width = math.max(1, math.floor(ui.width * 0.9) - opts.left - opts.right)
+	    height = math.max(1, math.floor(ui.height * 0.9) - opts.top - opts.bottom)
+	    row = math.floor((ui.height - height) / 2) + opts.top
+	    col = math.floor((ui.width - width) / 2) + opts.left
 	end
 	if opts == nil then
 	    width = math.max(1, math.floor(ui.width * 0.9))

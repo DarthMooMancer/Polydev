@@ -59,9 +59,9 @@ function M.setup(user_opts)
 	    },
 	},
 	terminal = {
-	    mode = "split", -- floating or split
+	    mode = "split",
 	    win = {
-		type = "horizontal", anchor = "bottom", size = "20" -- type: "vertical" or "horizonal" -- anchor: "below" or "right" or "center" or "corner" -- size: amount of cols or rows based on percentage without percente symbol
+		type = "horizontal", anchor = "bottom", size = "20"
 	    },
 	    border = {
 		enabled = true,
@@ -70,14 +70,9 @@ function M.setup(user_opts)
 	},
     }
 
-    -- First merge global and terminal
     M.user_config = vim.tbl_deep_extend("force", {}, defaults, user_opts or {})
+    local langs = default_languages(M.user_config.globals.project_root)
 
-    -- Now use the final resolved project_root from user_config
-    local root = M.user_config.globals.project_root
-    local langs = default_languages(root)
-
-    -- Inject languages into the config, respecting user overrides
     for lang, conf in pairs(langs) do
 	M.user_config[lang] = vim.tbl_deep_extend("force", conf, M.user_config[lang] or {})
     end
