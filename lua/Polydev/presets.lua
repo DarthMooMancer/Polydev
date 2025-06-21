@@ -2,15 +2,15 @@ local M = {}
 
 local presets = {
     right = {
-	left = 100,
-	right = 0,
-	top = 0,
+	left   = 100,
+	right  = 0,
+	top    = 0,
 	bottom = 0,
     },
     corner = {
-	left = 100,
-	right = 0,
-	top = 25,
+	left   = 100,
+	right  = 0,
+	top    = 25,
 	bottom = 0,
     }
 }
