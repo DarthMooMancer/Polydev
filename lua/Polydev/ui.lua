@@ -25,6 +25,7 @@ end
 
 ---@param project_root string
 function M.manager(project_root)
+    local templates = require("Polydev.templates")
     local ui = vim.api.nvim_list_uis()[1]
     local width, height = math.floor(ui.width * 0.8), math.floor(ui.height * 0.9)
     local row, col = math.floor((ui.height - height) / 2), math.floor((ui.width - width) / 2)
@@ -127,6 +128,21 @@ function M.manager(project_root)
         return current_view[row], row
     end
 
+    ---@param type string
+    ---@return string, string
+    local function get_inputs(type)
+	local l, n
+	vim.ui.input({ prompt = "Enter language for new " .. type .. ": " }, function(lang)
+	    if lang == nil then return end
+	    vim.ui.input({ prompt = "Enter ".. type .. " name: " }, function(name)
+		if not lang or lang == "" then return end
+		if not name or name == "" then return end
+		l, n = lang, name
+	    end)
+	end)
+	return l, n
+    end
+
     local function switch_tab(index)
         if content_wins[selected_tab] and vim.api.nvim_win_is_valid(content_wins[selected_tab]) then
             vim.api.nvim_win_hide(content_wins[selected_tab])
@@ -168,10 +184,72 @@ function M.manager(project_root)
             end
             pcall(vim.api.nvim_win_close, tab_win, true)
         end, { buffer = buf })
-    end
-
-    -- Open file
-    for tab, buf in pairs(content_bufs) do
+	vim.keymap.set("n", "a", function ()
+	    vim.ui.input({ prompt = "New folder name: " }, function(input)
+		if input then
+		    vim.fn.mkdir(cwd .. "/" .. input, "p")
+		    update_screen()
+		end
+	    end)
+	end, { buffer = buf })
+	vim.keymap.set("n", "R", function ()
+	    local entry = get_selected_entry()
+	    if entry ~= nil and not entry.is_up then
+		vim.ui.input({ prompt = "Rename: ", default = entry.name }, function(input)
+		    if input then
+			local new_path = cwd .. "/" .. input
+			vim.fn.rename(entry.full_path, new_path)
+			update_screen()
+		    end
+		end)
+	    end
+	end, { buffer = buf })
+	vim.keymap.set("n", "D", function()
+	    local entry = get_selected_entry()
+	    if entry ~= nil and not entry.is_up then
+		vim.ui.input({ prompt = "Deletion of " .. entry.name .. ": (y/N) Defaults to N: " }, function(input)
+		    if input == "y" or input == "Y" then
+			vim.fn.delete(entry.full_path, "rf")
+			update_screen()
+		    end
+		end)
+	    end
+	end, {buffer = buf})
+	vim.keymap.set("n", "%", function()
+	    local lang, name = get_inputs("file")
+	    if lang == nil or lang == "" then return print("Error: Lang cannot be nil") end
+	    if templates.files[lang].run then
+		if name ~= nil and name ~= "" then
+		    templates.files[lang].run(name)
+		end
+	    else
+		print("Error: No File creation method for " .. lang)
+	    end
+	end, { buffer = buf })
+	vim.keymap.set("n", "x", function()
+	    local lang, name = get_inputs("aux file")
+	    if lang == nil or lang == "" then return print("Error: Lang cannot be nil") end
+	    if templates.extras.run then
+		if name ~= nil and name ~= "" then
+		    templates.extras.run(lang, name)
+		end
+	    else
+		print("Error: No File creation method for " .. lang)
+	    end
+	end, {buffer = buf})
+	vim.keymap.set("n", "d", function ()
+	    local lang, name = get_inputs("project")
+	    local opts = {}
+	    opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get(lang), opts or {})
+	    if lang == nil or lang == "" then return print("Error: Lang cannot be nil") end
+	    if templates.projects[lang].run then
+		if name ~= nil and name ~= "" then
+		    templates.projects[lang].run(name, opts.project_root)
+		end
+	    else
+		print("Error: No project creation method for " .. lang)
+	    end
+	end, { buffer = buf })
 	vim.keymap.set("n", "<CR>", function()
 	    local entry = get_selected_entry()
 	    if not entry then return end
@@ -191,7 +269,6 @@ function M.manager(project_root)
 		update_screen()
 	    end
 	end, { buffer = buf })
-
     end
 end
 
