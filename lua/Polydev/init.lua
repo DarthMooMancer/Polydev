@@ -1,6 +1,7 @@
 local M = {}
 
 function M.setup(opts)
+    opts = opts or {}
     local config = require("Polydev.configs")
     config.setup(opts)
     require("Polydev.utils").setup(opts)
