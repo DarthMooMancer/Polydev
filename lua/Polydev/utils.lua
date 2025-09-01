@@ -1,14 +1,13 @@
-
+local M = {}
 M.opts = {}
 
 function M.setup(opts)
     M.opts = vim.tbl_deep_extend("force", {}, require("Polydev.configs").get("terminal"), opts or {})
 end
 
-function exists(path)
+function M.exists(path)
     return (io.open(path,"r") ~= nil)
 end
-
 
 ---@return string
 function M.get_project_root()
