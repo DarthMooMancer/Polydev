@@ -113,7 +113,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 ]], project_name, project_name))
 	    local gitignore = { "build/" }
 	    utils.init_git(full_project_root, gitignore)
-	    vim.fn.system(string.format("cd %s/build && cmake -S .. -B . && cmake --build . && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && ln -sf compile_commands.json ../compile_commands.json", full_project_root))
+	    vim.fn.system(string.format("cd %s/build && cmake -S .. -B . && cmake --build . && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..", full_project_root))
 	    vim.cmd("edit " .. full_project_root .. "/src/main.c")
 	end
     },
@@ -127,8 +127,8 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 #include <iostream>
 
 int main() {
-    std::cout << "Hello World" << std::endl;
-    return 0;
+	std::cout << "Hello World" << std::endl;
+	return 0;
 }
 ]])
 	    utils.write_file({ full_project_root, "CMakeLists.txt" }, string.format([[
@@ -147,7 +147,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 	    local gitignore = { "build/" }
 	    utils.init_git(full_project_root, gitignore)
-	    vim.fn.system(string.format("cd %s/build && cmake -S .. -B . && cmake --build . && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && ln -sf compile_commands.json ../compile_commands.json", full_project_root))
+	    vim.fn.system(string.format("cd %s/build && cmake -S .. -B . && cmake --build . && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..", full_project_root))
 	    vim.cmd("edit " .. full_project_root .. "/src/main.cpp")
 	end
     },
