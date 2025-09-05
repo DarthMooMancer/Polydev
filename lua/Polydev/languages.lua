@@ -89,10 +89,6 @@ M.languages = {
 		run = function ()
 			local root = utils.get_project_root()
 			local build_dir = root .. "/build"
-			if utils.exists(build_dir) == nil then
-				vim.fn.mkdir(build_dir, "p")
-				vim.fn.system(string.format("cd %s/build && cmake -S .. -B . && cmake --build . && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && ln -sf compile_commands.json ../compile_commands.json", root))
-			end
 
 			local cmd = "cd '" .. build_dir .. "' && cmake --build ."
 			local output = vim.fn.system(cmd)
