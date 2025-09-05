@@ -94,24 +94,30 @@ setup(
 #include <stdio.h>
 
 int main() {
-    printf("%s", "Hello World");
-    return 0;
+	printf("%s", "Hello World");
+	return 0;
 }
 ]])
 	    utils.write_file({ full_project_root, "CMakeLists.txt" }, string.format([[
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.16)
 project(%s)
-include_directories(include)
-set(SOURCES src/main.c)
-add_executable(%s ${SOURCES})
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_STANDARD_REQUIRED ON)
+include_directories(include)
 
-# find_package(SDL3 CONFIG REQUIRED) # An example of how to import libraries from vcpkg
-# target_link_libraries(Game PRIVATE SDL3::SDL3)
-]], project_name, project_name))
-	    local gitignore = { "build/" }
+set(SOURCES
+	src/main.c
+)
+
+add_executable(%s ${SOURCES})
+
+# find_package(Curses REQUIRED)
+# include_directories(${CURSES_INCLUDE_DIR})
+# target_link_libraries(%s ${CURSES_LIBRARIES})
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+]], project_name, project_name, project_name))
+	    local gitignore = { "build/", ".cache/" }
 	    utils.init_git(full_project_root, gitignore)
 	    vim.fn.system(string.format("cd %s/build && cmake -S .. -B . && cmake --build . && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..", full_project_root))
 	    vim.cmd("edit " .. full_project_root .. "/src/main.c")
@@ -132,20 +138,26 @@ int main() {
 }
 ]])
 	    utils.write_file({ full_project_root, "CMakeLists.txt" }, string.format([[
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.16)
 project(%s)
-include_directories(include)
-set(SOURCES src/main.cpp)
-add_executable(%s ${SOURCES})
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_STANDARD_REQUIRED ON)
+include_directories(include)
 
-# find_package(SDL3 CONFIG REQUIRED) # An example of how to import libraries from vcpkg
-# target_link_libraries(Game PRIVATE SDL3::SDL3)
-]], project_name, project_name))
+set(SOURCES
+	src/main.cpp
+)
 
-	    local gitignore = { "build/" }
+add_executable(%s ${SOURCES})
+
+# find_package(Curses REQUIRED)
+# include_directories(${CURSES_INCLUDE_DIR})
+# target_link_libraries(%s ${CURSES_LIBRARIES})
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+]], project_name, project_name, project_name))
+
+	    local gitignore = { "build/", ".cache/" }
 	    utils.init_git(full_project_root, gitignore)
 	    vim.fn.system(string.format("cd %s/build && cmake -S .. -B . && cmake --build . && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..", full_project_root))
 	    vim.cmd("edit " .. full_project_root .. "/src/main.cpp")

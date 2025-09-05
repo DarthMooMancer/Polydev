@@ -1,6 +1,6 @@
 <h1 align="center">Polydev</h1>
 
-<p align="center"><em>A multi-language project managing plugin for file creation, building, and running code—all within neovim. Whether you're coding in Java, Python, Lua, Rust, or more, Polydev provides seamless integration to boost your productivity inside Neovim.</em></p>
+<p align="center"><em>A multi-language project managing plugin for file creation, building, and running code—all within neovim. Whether you're coding in C/C++ Java, Python, Lua, Rust, and more, Polydev provides seamless integration to boost your productivity inside Neovim.</em></p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Lua-1e90ff?style=for-the-badge&logo=lua&logoColor=white" />
@@ -10,9 +10,8 @@
   <img src="https://img.shields.io/badge/Docs-Available-blue?style=for-the-badge&logo=readthedocs&logoColor=white" />
 </p>
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/c8e84056-5080-4ec3-ba15-30be61faaf68" alt="Polydev Preview" width="720"/>
-</p>
+
+https://github.com/user-attachments/assets/39d406e7-19cc-4040-823f-0a5c30dec714
 
 ## Features
 
@@ -25,7 +24,6 @@
 * Minimal configuration with extensibility in mind
 
 > 📚 [View the full documentation](https://darthmoomancer.github.io/Polydev/) for setup, configuration, and usage details.
-
 
 ## Supported Languages
 
