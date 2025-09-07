@@ -1,0 +1,1 @@
+- Its really simple. Just if you see an error/bug, enhancment or feature to be improved on just make an issue or make a pr.
