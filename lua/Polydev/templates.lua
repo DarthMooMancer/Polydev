@@ -140,8 +140,10 @@ int main() {
 	    utils.write_file({ full_project_root, "CMakeLists.txt" }, string.format([[
 cmake_minimum_required(VERSION 3.16)
 project(%s)
-set(CMAKE_C_STANDARD 23)
-set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 include_directories(include)
 
 set(SOURCES
