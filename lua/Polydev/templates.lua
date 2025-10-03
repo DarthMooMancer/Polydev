@@ -133,16 +133,17 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 #include <iostream>
 
 int main() {
-	std::cout << "Hello World" << std::endl;
+	std::cout << "Hello World\n";
 	return 0;
 }
 ]])
 	    utils.write_file({ full_project_root, "CMakeLists.txt" }, string.format([[
 cmake_minimum_required(VERSION 3.16)
-project(%s)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+project(%s)
 
 include_directories(include)
 
@@ -155,8 +156,6 @@ add_executable(%s ${SOURCES})
 # find_package(Curses REQUIRED)
 # include_directories(${CURSES_INCLUDE_DIR})
 # target_link_libraries(%s ${CURSES_LIBRARIES})
-
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 ]], project_name, project_name, project_name))
 
 	    local gitignore = { "build/", ".cache/" }
