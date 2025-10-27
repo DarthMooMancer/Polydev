@@ -224,7 +224,7 @@ function M.manager(project_root)
 					end
 				end)
 			end
-		end, {buffer = buf})
+		end, { buffer = buf })
 		vim.keymap.set("n", "%", function()
 			local lang, name = get_inputs("file")
 			if lang == nil or lang == "" then return print("Error: Lang cannot be nil") end
@@ -248,7 +248,7 @@ function M.manager(project_root)
 			else
 				print("Error: No File creation method for " .. lang)
 			end
-		end, {buffer = buf})
+		end, { buffer = buf })
 		vim.keymap.set("n", "d", function ()
 			local lang, name = get_inputs("project")
 			local opts = {}
@@ -280,6 +280,8 @@ function M.manager(project_root)
 				cwd = entry.full_path
 				vim.cmd("cd " .. cwd)
 				update_screen()
+			else
+				print("Error")
 			end
 		end, { buffer = buf })
 	end
