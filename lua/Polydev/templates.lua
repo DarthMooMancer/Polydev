@@ -100,22 +100,17 @@ int main() {
 ]])
 			utils.write_file({ full_project_root, "CMakeLists.txt" }, string.format([[
 cmake_minimum_required(VERSION 3.16)
-project(%s)
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 include_directories(include)
+project(%s)
 
 set(SOURCES
 	src/main.c
 )
 
 add_executable(%s ${SOURCES})
-
-# find_package(Curses REQUIRED)
-# include_directories(${CURSES_INCLUDE_DIR})
-# target_link_libraries(%s ${CURSES_LIBRARIES})
-
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 ]], project_name, project_name, project_name))
 			local gitignore = { "build/", ".cache/" }
 			utils.init_git(full_project_root, gitignore)
