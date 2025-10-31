@@ -110,24 +110,6 @@ function M.manager(project_root)
 				table.insert(lines, string.format("%-2d | %-27s | %-6s", i, item.name, item.type))
 			end
 			vim.api.nvim_buf_set_lines(content_bufs.Projects, 0, -1, false, lines)
-
-		elseif selected_tab == "Recents" then
-			local oldfiles = vim.v.oldfiles
-			local valid = {}
-			for _, file in ipairs(oldfiles) do
-				if vim.fn.filereadable(file) == 1 then
-					table.insert(valid, file)
-				end
-			end
-			current_view = vim.tbl_map(function(f)
-				return { name = vim.fn.fnamemodify(f, ":t"), full_path = f, type = "file" }
-			end, valid)
-
-			local lines = {}
-			for i, item in ipairs(current_view) do
-				table.insert(lines, string.format("%-2d | %-40s", i, item.full_path))
-			end
-			vim.api.nvim_buf_set_lines(content_bufs.Recents, 0, -1, false, lines)
 		end
 	end
 
@@ -153,39 +135,11 @@ function M.manager(project_root)
 		return l, n
 	end
 
-	local function switch_tab(index)
-		if content_wins[selected_tab] and vim.api.nvim_win_is_valid(content_wins[selected_tab]) then
-			vim.api.nvim_win_hide(content_wins[selected_tab])
-		end
-
-		selected = ((index - 1) % #tabs) + 1
-		selected_tab = tabs[selected]
-
-		if not content_wins[selected_tab] or not vim.api.nvim_win_is_valid(content_wins[selected_tab]) then
-			content_wins[selected_tab] = vim.api.nvim_open_win(content_bufs[selected_tab], true, {
-				relative = "editor",
-				width = width,
-				height = content_height,
-				row = content_row,
-				col = col,
-				style = "minimal",
-				border = "rounded",
-			})
-		else
-			vim.api.nvim_set_current_win(content_wins[selected_tab])
-		end
-
-		update_tab_bar()
-		update_screen()
-	end
-
 	update_tab_bar()
 	update_screen()
 
 	-- Shared mappings
 	for _, buf in pairs(content_bufs) do
-		vim.keymap.set("n", "<Tab>", function() switch_tab(selected + 1) end, { buffer = buf })
-		vim.keymap.set("n", "gT", function() switch_tab(selected - 1) end, { buffer = buf })
 		vim.keymap.set("n", "<ESC>", function()
 			for _, win in pairs(content_wins) do
 				if win and vim.api.nvim_win_is_valid(win) then
